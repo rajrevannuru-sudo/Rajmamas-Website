@@ -1,0 +1,26 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { pages } from '../lib/site';
+import { ph } from '../lib/placeholder';
+
+const p = pages.privacy;
+const entry = await getEntry('pages', 'privacy-policy');
+if (!entry) throw new Error('content/pages/privacy-policy.md is missing');
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={p.seo.title} description={p.seo.description} path="/privacy-policy" og="privacy-policy">
+  <section class="page-hero light" aria-labelledby="h1">
+    <div class="wrap">
+      <p class="eyebrow">{p.eyebrow}</p>
+      <h1 id="h1">{p.seo.h1}</h1>
+      <p class="lead" set:html={ph(p.updated)} />
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="prose-md"><Content /></div>
+    </div>
+  </section>
+</BaseLayout>

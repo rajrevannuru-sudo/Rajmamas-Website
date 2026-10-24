@@ -1,0 +1,36 @@
+---
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+import { ph } from '../lib/placeholder';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  items: { q: string; a: string }[];
+}
+const { eyebrow, title, lead, items } = Astro.props;
+---
+
+<div class="wrap faq-layout">
+  <div>
+    <SectionHead id="faq-h" eyebrow={eyebrow} title={title} lead={lead} />
+  </div>
+  <div class="faq">
+    {
+      items.map((item, i) => (
+        <details open={i === 0}>
+          <summary>
+            <span set:html={ph(item.q)} />
+            <span class="pm" aria-hidden="true">
+              <Icon name="plus" />
+            </span>
+          </summary>
+          <div>
+            <p set:html={ph(item.a)} />
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</div>

@@ -1,0 +1,25 @@
+---
+import Glyph from './Glyph.astro';
+import { ph } from '../lib/placeholder';
+
+interface Props {
+  items: { title: string; text: string; icon?: string }[];
+  label: string;
+}
+const { items, label } = Astro.props;
+---
+
+<ol class="steps" aria-label={label}>
+  {
+    items.map((s, i) => (
+      <li class="step">
+        <div class="n" aria-hidden="true">
+          {String(i + 1).padStart(2, '0')}
+          {s.icon && <span class="badge step-badge"><Glyph name={s.icon} /></span>}
+        </div>
+        <h3 set:html={ph(s.title)} />
+        <p set:html={ph(s.text)} />
+      </li>
+    ))
+  }
+</ol>

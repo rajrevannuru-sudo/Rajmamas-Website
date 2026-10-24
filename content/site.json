@@ -1,0 +1,117 @@
+{
+  "_note": "Single source for business details, founder, navigation, shared flows and the home FAQ. Values in [square brackets] are unconfirmed placeholders.",
+  "name": "VAKS Consulting",
+  "legalName": "VAKS Consulting",
+  "tagline": "Clear documentation. Confident customers.",
+  "description": "Technical writing and documentation for product teams. A small, senior studio in Hyderabad.",
+  "url": "https://vaksconsulting.com",
+  "email": "contact@vaksconsulting.com",
+  "phone": "+91 63095 82277",
+  "phoneHref": "tel:+916309582277",
+  "whatsappHref": "https://wa.me/916309582277",
+  "bookingUrl": "/contact",
+  "_bookingNote": "Replace with a Calendly or Google Calendar booking link if Raj sets one up; every 'Book a call' button reads this value.",
+  "address": {
+    "locality": "Hyderabad",
+    "region": "Telangana",
+    "country": "IN",
+    "display": "Hyderabad, India · Working with teams worldwide"
+  },
+  "responseTime": "We reply within one business day",
+  "availability": "[Currently taking on new projects from Month YYYY.]",
+  "callHours": "Calls run Monday to Friday, [10:00–18:00] IST, with overlap for teams in other time zones.",
+  "linkedinCompany": "",
+  "founder": {
+    "name": "Rajasekhar V. Revannuru",
+    "shortName": "Rajasekhar",
+    "jobTitle": "Founder & Documentation Solutions Architect",
+    "experienceYears": "26+",
+    "location": "Hyderabad, India",
+    "linkedin": "https://www.linkedin.com/in/rajrevannuru/",
+    "photo": "assets-source/images/rajasekhar-revannuru-founder-vaks-consulting.png",
+    "photoAlt": "Rajasekhar V. Revannuru, Founder of VAKS Consulting",
+    "shortBio": "Rajasekhar V. Revannuru is a Documentation Solutions Architect with 26+ years of experience turning complex products and engineering workflows into clear, useful experiences for customers and internal teams.",
+    "bio": [
+      "I'm Rajasekhar V. Revannuru, a Documentation Solutions Architect based in Hyderabad, India. I help organizations turn complex products and engineering workflows into clear, useful experiences for customers and internal teams.",
+      "My work spans documentation strategy, content architecture, knowledge management, and Docs-as-Code. Across cloud platforms, APIs, enterprise software, hardware, and telecommunications, I build scalable documentation systems that make information easier to find, understand, and maintain.",
+      "I bring together structured content, thoughtful information architecture, and practical workflows to help people get more value from products."
+    ],
+    "careerResults": [
+      { "value": "70%", "label": "fewer support tickets" },
+      { "value": "90%", "label": "fewer documentation defects" },
+      { "value": "25%", "label": "faster customer onboarding" },
+      { "value": "40%", "label": "better API documentation discoverability" }
+    ],
+    "careerResultsNote": "Results across Rajasekhar's career, not a single VAKS client's outcome.",
+    "expertise": ["Documentation strategy", "Content architecture", "Knowledge management", "Docs-as-Code", "Cloud platforms", "APIs", "Enterprise software", "Hardware", "Telecommunications"]
+  },
+  "stats": [
+    { "value": "26", "suffix": "+", "label": "Years in technical documentation", "icon": "calendar-check" },
+    { "value": "[60]", "suffix": "+", "label": "Projects delivered", "icon": "folder-check" },
+    { "value": "[16]", "suffix": "+", "label": "Clients served", "icon": "users" }
+  ],
+  "_statsNote": "60+ and 16+ come from the old site and are not yet confirmed by Raj.",
+  "clients": ["Aapmor Technologies", "Drut Networks", "Athena Overseas"],
+  "_clientsNote": "Only these three may be named anywhere on the site.",
+  "nav": [
+    { "label": "Services", "href": "/services", "dropdown": true },
+    { "label": "Case studies", "href": "/case-studies" },
+    { "label": "About", "href": "/about" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "_iconNote": "icon values are Lucide icon names (https://lucide.dev/icons), e.g. ticket, pen-line, rocket.",
+  "_navNote": "Resources is phase 2: add { label: 'Resources', href: '/resources' } after the first article is published.",
+  "process": [
+    { "title": "Discover", "icon": "search", "text": "We learn your product, your readers and what they struggle with, through interviews and a review of what you already have." },
+    { "title": "Draft", "icon": "pen-line", "text": "We write and structure in close collaboration with your team, sharing drafts early so nothing is a surprise." },
+    { "title": "Deliver", "icon": "package-check", "text": "You get finished, production-ready docs in your format, with a plan to keep them accurate." }
+  ],
+  "engagementFlow": [
+    { "title": "Discovery call", "icon": "phone-call", "text": "30 minutes on your product, readers and goals. No commitment." },
+    { "title": "Audit & plan", "icon": "clipboard-list", "text": "We review what exists and agree a scoped plan and timeline." },
+    { "title": "Write & review", "icon": "pen-line", "text": "Drafts tested with your team, with up to three review cycles." },
+    { "title": "Deliver & hand over", "icon": "package-check", "text": "Finished docs plus the templates and workflow to keep them current." }
+  ],
+  "projectFlow": [
+    { "title": "Discovery call", "icon": "phone-call", "text": "30 minutes on your product, readers and goals." },
+    { "title": "Audit & plan", "icon": "clipboard-list", "text": "What exists, what is missing, and a scoped plan." },
+    { "title": "Architecture", "icon": "network", "text": "Structure, templates and style rules." },
+    { "title": "Write & review", "icon": "pen-line", "text": "Drafts tested with your team, up to 3 review cycles." },
+    { "title": "Publish & hand over", "icon": "rocket", "text": "Live docs plus the workflow to keep them current." }
+  ],
+  "problems": [
+    { "title": "More support tickets", "icon": "ticket", "text": "Your support team answers the same questions every week because the help centre doesn't." },
+    { "title": "Slow onboarding", "icon": "hourglass", "text": "New users and developers take days to reach their first success, and some never get there." },
+    { "title": "Lost deals", "icon": "trending-down", "text": "Technical buyers judge your product by its docs. Thin or outdated docs end evaluations early." }
+  ],
+  "values": [
+    { "title": "Clarity over cleverness", "icon": "lightbulb", "text": "We write to be understood, not to impress. If a simpler word works, we use it." },
+    { "title": "Partnership, not just delivery", "icon": "handshake", "text": "We work with your team, not around them. The best docs come from the people who know the product." },
+    { "title": "Built to last", "icon": "shield-check", "text": "Clear structure, consistent style and a handover your team can maintain after we leave." },
+    { "title": "Honest about scope", "icon": "scale", "text": "We tell you what will help most, what won't, and what it will take. No overselling, no surprises." }
+  ],
+  "story": [
+    "VAKS Consulting was founded on a simple observation: most documentation is an afterthought. It's written in a hurry, by people who know too much to explain it clearly, for users who are left to figure it out alone.",
+    "We started VAKS to change that. We bring the same rigour and craft to documentation that great teams bring to their products: structured thinking, clear language, and a genuine obsession with the reader's experience.",
+    "We take on a small number of projects at a time, so every client works directly with a senior documentation architect. Today we work with startups and technology companies across India and beyond."
+  ],
+  "homeFaq": [
+    { "q": "How do you price projects?", "a": "Every project starts with a free scoping call. We then send a fixed proposal based on what you actually need, not a menu of packages. [Raj to confirm pricing model.]" },
+    { "q": "How long does a typical project take?", "a": "Most projects run between [4 and 12] weeks, depending on scope. An audit can take as little as [2] weeks; a full help centre or API reference takes longer. We agree the timeline before we start." },
+    { "q": "Do you sign NDAs?", "a": "Yes. We're happy to sign your NDA before we see any product details or internal material." },
+    { "q": "Which tools and formats do you work in?", "a": "We deliver in Markdown, HTML, PDF or your CMS, and work in tools such as Confluence, Notion, Google Docs, Git and docs-as-code platforms. If your team already uses a tool, we work in it." },
+    { "q": "Do you work with teams outside India?", "a": "Yes. We're based in Hyderabad and work remotely with teams worldwide, with call times that overlap your working day." }
+  ],
+  "testimonials": [
+    {
+      "quote": "Our internal SOPs were disorganized and difficult to maintain. VAKS brought structure and clarity, creating a practical system our team can confidently manage and sustain.",
+      "name": "Rajesh Kolli",
+      "role": "Managing Director",
+      "company": "Athena Overseas",
+      "confirmed": true
+    },
+    { "quote": "[Client quote]", "name": "[Client name]", "role": "[Role]", "company": "[Company]", "confirmed": false },
+    { "quote": "[Client quote]", "name": "[Client name]", "role": "[Role]", "company": "[Company]", "confirmed": false }
+  ],
+  "_testimonialsNote": "Hide unconfirmed testimonial cards in production builds; show them with the .placeholder style in development."
+}

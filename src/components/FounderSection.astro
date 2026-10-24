@@ -1,0 +1,86 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import Button from './Button.astro';
+import { site, pages } from '../lib/site';
+import { ph } from '../lib/placeholder';
+import { founderPhoto } from '../lib/images';
+
+interface Props {
+  variant: 'home' | 'about';
+}
+const { variant } = Astro.props;
+const f = site.founder;
+const ui = pages.ui;
+const home = pages.home.founder;
+const about = pages.about.founder;
+---
+
+<div class="wrap founder">
+  <div class="portrait-wrap">
+    <figure class="img-slot portrait">
+      <Image
+        src={founderPhoto}
+        alt={f.photoAlt}
+        widths={[480, 720, 960]}
+        sizes="(max-width: 760px) calc(100vw - 56px), 480px"
+        loading="eager"
+        class="founder-photo"
+      />
+    </figure>
+  </div>
+  <div>
+    <p class="eyebrow">{variant === 'home' ? home.eyebrow : about.eyebrow}</p>
+    <h2 class="name" id="founder-h">{f.name}</h2>
+    <p class="role">{f.jobTitle}</p>
+    {
+      variant === 'home' ? (
+        <>
+          <div class="prose bio">
+            <p set:html={ph(f.shortBio)} />
+          </div>
+          <dl class="facts">
+            {home.facts.map((fact) => (
+              <div>
+                <dt>{fact.label}</dt>
+                <dd set:html={ph(fact.value)} />
+              </div>
+            ))}
+          </dl>
+          <div class="btn-row">
+            <Button href={f.linkedin} variant="secondary" icon="linkedin">{ui.connectLinkedIn}</Button>
+            <a class="link-arrow" href="/about"><span>{ui.moreAboutUs}</span><Icon name="arrow" /></a>
+          </div>
+        </>
+      ) : (
+        <>
+          <div class="prose bio">
+            {f.bio.map((p) => <p set:html={ph(p)} />)}
+          </div>
+          <div class="career">
+            <p class="career-label">{about.careerLabel}</p>
+            <dl>
+              {f.careerResults.map((r) => (
+                <div>
+                  <dt class="numeral">{r.value}</dt>
+                  <dd>{r.label}</dd>
+                </div>
+              ))}
+            </dl>
+            <p class="career-note">{f.careerResultsNote}</p>
+          </div>
+          <div class="expertise">
+            <p class="career-label">{about.expertiseLabel}</p>
+            <ul class="tags">
+              {f.expertise.map((t) => <li class="tag">{t}</li>)}
+            </ul>
+          </div>
+          <div class="btn-row">
+            <Button href={f.linkedin} variant="secondary" icon="linkedin">{ui.connectLinkedIn}</Button>
+            <Button href={site.bookingUrl} icon="calendar">{ui.bookCall}</Button>
+          </div>
+        </>
+      )
+    }
+  </div>
+</div>

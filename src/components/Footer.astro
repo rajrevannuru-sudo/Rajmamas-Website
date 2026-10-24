@@ -1,0 +1,48 @@
+---
+import Wordmark from './Wordmark.astro';
+import Icon from './Icon.astro';
+import { site, pages } from '../lib/site';
+import { getServices, serviceHref } from '../lib/content';
+
+const services = await getServices();
+const ui = pages.ui;
+const company = [...site.nav.filter((n) => !n.dropdown), { label: ui.bookCall, href: site.bookingUrl }];
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer dark">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <Wordmark />
+        <p>{site.description}</p>
+      </div>
+      <nav aria-labelledby="ft-svc">
+        <h2 id="ft-svc">{ui.footerServices}</h2>
+        <ul>
+          {services.map((s) => <li><a href={serviceHref(s)}>{s.data.name}</a></li>)}
+        </ul>
+      </nav>
+      <nav aria-labelledby="ft-co">
+        <h2 id="ft-co">{ui.footerCompany}</h2>
+        <ul>
+          {company.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="contact">
+        <h2>{ui.footerContact}</h2>
+        <a href={`mailto:${site.email}`}><Icon name="mail" />{site.email}</a>
+        <br />
+        <a href={site.whatsappHref}><Icon name="whatsapp" />{site.phone}</a>
+        <p class="loc"><Icon name="pin" /><span>{site.address.display}</span></p>
+      </div>
+    </div>
+    <div class="bottom">
+      <span>© {year} {site.name}</span>
+      <div class="links">
+        <a href="/privacy-policy">{ui.privacyPolicy}</a>
+        <a class="icon-btn" href={site.founder.linkedin} aria-label={ui.linkedinLabel}><Icon name="linkedin" /></a>
+      </div>
+    </div>
+  </div>
+</footer>

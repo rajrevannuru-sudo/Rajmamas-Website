@@ -1,0 +1,32 @@
+---
+import Icon from './Icon.astro';
+import { ph } from '../lib/placeholder';
+import { pages } from '../lib/site';
+import { caseHref, getService, type CaseStudy } from '../lib/content';
+
+interface Props {
+  study: CaseStudy;
+  /** Heading level for the title (H3 under a section H2). */
+  as?: 'h2' | 'h3';
+}
+const { study, as: Tag = 'h3' } = Astro.props;
+const { client, title, serviceLabel, headlineMetric } = study.data;
+const service = await getService(study.data.service);
+---
+
+<a class="card case-card" href={caseHref(study)}>
+  <div class="top">
+    {service && <span class="case-ico badge sm" aria-hidden="true"><Icon name={service.data.icon} /></span>}
+    <div class="numeral" set:html={ph(headlineMetric.value)} />
+    <p set:html={ph(headlineMetric.label)} />
+    <div class="metric-rule" aria-hidden="true"></div>
+  </div>
+  <div class="bottom">
+    <span class="client">{client}</span>
+    <Tag class="h3">{title}</Tag>
+    <div class="meta">
+      <span class="tag">{serviceLabel}</span>
+      <span class="link-arrow"><span>{pages.ui.readCaseStudy}</span><Icon name="arrow" /></span>
+    </div>
+  </div>
+</a>

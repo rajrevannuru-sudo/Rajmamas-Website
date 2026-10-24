@@ -1,0 +1,61 @@
+---
+import '../styles/tokens.css';
+import '../styles/global.css';
+import Seo from '../components/Seo.astro';
+import JsonLd from '../components/JsonLd.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { pages } from '../lib/site';
+import { graph } from '../lib/schema';
+import { founderSchemaImage } from '../lib/images';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path without trailing slash, e.g. "/services". */
+  path: string;
+  og: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+  headerOnDark?: boolean;
+  /** Extra JSON-LD nodes for this page. */
+  schema?: Record<string, unknown>[];
+  /** Include the full Person node (Home, About). */
+  person?: boolean;
+}
+
+const { title, description, path, og, noindex, type, headerOnDark = false, schema = [], person = false } = Astro.props;
+const ld = graph(schema, person ? await founderSchemaImage() : undefined);
+---
+
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Seo title={title} description={description} path={path} og={og} noindex={noindex} type={type} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0b1d33" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+    />
+    <JsonLd data={ld} />
+  </head>
+  <body class="vk">
+    <a class="skip-link" href="#main">{pages.ui.skipLink}</a>
+    <Header onDark={headerOnDark} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '../scripts/menu';
+    </script>
+  </body>
+</html>

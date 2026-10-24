@@ -1,0 +1,45 @@
+/* VAKS Consulting — design tokens (Midnight Editorial). Generated from tokens.json. */
+:root {
+  /* colour */
+  --midnight: #0b1d33;  /* Primary dark. Hero, closing CTA band and footer backgrounds; heading text on studio-light and warm-parchment (16:1). */
+  --ink-navy: #102b4e;  /* Raised surfaces inside midnight sections (founder card in the hero, code panels, share image panels). */
+  --harbor-blue: #1b4266;  /* Secondary surfaces, eyebrow labels and text links on light grounds (9.8:1 on studio-light), stat and step numerals on parchment. */
+  --antique-gold: #c6a56b;  /* ONLY the primary button fill, key highlights (rules, metric underlines) and eyebrows/links on midnight (7.3:1). Never text on light grounds (2.2:1). */
+  --gold-hover: #d6ba86;  /* Primary button hover fill; midnight text on it stays above 8:1. */
+  --warm-parchment: #f4efe5;  /* Alternate section background (trust strip, services, how we work, FAQ). */
+  --studio-light: #fbf8f1;  /* Main page background. */
+  --paper: #fffdf8;  /* Card surfaces on studio-light and warm-parchment. */
+  --text: var(--midnight);  /* Headings and body copy on studio-light, warm-parchment and paper. */
+  --text-muted: #4a5668;  /* Secondary copy, captions and meta on studio-light (7.0:1) and warm-parchment (6.5:1). */
+  --text-on-dark: var(--warm-parchment);  /* Headings and body copy on midnight, ink-navy and harbor-blue (9:1 or better). */
+  --text-muted-on-dark: #b4c0cf;  /* Secondary copy on midnight (9.2:1), ink-navy (7.7:1) and harbor-blue (5.6:1). */
+  --hairline: #dcd3c2;  /* Decorative dividers and card outlines on light grounds. Not for control borders. */
+  --hairline-on-dark: #2a3f5c;  /* Decorative dividers on midnight and ink-navy. */
+  --border-strong: #8c7f68;  /* Form control borders on studio-light and paper (3.7:1), meets the 3:1 control floor. */
+  --focus: var(--harbor-blue);  /* Focus ring on light grounds: 2px solid outline, 3px offset. */
+  --focus-on-dark: var(--antique-gold);  /* Focus ring inside midnight sections: 2px solid outline, 3px offset. */
+  /* type families */
+  /* Headings: Manrope. Body: Inter. (--font-serif keeps its name so the ported component CSS still applies; it is the heading face.) */
+  --font-heading: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: var(--font-heading);
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* spacing */
+  --space-1: 4px;  /* Icon-to-label gaps. */
+  --space-2: 8px;  /* Tight stacks: eyebrow to heading, tag padding. */
+  --space-3: 12px;  /* Button gaps, list item spacing. */
+  --space-4: 16px;  /* Paragraph spacing; mobile page gutter is space-5. */
+  --space-5: 20px;  /* Mobile page gutter. */
+  --space-6: 24px;  /* Grid gaps between cards. */
+  --space-8: 32px;  /* Card padding at desktop. */
+  --space-12: 48px;  /* Heading block to content. */
+  --space-16: 64px;  /* Mobile section padding. */
+  --space-24: 96px;  /* Desktop section padding. */
+  --space-30: 120px;  /* Desktop page gutter at 1440 (content 1200 wide). */
+  /* radius */
+  --radius-sm: 4px;  /* Tags, inputs, code chips. */
+  --radius-md: 6px;  /* Buttons. */
+  --radius-lg: 12px;  /* Cards and panels. */
+  --radius-full: 999px;  /* Avatars and icon discs. */
+  /* shadow */
+  --shadow-card: 0 1px 2px rgba(11,29,51,0.06), 0 8px 24px rgba(11,29,51,0.06);  /* Cards on hover and floating panels (dropdown, founder card). Resting cards use a hairline instead. */
+}

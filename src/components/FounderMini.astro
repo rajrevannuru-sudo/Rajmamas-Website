@@ -1,0 +1,19 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { site, pages } from '../lib/site';
+import { founderPhoto } from '../lib/images';
+
+const f = site.founder;
+---
+
+<div class="founder-mini">
+  <span class="photo">
+    <Image src={founderPhoto} alt={f.name} width={112} height={168} loading="eager" class="founder-avatar" />
+  </span>
+  <div>
+    <b>{f.name}</b>
+    <span>{f.jobTitle}</span>
+  </div>
+  <a href={f.linkedin} aria-label={pages.ui.linkedinLabel}><Icon name="linkedin" /></a>
+</div>

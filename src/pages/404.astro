@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { pages } from '../lib/site';
+
+const p = pages.notFound;
+---
+
+<BaseLayout title={p.seo.title} description={p.seo.description} path="/404" og="home" noindex>
+  <section class="page-hero light not-found" aria-labelledby="h1">
+    <div class="wrap">
+      <p class="eyebrow">{p.eyebrow}</p>
+      <h1 id="h1">{p.seo.h1}</h1>
+      <p class="lead">{p.lead}</p>
+      <div class="btn-row link-list">
+        {p.links.map((l, i) => <Button href={l.href} variant={i === 0 ? 'primary' : 'secondary'}>{l.label}</Button>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

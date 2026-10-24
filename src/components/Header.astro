@@ -1,0 +1,106 @@
+---
+import Wordmark from './Wordmark.astro';
+import Icon from './Icon.astro';
+import { site, pages } from '../lib/site';
+import { getServices, serviceHref } from '../lib/content';
+
+interface Props {
+  onDark?: boolean;
+}
+
+const { onDark = false } = Astro.props;
+const services = await getServices();
+const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+const ui = pages.ui;
+---
+
+<header class:list={['site-header', { 'on-dark': onDark }]}>
+  <div class="wrap bar">
+    <Wordmark />
+    <nav aria-label="Main">
+      <ul class="nav">
+        {
+          site.nav.map((item) =>
+            item.dropdown ? (
+              <li class="has-dropdown">
+                <button
+                  class="nav-link"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="svc-menu"
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                >
+                  {item.label} <Icon name="chevron" />
+                </button>
+                <ul class="dropdown" id="svc-menu">
+                  {services.map((s) => (
+                    <li>
+                      <a href={serviceHref(s)} aria-current={path === serviceHref(s) ? 'page' : undefined}>
+                        <span class="ico">
+                          <Icon name={s.data.icon} />
+                        </span>
+                        <span>
+                          <strong>{s.data.name}</strong>
+                          <small>{s.data.cardDescription}</small>
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                  <li class="all">
+                    <a class="link-arrow" href={item.href}>
+                      <span>{ui.allServices}</span>
+                      <Icon name="arrow" />
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            ) : (
+              <li>
+                <a class="nav-link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+    <div class="header-cta">
+      <a class="btn btn-primary btn-sm" href={site.bookingUrl}>{ui.bookCall}</a>
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <Icon name="menu" />
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile">
+    <div class="wrap">
+      {
+        site.nav.map((item) =>
+          item.dropdown ? (
+            <details>
+              <summary>
+                {item.label} <Icon name="chevron" />
+              </summary>
+              <ul>
+                {services.map((s) => (
+                  <li>
+                    <a href={serviceHref(s)}>{s.data.name}</a>
+                  </li>
+                ))}
+                <li>
+                  <a href={item.href}>{ui.allServices}</a>
+                </li>
+              </ul>
+            </details>
+          ) : (
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ),
+        )
+      }
+      <a class="btn btn-primary" href={site.bookingUrl}><Icon name="calendar" />{ui.bookCall}</a>
+    </div>
+  </nav>
+</header>

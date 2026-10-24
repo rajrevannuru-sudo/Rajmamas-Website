@@ -1,0 +1,141 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Button from '../../components/Button.astro';
+import Icon from '../../components/Icon.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import ProblemCard from '../../components/ProblemCard.astro';
+import Checklist from '../../components/Checklist.astro';
+import Timeline from '../../components/Timeline.astro';
+import ToolsStrip from '../../components/ToolsStrip.astro';
+import CaseCard from '../../components/CaseCard.astro';
+import QuoteCard from '../../components/QuoteCard.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { site, pages, showUnconfirmed } from '../../lib/site';
+import { ph, fill } from '../../lib/placeholder';
+import { breadcrumbNode, serviceNode, faqNode, type Crumb } from '../../lib/schema';
+import { getServices, getCaseStudy, caseHref, serviceHref, type Service } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const services = await getServices();
+  return services.map((service) => ({ params: { slug: service.id }, props: { service } }));
+}
+
+const { service } = Astro.props as { service: Service };
+const d = service.data;
+const t = pages.service;
+const ui = pages.ui;
+const path = serviceHref(service);
+const { Content } = await render(service);
+
+const related = await getCaseStudy(d.relatedCaseStudy);
+const relatedQuote = related?.data.quote && (related.data.quote.confirmed || showUnconfirmed) ? related.data.quote : undefined;
+
+const crumbs: Crumb[] = [
+  { name: ui.home, path: '/' },
+  { name: t.breadcrumb, path: '/services' },
+  { name: d.name, path },
+];
+const schema = [
+  serviceNode({ name: d.name, description: d.seo.description, serviceType: d.seo.primaryKeyword, path }),
+  breadcrumbNode(crumbs),
+  faqNode(d.faq),
+];
+
+// Section backgrounds alternate studio-light / parchment whatever blocks are present.
+const order = ['problems', 'intro', 'included', 'process', ...(related ? ['related'] : []), 'faq'];
+const bg = (key: string) => (order.indexOf(key) % 2 === 1 ? 'section parchment' : 'section');
+---
+
+<BaseLayout title={d.seo.title} description={d.seo.description} path={path} og={`services-${service.id}`} schema={schema}>
+  <section class="page-hero dark" aria-labelledby="h1">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <div class="grid">
+        <div>
+          <p class="eyebrow">{d.eyebrow}</p>
+          <h1 id="h1">{d.seo.h1}</h1>
+          <p class="lead" set:html={ph(d.lead)} />
+          <div class="btn-row">
+            <Button href={site.bookingUrl} icon="calendar">{ui.bookCall}</Button>
+            {
+              related ? (
+                <Button href={caseHref(related)} variant="secondary">
+                  {fill(t.caseButton, { client: related.data.client })}
+                </Button>
+              ) : (
+                <Button href="/case-studies" variant="secondary">{ui.seeOurWork}</Button>
+              )
+            }
+          </div>
+        </div>
+        <aside class="for-box" aria-labelledby="for-h">
+          <h2 id="for-h">{t.forBox}</h2>
+          <ul>
+            {d.whoFor.map((w) => <li><Icon name="check" /><span set:html={ph(w)} /></li>)}
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class={bg('problems')} aria-labelledby="prob-h">
+    <div class="wrap">
+      <SectionHead id="prob-h" eyebrow={t.problemsEyebrow} title={d.headings.problems} />
+      <ul class="grid-3">
+        {d.problems.map((pr, i) => <ProblemCard n={i + 1} {...pr} />)}
+      </ul>
+    </div>
+  </section>
+
+  <section class={bg('intro')} aria-labelledby="intro-h">
+    <div class="wrap story">
+      <div>
+        <p class="eyebrow">{t.introEyebrow}</p>
+        <h2 id="intro-h" class="wide" set:html={ph(d.headings.intro)} />
+      </div>
+      <div class="prose-md intro-prose"><Content /></div>
+    </div>
+  </section>
+
+  <section class={bg('included')} aria-labelledby="inc-h">
+    <div class="wrap">
+      <SectionHead id="inc-h" eyebrow={t.includedEyebrow} title={d.headings.included} />
+      <Checklist items={d.included} />
+    </div>
+  </section>
+
+  <section class={bg('process')} aria-labelledby="proc-h">
+    <div class="wrap">
+      <SectionHead id="proc-h" eyebrow={t.processEyebrow} title={t.processTitle} lead={d.timelineNote} />
+      <Timeline items={d.process} label={t.processEyebrow} />
+      {d.tools.length > 0 && <div class="tools-wrap"><ToolsStrip label={t.toolsLabel} items={d.tools} /></div>}
+    </div>
+  </section>
+
+  {
+    related && (
+      <section class={bg('related')} aria-labelledby="rel-h">
+        <div class="wrap">
+          <SectionHead id="rel-h" eyebrow={t.relatedEyebrow} title={t.relatedTitle} />
+          <ul class="related-row">
+            <li><CaseCard study={related} /></li>
+            {relatedQuote && (
+              <li>
+                <QuoteCard quote={relatedQuote.text} name={relatedQuote.name} role={relatedQuote.role} company={related.data.client} />
+              </li>
+            )}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class={bg('faq')} aria-labelledby="faq-h">
+    <Faq eyebrow={t.faqEyebrow} title={d.headings.faq} items={d.faq} />
+  </section>
+
+  <CtaBand title={d.headings.cta} />
+</BaseLayout>

@@ -1,0 +1,24 @@
+---
+import Icon from './Icon.astro';
+import type { Crumb } from '../lib/schema';
+
+interface Props {
+  crumbs: Crumb[];
+}
+const { crumbs } = Astro.props;
+---
+
+<nav class="crumbs" aria-label="Breadcrumb">
+  {
+    crumbs.map((c, i) =>
+      i < crumbs.length - 1 ? (
+        <>
+          <a href={c.path}>{c.name}</a>
+          <Icon name="chevronR" />
+        </>
+      ) : (
+        <span aria-current="page">{c.name}</span>
+      ),
+    )
+  }
+</nav>

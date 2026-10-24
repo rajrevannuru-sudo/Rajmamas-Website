@@ -1,0 +1,199 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Icon from '../../components/Icon.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import Flow from '../../components/Flow.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { site, pages, showUnconfirmed } from '../../lib/site';
+import { ph } from '../../lib/placeholder';
+import { md, splitSections } from '../../lib/markdown';
+import { breadcrumbNode, articleNode, type Crumb } from '../../lib/schema';
+import { getCaseStudies, getService, getCaseStudy, serviceHref, caseHref, type CaseStudy } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const studies = await getCaseStudies();
+  return studies.map((study) => ({ params: { slug: study.id }, props: { study } }));
+}
+
+const { study } = Astro.props as { study: CaseStudy };
+const d = study.data;
+const t = pages.caseStudy;
+const ui = pages.ui;
+const path = caseHref(study);
+const service = await getService(d.service);
+const next = await getCaseStudy(d.next);
+const quote = d.quote && (d.quote.confirmed || showUnconfirmed) ? d.quote : undefined;
+
+// Body sections in order: challenge, approach, outcome. Markdown H2 → eyebrow; frontmatter headings → H2.
+const keys = ['challenge', 'approach', 'outcome'] as const;
+const parts = splitSections(study.body ?? '');
+const sections = await Promise.all(
+  keys.map(async (key, i) => ({
+    key,
+    eyebrow: parts[i]?.heading ?? t.glanceLabels[i],
+    title: d.headings[key] ?? parts[i]?.heading ?? t.glanceLabels[i],
+    html: parts[i] ? await md(parts[i].body) : '',
+  })),
+);
+
+const crumbs: Crumb[] = [
+  { name: ui.home, path: '/' },
+  { name: t.breadcrumb, path: '/case-studies' },
+  { name: d.client, path },
+];
+const schema = [
+  articleNode({ headline: d.title, description: d.seo.description, path, image: `${site.url}/og/case-studies-${study.id}.png` }),
+  breadcrumbNode(crumbs),
+];
+const summary = [
+  { title: t.glanceLabels[0], text: d.summary.challenge },
+  { title: t.glanceLabels[1], text: d.summary.approach },
+  { title: t.glanceLabels[2], text: d.summary.outcome },
+];
+const toc = [
+  { id: 'challenge', label: t.toc[0] },
+  { id: 'approach', label: t.toc[1] },
+  { id: 'outcome', label: t.toc[2] },
+  { id: 'deliverables', label: t.toc[3] },
+];
+---
+
+<BaseLayout
+  title={d.seo.title}
+  description={d.seo.description}
+  path={path}
+  og={`case-studies-${study.id}`}
+  type="article"
+  schema={schema}
+>
+  <section class="page-hero dark" aria-labelledby="h1">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <ul class="tags">
+        <li class="tag">{t.tagClient}: {d.client}</li>
+        <li class="tag">{t.tagIndustry}:&nbsp;<span set:html={ph(d.industry)} /></li>
+        <li class="tag">{t.tagService}: {d.serviceLabel}</li>
+      </ul>
+      <h1 id="h1" class="cs-title">{d.title}</h1>
+      <dl class="facts-bar">
+        <div><dt>{t.tagClient}</dt><dd>{d.client}</dd></div>
+        <div><dt>{t.tagIndustry}</dt><dd set:html={ph(d.industry)} /></div>
+        <div><dt>{t.tagService}</dt><dd>{d.serviceLabel}</dd></div>
+        <div><dt>{t.factTimeline}</dt><dd set:html={ph(d.timeline)} /></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section tight glance" aria-labelledby="glance-h">
+    <div class="wrap">
+      <SectionHead id="glance-h" eyebrow={t.glanceEyebrow} title={t.glanceTitle} />
+      <Flow items={summary} label={t.glanceEyebrow} variant="summary" metric={d.headlineMetric} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap cs-layout">
+      <nav class="toc-rail" aria-label={t.tocLabel}>
+        <b>{t.tocLabel}</b>
+        {toc.map((item, i) => <a class:list={{ on: i === 0 }} href={`#${item.id}`}>{item.label}</a>)}
+      </nav>
+      <div class="cs-body">
+        {
+          sections.map((s) => (
+            <section id={s.key} aria-labelledby={`${s.key}-h`}>
+              <p class="eyebrow">{s.eyebrow}</p>
+              <h2 id={`${s.key}-h`} set:html={ph(s.title)} />
+              {s.html && <div class="prose prose-md" set:html={s.html} />}
+              {s.key === 'approach' && <Flow items={d.approach} label={s.eyebrow} />}
+              {s.key === 'outcome' && (
+                <ul class="outcome">
+                  {d.outcomes.map((o) => (
+                    <li class="m">
+                      <div class="numeral" set:html={ph(o.value)} />
+                      <span aria-hidden="true" />
+                      <p set:html={ph(o.label)} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))
+        }
+
+        <section id="deliverables" aria-labelledby="deliverables-h">
+          <p class="eyebrow">{t.deliverablesEyebrow}</p>
+          <h2 id="deliverables-h">{t.deliverablesTitle}</h2>
+          <ul class="deliverables">
+            {d.deliverables.map((item) => <li><Icon name="doc" /><span set:html={ph(item)} /></li>)}
+          </ul>
+        </section>
+
+        {
+          quote && (
+            <section aria-label={t.quoteLabel}>
+              <figure class="pull">
+                <blockquote set:html={ph(quote.text)} />
+                <figcaption>
+                  <b set:html={ph(quote.name)} /> · <span set:html={ph(`${quote.role}, ${d.client}`)} />
+                </figcaption>
+              </figure>
+            </section>
+          )
+        }
+
+        {
+          service && (
+            <section aria-labelledby="rs-h">
+              <div class="related-svc">
+                <span class="ico"><Icon name={service.data.icon} /></span>
+                <div class="related-svc-text">
+                  <p class="eyebrow">{t.relatedService}</p>
+                  <h2 id="rs-h" class="h3">{service.data.name}</h2>
+                </div>
+                <a class="link-arrow" href={serviceHref(service)}><span>{t.viewService}</span><Icon name="arrow" /></a>
+              </div>
+            </section>
+          )
+        }
+
+        {
+          next && (
+            <a class="next-case" href={caseHref(next)}>
+              <div>
+                <span class="kick">{t.nextCase}</span>
+                <p class="h3">{next.data.title}</p>
+              </div>
+              <span class="arrow"><Icon name="arrow" /></span>
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<script>
+  // Marks the TOC link for the section currently in view.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc-rail a')];
+  const targets = links.map((a) => document.querySelector<HTMLElement>(a.hash)).filter((el): el is HTMLElement => !!el);
+  const setOn = (id: string) =>
+    links.forEach((a) => {
+      const on = a.hash === `#${id}`;
+      a.classList.toggle('on', on);
+      if (on) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+  if ('IntersectionObserver' in window && targets.length) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setOn(visible[0].target.id);
+      },
+      { rootMargin: '-20% 0px -60% 0px' },
+    );
+    targets.forEach((t) => io.observe(t));
+  }
+</script>

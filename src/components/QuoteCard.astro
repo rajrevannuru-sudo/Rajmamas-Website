@@ -1,0 +1,32 @@
+---
+import { ph } from '../lib/placeholder';
+
+interface Props {
+  quote: string;
+  name: string;
+  role: string;
+  company?: string;
+}
+const { quote, name, role, company } = Astro.props;
+const initials = name.startsWith('[')
+  ? '?'
+  : name
+      .split(/\s+/)
+      .map((w) => w[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+const roleLine = [role, company].filter(Boolean).join(', ');
+---
+
+<figure class="card quote-card">
+  <div class="mark" aria-hidden="true">“</div>
+  <blockquote set:html={ph(quote)} />
+  <figcaption>
+    <div class="photo av" aria-hidden="true"><span class="initials">{initials}</span></div>
+    <div>
+      <b set:html={ph(name)} />
+      <span set:html={ph(roleLine)} />
+    </div>
+  </figcaption>
+</figure>

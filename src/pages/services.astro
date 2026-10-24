@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Button from '../components/Button.astro';
+import ServicesHub from '../components/ServicesHub.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import Flow from '../components/Flow.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site, pages } from '../lib/site';
+import { ph } from '../lib/placeholder';
+import { breadcrumbNode, type Crumb } from '../lib/schema';
+import { getServices } from '../lib/content';
+
+const p = pages.services;
+const ui = pages.ui;
+const services = await getServices();
+const crumbs: Crumb[] = [
+  { name: ui.home, path: '/' },
+  { name: pages.service.breadcrumb, path: '/services' },
+];
+---
+
+<BaseLayout title={p.seo.title} description={p.seo.description} path="/services" og="services" schema={[breadcrumbNode(crumbs)]}>
+  <section class="page-hero dark" aria-labelledby="h1">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <div class="grid hero-split has-diagram">
+        <div>
+          <p class="eyebrow">{p.hero.eyebrow}</p>
+          <h1 id="h1">{p.seo.h1}</h1>
+          <p class="lead" set:html={ph(p.hero.lead)} />
+          <div class="btn-row">
+            <Button href={site.bookingUrl} icon="calendar">{ui.bookCall}</Button>
+            <Button href="/case-studies" variant="secondary">{ui.seeOurWork}</Button>
+          </div>
+        </div>
+        <ServicesHub services={services} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section parchment" aria-labelledby="svc-h">
+    <div class="wrap">
+      <SectionHead id="svc-h" {...p.grid} />
+      <ul class="grid-3">
+        {services.map((s) => <ServiceCard service={s} />)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="how-h">
+    <div class="wrap">
+      <SectionHead id="how-h" eyebrow={p.process.eyebrow} title={p.process.title} />
+      <Flow items={site.process} label={p.process.eyebrow} />
+      <p class="flow-note">{p.process.note}</p>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

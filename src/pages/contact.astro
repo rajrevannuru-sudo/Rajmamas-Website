@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Button from '../components/Button.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site, pages } from '../lib/site';
+import { ph } from '../lib/placeholder';
+
+const p = pages.contact;
+// Until a booking link exists, bookingUrl points here, so the button jumps to the form instead.
+const bookHref = site.bookingUrl === '/contact' ? '#contact-form' : site.bookingUrl;
+---
+
+<BaseLayout title={p.seo.title} description={p.seo.description} path="/contact" og="contact">
+  <section class="section">
+    <div class="wrap contact-grid">
+      <div>
+        <p class="eyebrow">{p.eyebrow}</p>
+        <h1 id="h1">{p.seo.h1}</h1>
+        <p class="reply"><i aria-hidden="true"></i>{site.responseTime}</p>
+        <p class="lead" set:html={`${ph(site.availability)} ${ph(site.callHours)}`} />
+        <ul class="contact-list">
+          <li>
+            <span class="ico"><Icon name="mail" /></span>
+            <div>
+              <small>{p.emailLabel}</small>
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+            </div>
+          </li>
+          <li>
+            <span class="ico"><Icon name="whatsapp" /></span>
+            <div>
+              <small>{p.phoneLabel}</small>
+              <a href={site.phoneHref}>{site.phone}</a>
+              <a class="alt" href={site.whatsappHref}>{pages.cta.whatsapp}</a>
+            </div>
+          </li>
+          <li>
+            <span class="ico"><Icon name="pin" /></span>
+            <div>
+              <small>{p.locationLabel}</small>
+              <span class="v">{site.address.display}</span>
+            </div>
+          </li>
+        </ul>
+        <Button href={bookHref} icon="calendar">{p.bookButton}</Button>
+      </div>
+      <ContactForm />
+    </div>
+  </section>
+</BaseLayout>

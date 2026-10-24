@@ -1,0 +1,7 @@
+# 301 redirects from docs/seo-plan.md §6 (Cloudflare Pages / Netlify)
+/portfolio       /case-studies  301
+/portfolio/*     /case-studies  301
+/theme-study     /              301
+/design-system   /              301
+/home            /              301
+/index.html      /              301

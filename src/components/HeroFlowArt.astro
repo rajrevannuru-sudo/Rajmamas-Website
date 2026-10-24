@@ -1,0 +1,66 @@
+---
+// Home hero illustration: scattered raw input → VAKS → structured, connected documentation.
+// Built in HTML/SVG (not an image) so it stays crisp, on-brand and light. Decorative; the figcaption carries the meaning.
+import Glyph from './Glyph.astro';
+import { pages } from '../lib/site';
+
+const d = pages.home.hero.diagram;
+const caption = pages.home.hero.diagramCaption;
+const fragIcons = ['sticky-note', 'file-text', 'message-square', 'sheet', 'copy'];
+const nodeIcons = ['tags', 'user-round', 'mouse-pointer-click', 'library'];
+---
+
+<figure class="flowart">
+  <div class="fa-stage" aria-hidden="true">
+    <div class="fa-before">
+      <p class="fa-label"><Glyph name="layers" />{d.before}</p>
+      <ul class="fa-scatter">
+        {
+          d.fragments.map((f, i) => (
+            <li class={`frag frag-${i + 1}`}>
+              <span class="frag-ico"><Glyph name={fragIcons[i % fragIcons.length]} /></span>
+              <span class="frag-body">
+                <span class="frag-title">{f}</span>
+                <span class="frag-line" />
+                <span class="frag-line short" />
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="fa-engine">
+      <svg class="fa-wire" viewBox="0 0 100 20" preserveAspectRatio="none">
+        <line x1="0" y1="10" x2="100" y2="10" />
+      </svg>
+      <span class="fa-node">
+        <Glyph name="wand-sparkles" />
+      </span>
+      <span class="fa-node-label">{d.engine}<small>{d.engineSub}</small></span>
+    </div>
+
+    <div class="fa-after">
+      <div class="fa-card">
+        <p class="fa-card-head"><span class="fa-tick"><Glyph name="check" strokeWidth={2.5} /></span>{d.after}</p>
+        <p class="fa-search"><Glyph name="search" />{d.search}<kbd>/</kbd></p>
+        <div class="fa-hub">
+          <svg class="fa-links" viewBox="0 0 300 170" preserveAspectRatio="none">
+            <path d="M150 85 L52 30" /><path d="M150 85 L248 30" /><path d="M150 85 L52 140" /><path d="M150 85 L248 140" />
+          </svg>
+          <span class="fa-core"><Glyph name="workflow" />{d.core}</span>
+          {
+            d.nodes.map((n, i) => (
+              <span class={`fa-sat fa-sat-${i + 1}`}>
+                <Glyph name={nodeIcons[i % nodeIcons.length]} />
+                {n}
+              </span>
+            ))
+          }
+        </div>
+        <p class="fa-foot">{d.footer}</p>
+      </div>
+    </div>
+  </div>
+  <figcaption class="sr-only">{caption}</figcaption>
+</figure>

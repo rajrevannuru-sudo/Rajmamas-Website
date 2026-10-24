@@ -1,0 +1,34 @@
+# Apache (GoDaddy cPanel) config for the static build. Upload the contents of dist/ to public_html.
+Options -MultiViews
+ErrorDocument 404 /404.html
+
+RewriteEngine On
+
+# HTTPS and no www
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://vaksconsulting.com%{REQUEST_URI} [L,R=301]
+
+# 301 redirects from docs/seo-plan.md §6
+RewriteRule ^portfolio(/.*)?$ /case-studies [L,R=301]
+RewriteRule ^theme-study/?$ / [L,R=301]
+RewriteRule ^design-system/?$ / [L,R=301]
+RewriteRule ^home/?$ / [L,R=301]
+RewriteRule ^index\.html$ / [L,R=301]
+
+# Clean URLs: /about.html → /about, trailing slash removed, /about served from about.html
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+RewriteRule ^ /%1 [L,R=301]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [L,R=301]
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+</IfModule>

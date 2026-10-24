@@ -1,0 +1,33 @@
+---
+title: Privacy policy
+---
+
+[Raj to review this policy before launch.]
+
+This policy explains what happens to the details you send us through vaksconsulting.com. We have kept it short and in plain English.
+
+## What we collect
+
+When you use the contact form, we receive your name, email address, company name (if you give one), the service you are interested in and your message. If you email, call or message us on WhatsApp, we receive the details you choose to share.
+
+We don't use analytics, advertising or tracking cookies on this website.
+
+## How we use it
+
+We use your details only to reply to your enquiry and, if we work together, to run the project. We never sell, rent or share your details for marketing.
+
+## Who processes it
+
+Contact form messages are delivered to us by [Web3Forms](https://web3forms.com), a form service that forwards each message to our inbox. Web3Forms processes your message only to deliver it. Our email is hosted by [our email provider].
+
+## How long we keep it
+
+We keep enquiry emails for as long as they are useful for the conversation, and no longer than [24 months] if we don't go on to work together.
+
+## Your choices
+
+You can ask us to show you, correct or delete the details we hold about you at any time. Email [contact@vaksconsulting.com](mailto:contact@vaksconsulting.com) and we will reply within one business day.
+
+## Changes
+
+If we change this policy, we will update this page and the date at the top.

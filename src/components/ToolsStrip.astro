@@ -1,0 +1,32 @@
+---
+import Icon from './Icon.astro';
+import { ph } from '../lib/placeholder';
+import { toolLogo } from '../lib/tool-logos';
+
+interface Props {
+  label: string;
+  items: string[];
+}
+const { label, items } = Astro.props;
+const tools = items.map((name) => ({ name, logo: toolLogo(name) }));
+---
+
+<div class="tools">
+  <span class="label" id="tools-label">{label}</span>
+  <ul aria-labelledby="tools-label">
+    {
+      tools.map(({ name, logo }) => (
+        <li>
+          {logo.kind === 'brand' ? (
+            <svg class="tool-logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style={`color:${logo.color}`}>
+              <path d={logo.path} fill="currentColor" />
+            </svg>
+          ) : (
+            <Icon name={logo.name} class="tool-logo tool-icon" />
+          )}
+          <span set:html={ph(name)} />
+        </li>
+      ))
+    }
+  </ul>
+</div>

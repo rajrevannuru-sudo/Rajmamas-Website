@@ -1,0 +1,12 @@
+---
+import Icon from './Icon.astro';
+import { ph } from '../lib/placeholder';
+
+interface Props {
+  items: string[];
+}
+---
+
+<ul class="checklist">
+  {Astro.props.items.map((t) => <li><Icon name="check" /><span set:html={ph(t)} /></li>)}
+</ul>

@@ -1,0 +1,28 @@
+---
+// Lucide icon (https://lucide.dev, ISC licence) by kebab-case name, e.g. "pen-line". Decorative unless `label` is set.
+import * as lucide from 'lucide-static';
+
+interface Props {
+  name: string;
+  class?: string;
+  label?: string;
+  strokeWidth?: number;
+}
+const { name, class: className, label, strokeWidth = 1.75 } = Astro.props;
+const key = name.replace(/(^|-)([a-z0-9])/g, (_, __, c: string) => c.toUpperCase());
+const raw = (lucide as unknown as Record<string, string>)[key];
+if (typeof raw !== 'string') throw new Error(`Unknown Lucide icon "${name}"`);
+
+const attrs = [
+  `class="glyph${className ? ` ${className}` : ''}"`,
+  label ? `role="img" aria-label="${label}"` : 'aria-hidden="true" focusable="false"',
+].join(' ');
+const svg = raw
+  .replace(/\s*class="[^"]*"/, '')
+  .replace(/\s*width="24"\s*height="24"/, '')
+  .replace(/stroke-width="2"/, `stroke-width="${strokeWidth}"`)
+  .replace('<svg', `<svg ${attrs}`)
+  .replace(/\s+/g, ' ');
+---
+
+<Fragment set:html={svg} />

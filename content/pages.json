@@ -1,0 +1,255 @@
+{
+  "_note": "Page section copy (eyebrows, headings, leads, UI text) for every page. Business details live in site.json; services and case studies in their own folders. Values in [square brackets] are unconfirmed placeholders.",
+  "cta": {
+    "eyebrow": "Next step",
+    "title": "Ready for documentation your customers actually use?",
+    "text": "Tell us what you are building. In 30 minutes you will know what to document first and what it will take.",
+    "button": "Book a call",
+    "whatsapp": "Or message us on WhatsApp"
+  },
+  "ui": {
+    "skipLink": "Skip to content",
+    "bookCall": "Book a call",
+    "allServices": "All services",
+    "learnMore": "Learn more",
+    "readCaseStudy": "Read case study",
+    "allCaseStudies": "All case studies",
+    "seeOurWork": "See our work",
+    "connectLinkedIn": "Connect on LinkedIn",
+    "moreAboutUs": "More about us",
+    "home": "Home",
+    "footerServices": "Services",
+    "footerCompany": "Company",
+    "footerContact": "Get in touch",
+    "privacyPolicy": "Privacy policy",
+    "linkedinLabel": "Rajasekhar V. Revannuru on LinkedIn"
+  },
+  "home": {
+    "seo": {
+      "title": "Technical Writing & Documentation Services | VAKS Consulting",
+      "description": "Technical writing and documentation services for product teams: API docs, help centres, SOPs and audits, led by a 26+ year expert in Hyderabad.",
+      "h1": "Technical writing and documentation services for product teams",
+      "ogEyebrow": "VAKS Consulting · Hyderabad"
+    },
+    "hero": {
+      "lead": "We make it easier for your customers to find answers, understand your product and get more value from it. A small, senior technical writing studio in Hyderabad, working with product teams worldwide.",
+      "reassure": ["NDA on request", "Working with teams worldwide"],
+      "diagramCaption": "VAKS Consulting turns scattered notes, files and duplicates into structured, connected documentation organised around topics, people, actions and sources.",
+      "diagram": {
+        "before": "Before · raw input",
+        "fragments": ["Meeting notes", "Spec_v3_final.docx", "Slack thread", "Tracker.xlsx", "Old wiki page (copy)"],
+        "engine": "VAKS",
+        "engineSub": "Structure",
+        "after": "After · structured content",
+        "search": "Search the docs…",
+        "core": "Core information",
+        "nodes": ["Topics", "People", "Actions", "Sources"],
+        "footer": "Connected · searchable · understandable"
+      }
+    },
+    "trustLabel": "Trusted by teams at",
+    "problems": {
+      "eyebrow": "The problem",
+      "title": "Unclear documentation costs more than it looks",
+      "lead": "When people can't find the answer, they open a ticket, stall in onboarding or walk away."
+    },
+    "services": {
+      "eyebrow": "What we do",
+      "title": "Technical writing services for every stage of your product",
+      "lead": "Senior writers, one point of contact, and docs that stay useful after we hand them over."
+    },
+    "results": {
+      "eyebrow": "Results",
+      "title": "Proof from teams like yours"
+    },
+    "founder": {
+      "eyebrow": "Who you work with",
+      "facts": [
+        { "label": "Experience", "value": "26+ years" },
+        { "label": "Support tickets, across his career", "value": "Up to 70% fewer" },
+        { "label": "Based in", "value": "Hyderabad" }
+      ]
+    },
+    "process": {
+      "eyebrow": "How we work",
+      "title": "Three steps, no surprises"
+    },
+    "testimonials": {
+      "eyebrow": "What clients say",
+      "title": "In their words"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions we hear often",
+      "lead": "Something else on your mind? Ask us on the call."
+    }
+  },
+  "services": {
+    "seo": {
+      "title": "Technical Documentation Services | VAKS Consulting",
+      "description": "API docs, user manuals, SOPs, documentation audits, style guides and writing training. Seven ways we turn complex knowledge into docs people use.",
+      "h1": "Documentation services for every stage of your product",
+      "ogEyebrow": "Services"
+    },
+    "hero": {
+      "eyebrow": "How we can help",
+      "lead": "Seven technical documentation services that help product teams turn complex knowledge into documentation people use.",
+      "diagramCaption": "The six VAKS Consulting documentation services around one hub: technical writing and API docs, user manuals, SOPs, documentation strategy and audit, content systems and style guides, and documentation training.",
+      "hubTitle": "VAKS",
+      "hubText": "One senior studio"
+    },
+    "grid": {
+      "eyebrow": "Our services",
+      "title": "Choose where to start"
+    },
+    "process": {
+      "eyebrow": "How we work",
+      "title": "Three steps, no surprises",
+      "note": "Every project follows the same rhythm, so you always know what happens next."
+    }
+  },
+  "service": {
+    "breadcrumb": "Services",
+    "forBox": "Who it is for",
+    "problemsEyebrow": "Problems it solves",
+    "introEyebrow": "How we help",
+    "includedEyebrow": "What's included",
+    "processEyebrow": "Process and timeline",
+    "processTitle": "From kickoff to published docs",
+    "toolsLabel": "Tools and formats",
+    "relatedEyebrow": "Related case study",
+    "relatedTitle": "See it in practice",
+    "faqEyebrow": "FAQ",
+    "caseButton": "See the {client} case study"
+  },
+  "caseStudies": {
+    "seo": {
+      "title": "Documentation Case Studies | VAKS Consulting",
+      "description": "How we rebuilt API docs, a help centre and a library of SOPs for Drut Networks, Aapmor Technologies and Athena Overseas.",
+      "h1": "Documentation case studies",
+      "ogEyebrow": "Case studies"
+    },
+    "hero": {
+      "eyebrow": "Our work",
+      "lead": "Three documentation case studies: an API reference, a help centre and a library of SOPs, and what changed for each team."
+    },
+    "flow": {
+      "eyebrow": "How an engagement works",
+      "title": "From first call to handover",
+      "note": "Every project on this page followed these four steps."
+    },
+    "grid": {
+      "eyebrow": "Selected projects",
+      "title": "Proof from teams like yours"
+    }
+  },
+  "caseStudy": {
+    "breadcrumb": "Case studies",
+    "tagClient": "Client",
+    "tagIndustry": "Industry",
+    "tagService": "Service",
+    "factTimeline": "Timeline",
+    "glanceEyebrow": "At a glance",
+    "glanceTitle": "The project in three steps",
+    "glanceLabels": ["The challenge", "Our approach", "The outcome"],
+    "tocLabel": "On this page",
+    "toc": ["Challenge", "Approach", "Outcome", "Deliverables"],
+    "outcomeEyebrow": "The outcome",
+    "deliverablesEyebrow": "Deliverables",
+    "deliverablesTitle": "What we handed over",
+    "relatedService": "Related service",
+    "viewService": "View the service",
+    "nextCase": "Next case study",
+    "quoteLabel": "Client quote",
+    "ogEyebrow": "Case study · {client}"
+  },
+  "about": {
+    "seo": {
+      "title": "About Rajasekhar V. Revannuru | VAKS Consulting",
+      "description": "Rajasekhar V. Revannuru is a Documentation Solutions Architect with 26+ years of experience. Meet the founder behind VAKS Consulting, Hyderabad.",
+      "h1": "A small, senior studio for clear documentation",
+      "ogEyebrow": "About VAKS Consulting"
+    },
+    "hero": {
+      "eyebrow": "About VAKS Consulting"
+    },
+    "founder": {
+      "eyebrow": "Founder",
+      "careerLabel": "Results across my career",
+      "expertiseLabel": "Expertise"
+    },
+    "story": {
+      "eyebrow": "Our story",
+      "title": "Born from frustration with bad docs"
+    },
+    "flow": {
+      "eyebrow": "How a project flows",
+      "title": "From first call to living documentation"
+    },
+    "values": {
+      "eyebrow": "What we value",
+      "title": "How we work with you"
+    },
+    "statsLabel": "VAKS Consulting in numbers"
+  },
+  "contact": {
+    "seo": {
+      "title": "Contact VAKS Consulting | Book a Documentation Call",
+      "description": "Tell us about your documentation project. Call or WhatsApp +91 63095 82277, or send a message. We reply within one business day.",
+      "h1": "Let's talk about your documentation",
+      "ogEyebrow": "Contact"
+    },
+    "eyebrow": "Contact",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone / WhatsApp",
+    "locationLabel": "Location",
+    "bookButton": "Book a 30-minute call",
+    "form": {
+      "title": "Send us a message",
+      "intro": "Tell us a little about your project. All fields except Company are required.",
+      "name": "Name",
+      "email": "Email",
+      "company": "Company",
+      "optional": "(optional)",
+      "service": "Service interest",
+      "servicePlaceholder": "Choose a service",
+      "notSure": "Not sure yet",
+      "details": "Project details",
+      "detailsPlaceholder": "What are you building, who reads the docs, and when do you need them?",
+      "detailsHint": "A few sentences is plenty.",
+      "privacyNote": "We use your details only to reply to this message. See our",
+      "privacyLink": "privacy policy",
+      "submit": "Send message",
+      "sending": "Sending…",
+      "subject": "New enquiry from vaksconsulting.com",
+      "success": "Thank you. Your message is on its way, and we'll reply within one business day.",
+      "error": "Sorry, your message couldn't be sent. Please try again, or message us on WhatsApp at +91 63095 82277.",
+      "invalid": "Please fill in your name, a valid email, a service and your project details."
+    }
+  },
+  "privacy": {
+    "seo": {
+      "title": "Privacy Policy | VAKS Consulting",
+      "description": "How VAKS Consulting uses the details you send through this website.",
+      "h1": "Privacy policy",
+      "ogEyebrow": "Privacy policy"
+    },
+    "eyebrow": "Legal",
+    "updated": "Last updated: [24 October 2026]"
+  },
+  "notFound": {
+    "seo": {
+      "title": "Page not found | VAKS Consulting",
+      "description": "The page you were looking for doesn't exist or has moved.",
+      "h1": "We couldn't find that page",
+      "ogEyebrow": "VAKS Consulting"
+    },
+    "eyebrow": "Error 404",
+    "lead": "The page may have moved, or the link may be out of date. These pages should help you find what you need.",
+    "links": [
+      { "label": "Home", "href": "/" },
+      { "label": "Services", "href": "/services" },
+      { "label": "Contact", "href": "/contact" }
+    ]
+  }
+}

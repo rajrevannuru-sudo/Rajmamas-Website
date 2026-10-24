@@ -1,0 +1,50 @@
+---
+// Built flow diagram (docs/flow-diagrams.md): an <ol> of cards joined by gold connectors.
+import Glyph from './Glyph.astro';
+import { ph } from '../lib/placeholder';
+
+interface Step {
+  title: string;
+  text: string;
+  icon?: string;
+}
+interface Props {
+  items: Step[];
+  label: string;
+  /** "summary": challenge → approach → outcome cards; the last card carries the headline metric. */
+  variant?: 'default' | 'summary';
+  metric?: { value: string; label: string };
+}
+const { items, label, variant = 'default', metric } = Astro.props;
+---
+
+<ol class:list={['flow', { 'flow--summary': variant === 'summary' }]} aria-label={label}>
+  {
+    items.map((s, i) =>
+      variant === 'summary' ? (
+        <li class="flow-step">
+          <h3 class="flow-label" set:html={ph(s.title)} />
+          {i === items.length - 1 && metric && (
+            <>
+              <p class="flow-metric">
+                <span class="numeral" set:html={ph(metric.value)} />
+                <span class="flow-metric-label" set:html={ph(metric.label)} />
+              </p>
+              <span class="metric-rule" aria-hidden="true" />
+            </>
+          )}
+          <p set:html={ph(s.text)} />
+        </li>
+      ) : (
+        <li class="flow-step">
+          <div class="flow-head" aria-hidden="true">
+            <span class="flow-n">{String(i + 1).padStart(2, '0')}</span>
+            {s.icon && <span class="flow-ico"><Glyph name={s.icon} /></span>}
+          </div>
+          <h3 set:html={ph(s.title)} />
+          <p set:html={ph(s.text)} />
+        </li>
+      ),
+    )
+  }
+</ol>

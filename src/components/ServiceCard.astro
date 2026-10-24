@@ -1,0 +1,33 @@
+---
+import Icon from './Icon.astro';
+import { pages } from '../lib/site';
+import { serviceHref, type Service } from '../lib/content';
+
+interface Props {
+  service: Service;
+}
+const { service } = Astro.props;
+const { name, icon, cardDescription, secondary } = service.data;
+const link = pages.ui.learnMore;
+---
+
+<li class:list={['card lift service-card', { secondary }]}>
+  <span class="ico badge"><Icon name={icon} /></span>
+  {
+    secondary ? (
+      <div class="txt">
+        <h3>{name}</h3>
+        <p>{cardDescription}</p>
+      </div>
+    ) : (
+      <>
+        <h3>{name}</h3>
+        <p>{cardDescription}</p>
+      </>
+    )
+  }
+  <a class="link-arrow" href={serviceHref(service)}>
+    <span>{link}<span class="sr-only"> about {name}</span></span>
+    <Icon name="arrow" />
+  </a>
+</li>

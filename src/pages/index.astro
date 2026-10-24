@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import HeroFlowArt from '../components/HeroFlowArt.astro';
+import FounderMini from '../components/FounderMini.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ProblemCard from '../components/ProblemCard.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import CaseCard from '../components/CaseCard.astro';
+import FounderSection from '../components/FounderSection.astro';
+import Steps from '../components/Steps.astro';
+import QuoteCard from '../components/QuoteCard.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site, pages, testimonials } from '../lib/site';
+import { ph } from '../lib/placeholder';
+import { getServices, getCaseStudies } from '../lib/content';
+
+const p = pages.home;
+const ui = pages.ui;
+const services = await getServices();
+const studies = await getCaseStudies();
+const reassureIcons = ['shield', 'globe'] as const;
+---
+
+<BaseLayout title={p.seo.title} description={p.seo.description} path="/" og="home" headerOnDark person>
+  <section class="hero dark has-diagram" aria-labelledby="h1">
+    <div class="wrap grid">
+      <div>
+        <p class="eyebrow">{site.tagline}</p>
+        <h1 id="h1">{p.seo.h1}</h1>
+        <p class="lead" set:html={ph(p.hero.lead)} />
+        <div class="btn-row">
+          <Button href={site.bookingUrl} icon="calendar">{ui.bookCall}</Button>
+          <Button href="/case-studies" variant="secondary">{ui.seeOurWork}</Button>
+        </div>
+        <p class="reassure">
+          {p.hero.reassure.map((r, i) => <span><Icon name={reassureIcons[i % 2]} />{r}</span>)}
+        </p>
+      </div>
+      <div class="hero-visual">
+        <HeroFlowArt />
+        <FounderMini />
+      </div>
+    </div>
+  </section>
+
+  <section class="trust" aria-labelledby="trust-h">
+    <div class="wrap inner">
+      <h2 class="label" id="trust-h">{p.trustLabel}</h2>
+      <ul>
+        {site.clients.map((c) => <li>{c}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="prob-h">
+    <div class="wrap">
+      <SectionHead id="prob-h" {...p.problems} />
+      <ul class="grid-3">
+        {site.problems.map((pr, i) => <ProblemCard n={i + 1} {...pr} />)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section parchment" aria-labelledby="svc-h">
+    <div class="wrap">
+      <SectionHead id="svc-h" {...p.services} />
+      <ul class="grid-3">
+        {services.map((s) => <ServiceCard service={s} />)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="res-h">
+    <div class="wrap">
+      <SectionHead id="res-h" {...p.results} />
+      <ul class="grid-3">
+        {studies.map((c) => <li><CaseCard study={c} /></li>)}
+      </ul>
+      <p class="more-link">
+        <a class="link-arrow" href="/case-studies"><span>{ui.allCaseStudies}</span><Icon name="arrow" /></a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section parchment" aria-labelledby="founder-h">
+    <FounderSection variant="home" />
+  </section>
+
+  <section class="section" aria-labelledby="how-h">
+    <div class="wrap">
+      <SectionHead id="how-h" {...p.process} />
+      <Steps items={site.process} label={p.process.eyebrow} />
+    </div>
+  </section>
+
+  {
+    testimonials.length > 0 && (
+      <section class="section parchment" aria-labelledby="test-h">
+        <div class="wrap">
+          <SectionHead id="test-h" {...p.testimonials} />
+          <ul class:list={testimonials.length === 1 ? 'quotes-single' : 'grid-3'}>
+            {testimonials.map((t) => (
+              <li>
+                <QuoteCard quote={t.quote} name={t.name} role={t.role} company={t.company} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section" aria-labelledby="faq-h">
+    <Faq {...p.faq} items={site.homeFaq} />
+  </section>
+
+  <CtaBand />
+</BaseLayout>

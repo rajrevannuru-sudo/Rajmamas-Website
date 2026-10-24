@@ -1,0 +1,21 @@
+---
+import { ph } from '../lib/placeholder';
+
+interface Props {
+  items: { label: string; title: string; text: string }[];
+  label: string;
+}
+const { items, label } = Astro.props;
+---
+
+<ol class="timeline" aria-label={label} style={`--steps:${items.length}`}>
+  {
+    items.map((s) => (
+      <li>
+        <span class="wk" set:html={ph(s.label)} />
+        <h3 set:html={ph(s.title)} />
+        <p set:html={ph(s.text)} />
+      </li>
+    ))
+  }
+</ol>

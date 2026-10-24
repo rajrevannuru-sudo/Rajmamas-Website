@@ -1,0 +1,52 @@
+---
+// Services hero diagram: the six core services around one VAKS hub. Each node links to its service page.
+import Icon from './Icon.astro';
+import { pages } from '../lib/site';
+import { serviceHref, type Service } from '../lib/content';
+
+interface Props {
+  services: Service[];
+}
+const core = Astro.props.services.filter((s) => !s.data.secondary).slice(0, 6);
+const left = core.slice(0, 3);
+const right = core.slice(3, 6);
+const h = pages.services.hero;
+---
+
+<figure class="hub">
+  <svg class="hub-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    {[16.7, 50, 83.3].map((y) => <path d={`M50 50 L24 ${y}`} />)}
+    {[16.7, 50, 83.3].map((y) => <path d={`M50 50 L76 ${y}`} />)}
+  </svg>
+  <ul class="hub-col">
+    {
+      left.map((s) => (
+        <li>
+          <a class="hub-node" href={serviceHref(s)}>
+            <span class="badge sm"><Icon name={s.data.icon} /></span>
+            <span>{s.data.name}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <div class="hub-core" aria-hidden="true">
+    <span class="hub-ring">
+      <b>{h.hubTitle}</b>
+      <small>{h.hubText}</small>
+    </span>
+  </div>
+  <ul class="hub-col">
+    {
+      right.map((s) => (
+        <li>
+          <a class="hub-node" href={serviceHref(s)}>
+            <span class="badge sm"><Icon name={s.data.icon} /></span>
+            <span>{s.data.name}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <figcaption class="sr-only">{h.diagramCaption}</figcaption>
+</figure>

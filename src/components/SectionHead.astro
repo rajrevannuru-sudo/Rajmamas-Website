@@ -1,0 +1,19 @@
+---
+import { ph } from '../lib/placeholder';
+
+interface Props {
+  id: string;
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  class?: string;
+}
+const { id, eyebrow, title, lead, class: className } = Astro.props;
+---
+
+<div class:list={['section-head', className]}>
+  <p class="eyebrow">{eyebrow}</p>
+  <h2 id={id} set:html={ph(title)} />
+  {lead && <p class="lead" set:html={ph(lead)} />}
+  <slot />
+</div>
