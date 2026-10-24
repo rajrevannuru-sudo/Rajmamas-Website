@@ -46,7 +46,7 @@ const schema = [
 ];
 
 // Section backgrounds alternate studio-light / parchment whatever blocks are present.
-const order = ['who', 'problems', 'intro', 'included', 'process', ...(related ? ['related'] : []), 'faq'];
+const order = ['problems', 'intro', 'included', 'process', 'who', ...(related ? ['related'] : []), 'faq'];
 const whoIcons = ['user-round-check', 'users', 'building-2'];
 const bg = (key: string) => (order.indexOf(key) % 2 === 1 ? 'section parchment' : 'section');
 ---
@@ -75,22 +75,6 @@ const bg = (key: string) => (order.indexOf(key) % 2 === 1 ? 'section parchment' 
         </div>
         <ServiceHeroArt service={service} />
       </div>
-    </div>
-  </section>
-
-  <section class={bg('who')} aria-labelledby="for-h">
-    <div class="wrap">
-      <SectionHead id="for-h" eyebrow={t.forBox} title={t.forTitle} />
-      <ul class="grid-3 who-grid">
-        {
-          d.whoFor.map((w, i) => (
-            <li class="card who-card">
-              <span class="badge"><Glyph name={whoIcons[i % whoIcons.length]} /></span>
-              <p set:html={ph(w)} />
-            </li>
-          ))
-        }
-      </ul>
     </div>
   </section>
 
@@ -125,6 +109,22 @@ const bg = (key: string) => (order.indexOf(key) % 2 === 1 ? 'section parchment' 
       <SectionHead id="proc-h" eyebrow={t.processEyebrow} title={t.processTitle} lead={d.timelineNote} />
       <Timeline items={d.process} label={t.processEyebrow} />
       {d.tools.length > 0 && <div class="tools-wrap"><ToolsStrip label={t.toolsLabel} items={d.tools} /></div>}
+    </div>
+  </section>
+
+  <section class={bg('who')} aria-labelledby="for-h">
+    <div class="wrap">
+      <SectionHead id="for-h" eyebrow={t.forBox} title={t.forTitle} />
+      <ul class="grid-3 who-grid">
+        {
+          d.whoFor.map((w, i) => (
+            <li class="card who-card">
+              <span class="badge"><Glyph name={whoIcons[i % whoIcons.length]} /></span>
+              <p set:html={ph(w)} />
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
