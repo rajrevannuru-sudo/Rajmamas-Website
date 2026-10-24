@@ -1101,3 +1101,50 @@ html, body { margin: 0; }
 .vk .chips-field .chip { font-size: 14px; line-height: 18px; font-weight: 500; letter-spacing: 0; text-transform: none; gap: 8px; }
 .vk .chips-field .chip:has(input:checked) { color: var(--warm-parchment); }
 @media (max-width: 760px) { .vk .chips-field .chip { font-size: 13.5px; } }
+
+/* contact form: compact pass */
+.vk .form-card { padding: 32px; }
+.vk .form-head { gap: 14px; margin-bottom: var(--space-6); padding-bottom: var(--space-6); border-bottom: 1px solid var(--hairline); }
+.vk .form-head .badge { width: 40px; height: 40px; border-radius: 11px; }
+.vk .form-head .badge svg { width: 19px; height: 19px; }
+.vk .form-head .badge::after { width: 7px; height: 7px; }
+.vk .form-head h2 { font-size: 21px; line-height: 27px; margin-bottom: 4px; }
+.vk .form-head p { font-size: 14px; line-height: 22px; }
+.vk .form { gap: 16px; }
+.vk .field { gap: 6px; }
+.vk .field label, .vk .chips-field legend { font-size: 11px; letter-spacing: .1em; }
+.vk .field .opt { font-size: 11.5px; }
+.vk .field input, .vk .field textarea { min-height: 44px; padding-top: 10px; padding-bottom: 10px; font-size: 15px; line-height: 22px; }
+.vk .control input { padding-left: 40px; }
+.vk .control-ico { left: 13px; width: 16px; height: 16px; }
+.vk .field textarea { min-height: 112px; }
+.vk .field-meta .hint, .vk .field-meta .count { font-size: 12px; }
+
+.vk .chips-field legend { margin-bottom: 8px; }
+.vk .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.vk .chips-field .chip { min-height: 44px; padding: 6px 12px 6px 8px; border-radius: 8px; font-size: 13.5px; line-height: 17px; gap: 8px; }
+.vk .chip-ico { width: 26px; height: 26px; border-radius: 6px; }
+.vk .chip-ico svg { width: 14px; height: 14px; }
+.vk .chip-check { margin-left: auto; }
+.vk .chips-field .chip:has(input:checked) { box-shadow: none; }
+
+.vk .form .actions { padding-top: var(--space-4); margin-top: 0; }
+.vk .form .actions p { font-size: 12.5px; line-height: 19px; }
+.vk .btn-send { min-height: 46px; padding: 0 22px; font-size: 15px; box-shadow: 0 6px 16px rgba(198,165,107,.3); }
+
+.vk .form-success { padding: var(--space-8) var(--space-4); }
+.vk .success-ico { width: 60px; height: 60px; }
+.vk .success-ico svg { width: 28px; height: 28px; }
+.vk .form-success h2 { font-size: 22px; line-height: 28px; }
+
+@media (max-width: 760px) {
+  .vk .form-card { padding: 20px 16px; }
+  .vk .form-head { flex-direction: row; }
+  .vk .chips-field .chip { font-size: 13px; padding: 6px 10px 6px 6px; }
+  .vk .chip-ico { width: 24px; height: 24px; }
+}
+.vk .chips-field .chip { align-items: center; }
+@media (max-width: 760px) {
+  .vk .chips { grid-template-columns: 1fr; gap: 6px; }
+  .vk .chips-field .chip { min-height: 44px; font-size: 14px; }
+}
