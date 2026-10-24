@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import ClientLogo from './ClientLogo.astro';
 import { ph } from '../lib/placeholder';
 import { pages } from '../lib/site';
 import { caseHref, getService, type CaseStudy } from '../lib/content';
@@ -22,7 +23,7 @@ const service = await getService(study.data.service);
     <div class="metric-rule" aria-hidden="true"></div>
   </div>
   <div class="bottom">
-    <span class="client">{client}</span>
+    <ClientLogo name={client} height={26} class="client" />
     <Tag class="h3">{title}</Tag>
     <div class="meta">
       <span class="tag">{serviceLabel}</span>

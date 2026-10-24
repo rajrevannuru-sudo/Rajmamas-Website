@@ -24,15 +24,9 @@ const ui = pages.ui;
           site.nav.map((item) =>
             item.dropdown ? (
               <li class="has-dropdown">
-                <button
-                  class="nav-link"
-                  type="button"
-                  aria-expanded="false"
-                  aria-controls="svc-menu"
-                  aria-current={isCurrent(item.href) ? 'page' : undefined}
-                >
+                <a class="nav-link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
                   {item.label} <Icon name="chevron" />
-                </button>
+                </a>
                 <ul class="dropdown" id="svc-menu">
                   {services.map((s) => (
                     <li>

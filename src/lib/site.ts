@@ -37,6 +37,7 @@ const siteSchema = z.object({
   }),
   stats: z.array(z.object({ value: z.string(), suffix: z.string(), label: z.string(), icon: z.string().optional() })),
   clients: z.array(z.string()),
+  clientLogos: z.record(z.string(), z.union([z.string(), z.object({ file: z.string(), scale: z.number().positive().default(1) })])).default({}),
   nav: z.array(z.object({ label: z.string(), href: z.string(), dropdown: z.boolean().optional() })),
   process: z.array(titled),
   engagementFlow: z.array(titled),

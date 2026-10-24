@@ -53,6 +53,11 @@
   "_statsNote": "60+ and 16+ come from the old site and are not yet confirmed by Raj.",
   "clients": ["Aapmor Technologies", "Drut Networks", "Athena Overseas"],
   "_clientsNote": "Only these three may be named anywhere on the site.",
+  "clientLogos": {
+    "Aapmor Technologies": "aapmor-technologies-logo.png",
+    "Athena Overseas": { "file": "athena-overseas-logo.png", "scale": 1.35 }
+  },
+  "_clientLogosNote": "Logo files live in src/assets/images/clients/. A client without a logo here is shown as its name in text (Drut Networks until a logo is supplied). Use { \"file\": ..., \"scale\": 1.3 } to enlarge a logo that looks small next to the others.",
   "nav": [
     { "label": "Services", "href": "/services", "dropdown": true },
     { "label": "Case studies", "href": "/case-studies" },

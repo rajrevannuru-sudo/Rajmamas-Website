@@ -1,5 +1,7 @@
 ---
+import ClientLogo from './ClientLogo.astro';
 import { ph } from '../lib/placeholder';
+import { site } from '../lib/site';
 
 interface Props {
   quote: string;
@@ -28,5 +30,6 @@ const roleLine = [role, company].filter(Boolean).join(', ');
       <b set:html={ph(name)} />
       <span set:html={ph(roleLine)} />
     </div>
+    {company && site.clientLogos[company] && <ClientLogo name={company} height={24} class="quote-logo" />}
   </figcaption>
 </figure>

@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
 import HeroFlowArt from '../components/HeroFlowArt.astro';
+import ClientLogo from '../components/ClientLogo.astro';
 import FounderMini from '../components/FounderMini.astro';
 import SectionHead from '../components/SectionHead.astro';
 import ProblemCard from '../components/ProblemCard.astro';
@@ -50,7 +51,7 @@ const reassureIcons = ['shield', 'globe'] as const;
     <div class="wrap inner">
       <h2 class="label" id="trust-h">{p.trustLabel}</h2>
       <ul>
-        {site.clients.map((c) => <li>{c}</li>)}
+        {site.clients.map((c) => <li><ClientLogo name={c} height={34} /></li>)}
       </ul>
     </div>
   </section>

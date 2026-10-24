@@ -1005,3 +1005,24 @@ html, body { margin: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .vk .sa-chip, .vk .sa-wires path { animation: none; } }
 .vk .sa-engine .fa-node-label { background: var(--midnight); padding: 4px 8px 5px; border-radius: 6px; box-shadow: 0 0 0 4px var(--midnight); }
+
+/* client logos */
+.vk .client-logo { display: inline-flex; align-items: center; }
+.vk .client-logo img { display: block; width: auto; }
+.vk .client-logo-text { font-family: var(--font-heading); font-weight: 700; letter-spacing: -0.01em; }
+.vk .client-logo.plate { padding: 10px 16px; border-radius: 10px; background: var(--paper); box-shadow: 0 10px 24px rgba(0,0,0,.25); }
+.vk .client-logo-text.plate { color: var(--midnight); font-size: 18px; min-height: 60px; }
+.vk .trust ul { align-items: center; }
+.vk .trust li .client-logo-text { font-size: 22px; color: var(--harbor-blue); }
+.vk .case-card .client { min-height: 26px; }
+.vk .case-card .client-logo-text.client { font-family: var(--font-sans); font-weight: 600; }
+.vk .cs-logo { margin-bottom: var(--space-6); }
+.vk .quote-card .quote-logo { margin-left: auto; }
+.vk .has-dropdown > .nav-link svg { transition: transform .15s; }
+.vk .has-dropdown:hover > .nav-link svg, .vk .has-dropdown:focus-within > .nav-link svg { transform: rotate(180deg); }
+.vk .has-dropdown.dismissed > .nav-link svg { transform: none; }
+@media (max-width: 760px) {
+  .vk .trust ul { gap: var(--space-4) var(--space-8); }
+  .vk .trust li .client-logo img { height: auto; max-height: 38px; max-width: 150px; }
+  .vk .trust li .client-logo-text { font-size: 19px; }
+}
