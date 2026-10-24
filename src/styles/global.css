@@ -1026,3 +1026,78 @@ html, body { margin: 0; }
   .vk .trust li .client-logo img { height: auto; max-height: 38px; max-width: 150px; }
   .vk .trust li .client-logo-text { font-size: 19px; }
 }
+
+/* =========================================================
+   Contact form (v2): uppercase labels, icon inputs, service chips, inline errors, success panel
+   ========================================================= */
+.vk .form-card { padding: 44px; }
+.vk .form-head { display: flex; gap: 16px; align-items: flex-start; margin-bottom: var(--space-8); }
+.vk .form-head h2 { font-size: 26px; line-height: 32px; margin-bottom: 6px; }
+.vk .form-head p { color: var(--text-muted); font-size: 15.5px; line-height: 25px; }
+.vk .form { gap: 22px 20px; }
+.vk .field label, .vk .chips-field legend { display: flex; align-items: baseline; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--text); }
+.vk .field .req { color: #a0412d; font-weight: 700; }
+.vk .field .opt { margin-left: auto; font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text-muted); }
+.vk .control { position: relative; }
+.vk .control-ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-muted); pointer-events: none; transition: color .15s; }
+.vk .control input { padding-left: 44px; }
+.vk .field input, .vk .field textarea { min-height: 50px; border-radius: 8px; background: var(--paper); border-color: #cbbfa9; transition: border-color .15s, box-shadow .15s, background-color .15s; }
+.vk .field input:hover, .vk .field textarea:hover { border-color: var(--border-strong); }
+.vk .field input:focus-visible, .vk .field textarea:focus-visible { outline: none; border-color: var(--harbor-blue); box-shadow: 0 0 0 4px rgba(27,66,102,.14); border-radius: 8px; }
+.vk .control:focus-within .control-ico { color: var(--harbor-blue); }
+.vk .field textarea { min-height: 150px; }
+.vk .field-meta { display: flex; justify-content: space-between; gap: 12px; }
+.vk .field-meta .count { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.vk .field-error { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; font-weight: 500; color: #a0412d; }
+.vk .field-error::before { content: "!"; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; border-radius: 50%; background: #a0412d; color: #fff; font-size: 11px; font-weight: 700; }
+.vk .field.has-error input, .vk .field.has-error textarea { border-color: #a0412d; background: #fffaf8; }
+.vk .field.has-error .control-ico { color: #a0412d; }
+
+/* service chips: real checkboxes, styled as pills */
+.vk .chips-field { border: 0; margin: 0; padding: 0; min-width: 0; }
+.vk .chips-field legend { width: 100%; padding: 0; margin-bottom: 10px; }
+.vk .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.vk .chip { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px 8px 8px; border-radius: 999px;
+  border: 1px solid #cbbfa9; background: var(--paper); font-size: 14px; line-height: 18px; font-weight: 500; color: var(--text); cursor: pointer; user-select: none;
+  transition: background-color .15s, border-color .15s, color .15s, box-shadow .15s; }
+.vk .chip input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.vk .chip-ico { display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; border-radius: 50%; background: var(--badge-bg); color: var(--harbor-blue); flex: none; }
+.vk .chip-ico svg { width: 15px; height: 15px; }
+.vk .chip-check { width: 0; height: 15px; opacity: 0; transition: width .15s, opacity .15s; }
+.vk .chip:hover { border-color: var(--harbor-blue); }
+.vk .chip:has(input:checked) { background: var(--midnight); border-color: var(--midnight); color: var(--warm-parchment); box-shadow: 0 6px 16px rgba(11,29,51,.18); }
+.vk .chip:has(input:checked) .chip-ico { background: rgba(198,165,107,.18); color: var(--antique-gold); }
+.vk .chip:has(input:checked) .chip-check { width: 15px; opacity: 1; color: var(--antique-gold); }
+.vk .chip:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 3px; }
+.vk .chips-field.has-error .chip { border-color: #d9a99c; }
+
+/* actions */
+.vk .form .actions { padding-top: var(--space-4); border-top: 1px solid var(--hairline); margin-top: 4px; }
+.vk .form .actions p { display: flex; gap: 8px; align-items: flex-start; }
+.vk .privacy-ico { width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--harbor-blue); }
+.vk .btn-send { min-height: 52px; padding: 0 26px; font-size: 15.5px; box-shadow: 0 8px 20px rgba(198,165,107,.35); }
+.vk .btn-send:hover { box-shadow: 0 10px 24px rgba(198,165,107,.45); }
+.vk .btn-send svg { transition: transform .15s; }
+.vk .btn-send:hover svg { transform: translateX(3px); }
+
+/* success panel */
+.vk .form-success { text-align: center; padding: var(--space-12) var(--space-6); outline: none; }
+.vk .form-success:not([hidden]) { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); }
+.vk .success-ico { display: inline-flex; width: 72px; height: 72px; align-items: center; justify-content: center; border-radius: 50%;
+  background: var(--tint-green); color: #1f7a45; box-shadow: 0 0 0 10px rgba(31,122,69,.08); margin-bottom: var(--space-2); }
+.vk .success-ico svg { width: 34px; height: 34px; }
+.vk .form-success h2 { font-size: 28px; line-height: 34px; }
+.vk .form-success p { color: var(--text-muted); max-width: 40ch; }
+
+@media (max-width: 760px) {
+  .vk .form-card { padding: var(--space-6) 20px; }
+  .vk .form-head { flex-direction: column; gap: 12px; }
+  .vk .chip { font-size: 13.5px; }
+  .vk .form .actions p { order: 2; }
+}
+@media (prefers-reduced-motion: reduce) { .vk .btn-send:hover svg { transform: none; } }
+.vk .field-error[hidden], .vk .form-status[hidden] { display: none; }
+.vk .chips-field .chip { font-size: 14px; line-height: 18px; font-weight: 500; letter-spacing: 0; text-transform: none; gap: 8px; }
+.vk .chips-field .chip:has(input:checked) { color: var(--warm-parchment); }
+@media (max-width: 760px) { .vk .chips-field .chip { font-size: 13.5px; } }

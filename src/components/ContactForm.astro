@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import Glyph from './Glyph.astro';
 import { pages } from '../lib/site';
 import { getServices } from '../lib/content';
 
@@ -9,100 +10,201 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 ---
 
 <div class="form-card" id="contact-form">
-  <h2 id="form-h">{t.title}</h2>
-  <p>{t.intro}</p>
-  <form
-    class="form"
-    action="https://api.web3forms.com/submit"
-    method="POST"
-    novalidate
-    aria-labelledby="form-h"
-    data-error={t.error}
-    data-invalid={t.invalid}
-    data-success={t.success}
-    data-sending={t.sending}
-  >
-    <input type="hidden" name="access_key" value={accessKey} />
-    <input type="hidden" name="subject" value={t.subject} />
-    <input type="hidden" name="from_name" value="vaksconsulting.com" />
-    <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-    <div class="field">
-      <label for="f-name">{t.name}</label>
-      <input id="f-name" name="name" autocomplete="name" required />
+  <div class="form-panel">
+    <div class="form-head">
+      <span class="badge"><Glyph name="send" /></span>
+      <div>
+        <h2 id="form-h">{t.title}</h2>
+        <p>{t.intro}</p>
+      </div>
     </div>
-    <div class="field">
-      <label for="f-email">{t.email}</label>
-      <input id="f-email" type="email" name="email" autocomplete="email" required />
-    </div>
-    <div class="field full">
-      <label for="f-co">{t.company} <span class="opt">{t.optional}</span></label>
-      <input id="f-co" name="company" autocomplete="organization" />
-    </div>
-    <div class="field full">
-      <label for="f-svc">{t.service}</label>
-      <select id="f-svc" name="service" required>
-        <option value="">{t.servicePlaceholder}</option>
-        {services.map((s) => <option>{s.data.name}</option>)}
-        <option>{t.notSure}</option>
-      </select>
-    </div>
-    <div class="field full">
-      <label for="f-msg">{t.details}</label>
-      <textarea id="f-msg" name="message" required aria-describedby="f-msg-hint" placeholder={t.detailsPlaceholder}
-      ></textarea>
-      <span class="hint" id="f-msg-hint">{t.detailsHint}</span>
-    </div>
-    <p class="form-status full" role="status" aria-live="polite" hidden></p>
-    <div class="actions">
-      <p>{t.privacyNote} <a href="/privacy-policy">{t.privacyLink}</a>.</p>
-      <button class="btn btn-primary" type="submit"><span class="label">{t.submit}</span> <Icon name="arrow" /></button>
-    </div>
-  </form>
+
+    <form
+      class="form"
+      action="https://api.web3forms.com/submit"
+      method="POST"
+      novalidate
+      aria-labelledby="form-h"
+      data-error={t.error}
+      data-invalid={t.invalid}
+      data-sending={t.sending}
+    >
+      <input type="hidden" name="access_key" value={accessKey} />
+      <input type="hidden" name="subject" value={t.subject} />
+      <input type="hidden" name="from_name" value="vaksconsulting.com" />
+      <input type="hidden" name="service" value="" />
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+      <div class="field">
+        <label for="f-name">{t.name}<span class="req" aria-hidden="true">*</span></label>
+        <div class="control">
+          <Glyph name="user-round" class="control-ico" />
+          <input id="f-name" name="name" autocomplete="name" placeholder={t.namePlaceholder} required aria-describedby="f-name-err" />
+        </div>
+        <p class="field-error" id="f-name-err" data-msg={t.errName} hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="f-email">{t.email}<span class="req" aria-hidden="true">*</span></label>
+        <div class="control">
+          <Glyph name="mail" class="control-ico" />
+          <input id="f-email" type="email" name="email" autocomplete="email" inputmode="email" placeholder={t.emailPlaceholder} required aria-describedby="f-email-err" />
+        </div>
+        <p class="field-error" id="f-email-err" data-msg={t.errEmail} hidden></p>
+      </div>
+
+      <div class="field full">
+        <label for="f-co">{t.company}<span class="opt">{t.optional}</span></label>
+        <div class="control">
+          <Glyph name="building-2" class="control-ico" />
+          <input id="f-co" name="company" autocomplete="organization" placeholder={t.companyPlaceholder} />
+        </div>
+      </div>
+
+      <fieldset class="field full chips-field" aria-describedby="f-svc-hint f-svc-err">
+        <legend>{t.service}<span class="req" aria-hidden="true">*</span><span class="opt" id="f-svc-hint">{t.serviceHint}</span></legend>
+        <div class="chips">
+          {
+            services.map((s) => (
+              <label class="chip">
+                <input type="checkbox" name="services" value={s.data.name} />
+                <span class="chip-ico"><Icon name={s.data.icon} /></span>
+                <span>{s.data.name}</span>
+                <Glyph name="check" class="chip-check" strokeWidth={2.5} />
+              </label>
+            ))
+          }
+          <label class="chip">
+            <input type="checkbox" name="services" value={t.notSure} />
+            <span class="chip-ico"><Glyph name="circle-help" /></span>
+            <span>{t.notSure}</span>
+            <Glyph name="check" class="chip-check" strokeWidth={2.5} />
+          </label>
+        </div>
+        <p class="field-error" id="f-svc-err" data-msg={t.errService} hidden></p>
+      </fieldset>
+
+      <div class="field full">
+        <label for="f-msg">{t.details}<span class="req" aria-hidden="true">*</span></label>
+        <textarea
+          id="f-msg"
+          name="message"
+          required
+          maxlength={t.maxLength}
+          aria-describedby="f-msg-hint f-msg-err"
+          placeholder={t.detailsPlaceholder}></textarea>
+        <div class="field-meta">
+          <span class="hint" id="f-msg-hint">{t.detailsHint}</span>
+          <span class="count" aria-hidden="true"><span data-count>0</span> / {t.maxLength}</span>
+        </div>
+        <p class="field-error" id="f-msg-err" data-msg={t.errDetails} hidden></p>
+      </div>
+
+      <p class="form-status full" role="alert" hidden></p>
+
+      <div class="actions">
+        <p><Glyph name="shield-check" class="privacy-ico" /><span>{t.privacyNote} <a href="/privacy-policy">{t.privacyLink}</a>.</span></p>
+        <button class="btn btn-primary btn-send" type="submit"><span class="label">{t.submit}</span><Icon name="arrow" /></button>
+      </div>
+    </form>
+  </div>
+
+  <div class="form-success" hidden tabindex="-1">
+    <span class="success-ico"><Glyph name="check" strokeWidth={2.25} /></span>
+    <h2>{t.successTitle}</h2>
+    <p>{t.success}</p>
+    <button class="btn btn-secondary" type="button" data-again>{t.again}</button>
+  </div>
 </div>
 
 <script>
-  // Submits to Web3Forms with fetch so success and error messages show inline; falls back to a normal POST without JS.
-  const form = document.querySelector<HTMLFormElement>('#contact-form form');
-  if (form) {
+  // Inline validation, then a fetch submit to Web3Forms so success/error show in place.
+  // Without JS the form still posts normally (Web3Forms shows its own confirmation page).
+  const card = document.querySelector<HTMLElement>('#contact-form');
+  const form = card?.querySelector<HTMLFormElement>('form');
+  if (card && form) {
+    const panel = card.querySelector<HTMLElement>('.form-panel')!;
+    const success = card.querySelector<HTMLElement>('.form-success')!;
     const status = form.querySelector<HTMLElement>('.form-status')!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const label = button.querySelector<HTMLElement>('.label')!;
     const idle = label.textContent ?? '';
+    const message = form.querySelector<HTMLTextAreaElement>('#f-msg')!;
+    const counter = form.querySelector<HTMLElement>('[data-count]')!;
+    const chipsField = form.querySelector<HTMLFieldSetElement>('.chips-field')!;
+    const serviceHidden = form.querySelector<HTMLInputElement>('input[name="service"]')!;
 
-    const show = (kind: 'success' | 'error', msg: string) => {
-      status.hidden = false;
-      status.className = `form-status full ${kind}`;
-      status.textContent = msg;
+    const setError = (el: HTMLElement, errId: string, bad: boolean) => {
+      const err = document.getElementById(errId)!;
+      err.hidden = !bad;
+      err.textContent = bad ? (err.dataset.msg ?? '') : '';
+      if (bad) el.setAttribute('aria-invalid', 'true');
+      else el.removeAttribute('aria-invalid');
+      el.closest('.field')?.classList.toggle('has-error', bad);
     };
+
+    const checks: [HTMLElement, string, () => boolean][] = [
+      [form.querySelector('#f-name')!, 'f-name-err', () => !!(form.querySelector<HTMLInputElement>('#f-name')!.value.trim())],
+      [form.querySelector('#f-email')!, 'f-email-err', () => {
+        const el = form.querySelector<HTMLInputElement>('#f-email')!;
+        return !!el.value.trim() && el.checkValidity();
+      }],
+      [chipsField, 'f-svc-err', () => !!form.querySelector('input[name="services"]:checked')],
+      [message, 'f-msg-err', () => !!message.value.trim()],
+    ];
+
+    // Re-check a field once the visitor has been told about it
+    checks.forEach(([el, id, ok]) => {
+      el.addEventListener(el === chipsField ? 'change' : 'input', () => {
+        if (el.getAttribute('aria-invalid') === 'true') setError(el, id, !ok());
+      });
+      if (el !== chipsField) el.addEventListener('blur', () => {
+        if ((el as HTMLInputElement).value) setError(el, id, !ok());
+      });
+    });
+
+    message.addEventListener('input', () => (counter.textContent = String(message.value.length)));
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const invalid = [...form.querySelectorAll<HTMLInputElement>('[required]')].filter((el) => !el.checkValidity());
-      form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
-      if (invalid.length) {
-        invalid.forEach((el) => el.setAttribute('aria-invalid', 'true'));
-        invalid[0].focus();
-        show('error', form.dataset.invalid ?? '');
+      status.hidden = true;
+      const failed = checks.filter(([el, id, ok]) => {
+        const bad = !ok();
+        setError(el, id, bad);
+        return bad;
+      });
+      if (failed.length) {
+        const first = failed[0][0];
+        (first === chipsField ? chipsField.querySelector<HTMLInputElement>('input')! : first).focus();
         return;
       }
+      serviceHidden.value = [...form.querySelectorAll<HTMLInputElement>('input[name="services"]:checked')].map((c) => c.value).join(', ');
       button.disabled = true;
       label.textContent = form.dataset.sending ?? idle;
       try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(form),
-        });
+        const data = new FormData(form);
+        data.delete('services');
+        const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: data });
         const json = await res.json().catch(() => ({}));
         if (!res.ok || !json.success) throw new Error(json.message ?? res.statusText);
         form.reset();
-        show('success', form.dataset.success ?? '');
+        counter.textContent = '0';
+        panel.hidden = true;
+        success.hidden = false;
+        success.focus();
       } catch {
-        show('error', form.dataset.error ?? '');
+        status.hidden = false;
+        status.textContent = form.dataset.error ?? '';
       } finally {
         button.disabled = false;
         label.textContent = idle;
       }
+    });
+
+    card.querySelector('[data-again]')?.addEventListener('click', () => {
+      success.hidden = true;
+      panel.hidden = false;
+      form.querySelector<HTMLInputElement>('#f-name')!.focus();
     });
   }
 </script>
