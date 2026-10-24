@@ -19,6 +19,15 @@ headings:
   faq: "Style guide questions"
   cta: "Ready for docs that sound like one team?"
 lead: Consistent documentation starts with a shared system. We build the voice, structure, templates and governance your team needs to write with confidence.
+heroInputs:
+  - label: "Brand voice"
+    icon: megaphone
+  - label: "Existing docs"
+    icon: files
+  - label: "Each writer's habits"
+    icon: pen-line
+  - label: "Review comments"
+    icon: message-square-text
 whoFor:
   - Teams where engineers, product and support all write docs
   - Companies scaling their documentation across products or regions

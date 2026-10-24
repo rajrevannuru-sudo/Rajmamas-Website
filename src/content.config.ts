@@ -32,6 +32,8 @@ const services = defineCollection({
       cta: z.string().optional(),
     }),
     lead: z.string(),
+    /** Hero diagram inputs (Lucide icon names), 3–4 items. */
+    heroInputs: z.array(z.object({ label: z.string(), icon: z.string() })).min(3).max(4),
     whoFor: z.array(z.string()),
     problems: z.array(titled),
     included: z.array(z.string()),

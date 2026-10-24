@@ -19,6 +19,15 @@ headings:
   faq: "Help centre and user manual questions"
   cta: "Ready for a help centre that answers first?"
 lead: End-user documentation that reduces support load and builds product confidence, written for the people who need it most.
+heroInputs:
+  - label: "Support tickets"
+    icon: ticket
+  - label: "Product walkthrough"
+    icon: monitor-play
+  - label: "Feature specs"
+    icon: file-text
+  - label: "Customer feedback"
+    icon: message-circle
 whoFor:
   - Heads of Product and Customer Success with a growing support queue
   - SaaS teams launching new features or onboarding enterprise customers

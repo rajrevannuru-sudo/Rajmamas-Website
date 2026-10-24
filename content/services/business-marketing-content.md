@@ -19,6 +19,15 @@ headings:
   faq: "Business content questions"
   cta: "Ready to explain your business clearly?"
 lead: Clear, persuasive content for the moments your business needs to explain itself, from a one-page flyer to a full company profile.
+heroInputs:
+  - label: "Company facts"
+    icon: building-2
+  - label: "Client wins"
+    icon: trophy
+  - label: "Your audience"
+    icon: users
+  - label: "Brand voice"
+    icon: megaphone
 whoFor:
   - Founders preparing for fundraising, partnerships or sales
   - Companies refreshing their website or company profile

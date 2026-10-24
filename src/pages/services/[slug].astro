@@ -3,7 +3,8 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Button from '../../components/Button.astro';
-import Icon from '../../components/Icon.astro';
+import Glyph from '../../components/Glyph.astro';
+import ServiceHeroArt from '../../components/ServiceHeroArt.astro';
 import SectionHead from '../../components/SectionHead.astro';
 import ProblemCard from '../../components/ProblemCard.astro';
 import Checklist from '../../components/Checklist.astro';
@@ -45,7 +46,8 @@ const schema = [
 ];
 
 // Section backgrounds alternate studio-light / parchment whatever blocks are present.
-const order = ['problems', 'intro', 'included', 'process', ...(related ? ['related'] : []), 'faq'];
+const order = ['who', 'problems', 'intro', 'included', 'process', ...(related ? ['related'] : []), 'faq'];
+const whoIcons = ['user-round-check', 'users', 'building-2'];
 const bg = (key: string) => (order.indexOf(key) % 2 === 1 ? 'section parchment' : 'section');
 ---
 
@@ -53,7 +55,7 @@ const bg = (key: string) => (order.indexOf(key) % 2 === 1 ? 'section parchment' 
   <section class="page-hero dark" aria-labelledby="h1">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
-      <div class="grid">
+      <div class="grid hero-split has-art">
         <div>
           <p class="eyebrow">{d.eyebrow}</p>
           <h1 id="h1">{d.seo.h1}</h1>
@@ -71,13 +73,24 @@ const bg = (key: string) => (order.indexOf(key) % 2 === 1 ? 'section parchment' 
             }
           </div>
         </div>
-        <aside class="for-box" aria-labelledby="for-h">
-          <h2 id="for-h">{t.forBox}</h2>
-          <ul>
-            {d.whoFor.map((w) => <li><Icon name="check" /><span set:html={ph(w)} /></li>)}
-          </ul>
-        </aside>
+        <ServiceHeroArt service={service} />
       </div>
+    </div>
+  </section>
+
+  <section class={bg('who')} aria-labelledby="for-h">
+    <div class="wrap">
+      <SectionHead id="for-h" eyebrow={t.forBox} title={t.forTitle} />
+      <ul class="grid-3 who-grid">
+        {
+          d.whoFor.map((w, i) => (
+            <li class="card who-card">
+              <span class="badge"><Glyph name={whoIcons[i % whoIcons.length]} /></span>
+              <p set:html={ph(w)} />
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 

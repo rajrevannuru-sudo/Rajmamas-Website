@@ -19,6 +19,15 @@ headings:
   faq: "API documentation questions"
   cta: "Ready for API docs developers can follow?"
 lead: Reference docs, guides and code samples that help developers integrate faster and ask your team fewer questions.
+heroInputs:
+  - label: "OpenAPI spec"
+    icon: file-json
+  - label: "Engineer interviews"
+    icon: mic
+  - label: "Live API & sandbox"
+    icon: server
+  - label: "Repeated Slack questions"
+    icon: message-square
 whoFor:
   - CTOs and VPs of Engineering shipping a public or partner API
   - Developer-relations leads who need docs that match the product

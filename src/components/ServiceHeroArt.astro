@@ -1,0 +1,70 @@
+---
+// Service page hero diagram: this service's inputs converge through VAKS into a "What you get" deliverables card.
+// Same visual language as HeroFlowArt (home). Decorative; the figcaption carries the meaning.
+import Glyph from './Glyph.astro';
+import Icon from './Icon.astro';
+import { pages } from '../lib/site';
+import { ph } from '../lib/placeholder';
+import type { Service } from '../lib/content';
+
+interface Props {
+  service: Service;
+}
+const d = Astro.props.service.data;
+const t = pages.service;
+const inputs = d.heroInputs;
+const outputs = d.included.slice(0, 4);
+// y-positions (in %) of each input chip's centre, matching the evenly spaced column
+const ys = inputs.map((_, i) => ((i + 0.5) / inputs.length) * 100);
+const caption = `${t.artInputs}: ${inputs.map((i) => i.label).join(', ')}. ${t.artOutput}: ${outputs.join(', ')}.`;
+const tints = ['gold', 'blue', 'violet', 'green'];
+---
+
+<figure class="svcart">
+  <div class="sa-stage" aria-hidden="true">
+    <div class="sa-inputs">
+      <p class="fa-label"><Glyph name="layers" />{t.artInputs}</p>
+      <ul>
+        {
+          inputs.map((input, i) => (
+            <li class={`sa-chip tint-${tints[i % tints.length]}`}>
+              <span class="frag-ico"><Glyph name={input.icon} /></span>
+              <span set:html={ph(input.label)} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="sa-engine">
+      <svg class="sa-wires" viewBox="0 0 100 100" preserveAspectRatio="none">
+        {ys.map((y) => <path d={`M0 ${y} C 30 ${y}, 30 50, 50 50`} />)}
+        <path class="sa-out" d="M50 50 L100 50" />
+      </svg>
+      <span class="fa-node"><Glyph name="wand-sparkles" /></span>
+      <span class="fa-node-label">{t.artEngine}<small>{t.artEngineSub}</small></span>
+    </div>
+
+    <div class="sa-output">
+      <div class="fa-card">
+        <p class="fa-card-head"><span class="fa-tick"><Glyph name="check" strokeWidth={2.5} /></span>{t.artOutput}</p>
+        <div class="sa-doc-title">
+          <span class="badge sm"><Icon name={d.icon} /></span>
+          <span>{d.name}</span>
+        </div>
+        <ul class="sa-list">
+          {
+            outputs.map((o) => (
+              <li>
+                <Glyph name="circle-check" />
+                <span set:html={ph(o)} />
+              </li>
+            ))
+          }
+        </ul>
+        <div class="sa-bars"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </div>
+  <figcaption class="sr-only">{caption}</figcaption>
+</figure>

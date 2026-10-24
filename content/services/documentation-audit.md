@@ -19,6 +19,15 @@ headings:
   faq: "Documentation audit questions"
   cta: "Ready to know where your docs stand?"
 lead: Before writing a single word, we assess what you have, what's missing and what it's costing you, then hand you a roadmap prioritised by impact.
+heroInputs:
+  - label: "Scattered docs"
+    icon: folders
+  - label: "Search and usage data"
+    icon: search
+  - label: "Support tickets"
+    icon: ticket
+  - label: "Team interviews"
+    icon: mic
 whoFor:
   - Teams with years of documentation that grew without a plan
   - Leaders deciding where to invest in documentation next

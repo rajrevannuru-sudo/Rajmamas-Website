@@ -19,6 +19,15 @@ headings:
   faq: "Training questions"
   cta: "Ready to help your team write clearly?"
 lead: We help your team write better documentation themselves, through practical workshops, coaching and toolkits that make good habits stick.
+heroInputs:
+  - label: "Your team's writing"
+    icon: file-text
+  - label: "Your product"
+    icon: box
+  - label: "Learning goals"
+    icon: target
+  - label: "Common mistakes"
+    icon: circle-alert
 whoFor:
   - Engineering managers whose teams write their own docs
   - Docs and DevRel teams growing new technical writers

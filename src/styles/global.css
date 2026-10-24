@@ -955,3 +955,53 @@ html, body { margin: 0; }
   .vk .hero.has-diagram h1 { font-size: 34px; line-height: 41px; }
 }
 .vk .stats .numeral { border: 0; padding: 0; }
+
+/* ---------- Service page hero diagram ---------- */
+.vk .page-hero .hero-split.has-art { grid-template-columns: 0.95fr 1.15fr; gap: var(--space-12); align-items: center; }
+.vk .svcart { margin: 0; }
+.vk .sa-stage { display: grid; grid-template-columns: 200px 92px 1fr; align-items: stretch; height: 340px; margin-top: 28px; }
+.vk .sa-inputs { position: relative; }
+.vk .sa-inputs .fa-label { position: absolute; top: -30px; left: 0; margin: 0; white-space: nowrap; }
+.vk .sa-inputs ul { height: 100%; display: flex; flex-direction: column; justify-content: space-around; }
+.vk .sa-chip { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(255,253,248,.95); color: var(--midnight);
+  font-size: 12.5px; line-height: 16px; font-weight: 600; box-shadow: 0 12px 26px rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.6);
+  animation: fa-float 7s ease-in-out infinite; }
+.vk .sa-chip:nth-child(2) { animation-delay: -1.7s; margin-left: 14px; }
+.vk .sa-chip:nth-child(3) { animation-delay: -3.4s; }
+.vk .sa-chip:nth-child(4) { animation-delay: -5.1s; margin-left: 14px; }
+.vk .tint-gold .frag-ico { background: var(--tint-gold); color: #9a6b12; }
+.vk .tint-blue .frag-ico { background: var(--tint-blue); color: var(--harbor-blue); }
+.vk .tint-violet .frag-ico { background: var(--tint-violet); color: #4b3fa0; }
+.vk .tint-green .frag-ico { background: var(--tint-green); color: #1f7a45; }
+.vk .sa-engine { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; z-index: 2; }
+.vk .sa-wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.vk .sa-wires path { fill: none; stroke: rgba(198,165,107,.75); stroke-width: 1.5; stroke-dasharray: 4 5; vector-effect: non-scaling-stroke; animation: fa-dash 1.4s linear infinite; }
+.vk .sa-wires .sa-out { stroke: var(--antique-gold); stroke-width: 2; }
+.vk .sa-output { display: flex; align-items: center; position: relative; z-index: 1; }
+.vk .sa-output .fa-card { width: 100%; }
+.vk .sa-doc-title { display: flex; align-items: center; gap: 10px; margin: 14px 0 6px; font-family: var(--font-heading); font-weight: 700; font-size: 15px; line-height: 20px; }
+.vk .sa-doc-title .badge { background: var(--badge-bg); }
+.vk .sa-list { border-top: 1px solid var(--hairline); margin-top: 10px; }
+.vk .sa-list li { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--hairline); font-size: 12.5px; line-height: 17px; }
+.vk .sa-list svg { width: 16px; height: 16px; flex: none; color: #1f7a45; margin-top: 1px; }
+.vk .sa-bars { display: flex; gap: 6px; margin-top: 12px; }
+.vk .sa-bars i { height: 6px; border-radius: 3px; background: var(--warm-parchment); flex: 3; }
+.vk .sa-bars i:nth-child(2) { flex: 2; } .vk .sa-bars i:nth-child(3) { flex: 1; background: rgba(198,165,107,.35); }
+
+/* "Who it is for" section */
+.vk .who-card { display: flex; flex-direction: column; gap: var(--space-4); }
+.vk .who-card p { font-size: 17px; line-height: 26px; font-weight: 500; }
+
+@media (max-width: 760px) {
+  .vk .page-hero .hero-split.has-art { grid-template-columns: 1fr; gap: var(--space-8); }
+  .vk .sa-stage { grid-template-columns: 1fr; grid-template-rows: auto 72px auto; height: auto; margin-top: 30px; }
+  .vk .sa-inputs ul { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .vk .sa-chip, .vk .sa-chip:nth-child(2), .vk .sa-chip:nth-child(4) { margin-left: 0; font-size: 12px; padding: 8px 10px; }
+  .vk .sa-wires { display: none; }
+  .vk .sa-engine { flex-direction: row; }
+  .vk .sa-engine::before { content: ""; position: absolute; left: 50%; top: -4px; bottom: -4px; border-left: 2px dashed var(--antique-gold); transform: translateX(-1px); }
+  .vk .sa-engine .fa-node { width: 50px; height: 50px; }
+  .vk .sa-engine .fa-node-label { position: absolute; left: calc(50% + 36px); align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { .vk .sa-chip, .vk .sa-wires path { animation: none; } }
+.vk .sa-engine .fa-node-label { background: var(--midnight); padding: 4px 8px 5px; border-radius: 6px; box-shadow: 0 0 0 4px var(--midnight); }

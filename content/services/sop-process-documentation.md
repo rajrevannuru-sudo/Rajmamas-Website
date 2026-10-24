@@ -19,6 +19,15 @@ headings:
   faq: "SOP and process documentation questions"
   cta: "Ready for processes your team can follow?"
 lead: Internal documentation that keeps your team aligned and your operations scalable, written so people actually follow it.
+heroInputs:
+  - label: "Team know-how"
+    icon: users
+  - label: "Process workshops"
+    icon: presentation
+  - label: "Existing checklists"
+    icon: list-checks
+  - label: "Tools and systems"
+    icon: settings
 whoFor:
   - Founders and COOs whose processes live in a few people's heads
   - Operations, compliance and customer success leads scaling a team

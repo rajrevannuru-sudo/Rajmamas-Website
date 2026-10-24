@@ -111,6 +111,11 @@
   "service": {
     "breadcrumb": "Services",
     "forBox": "Who it is for",
+    "forTitle": "Built for teams like yours",
+    "artInputs": "What we start from",
+    "artEngine": "VAKS",
+    "artEngineSub": "Structure",
+    "artOutput": "What you get",
     "problemsEyebrow": "Problems it solves",
     "introEyebrow": "How we help",
     "includedEyebrow": "What's included",
