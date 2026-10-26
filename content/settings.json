@@ -1,0 +1,13 @@
+{
+  "_note": "Analytics and search-console integrations, edited in the CMS (Integrations). Leave a value empty to switch it off.",
+  "googleSiteVerification": "",
+  "_googleSiteVerificationNote": "Google Search Console → Add property → HTML tag method: paste only the content value, e.g. abc123XYZ.",
+  "ga4MeasurementId": "",
+  "_ga4MeasurementIdNote": "Google Analytics 4 → Admin → Data streams → Measurement ID, e.g. G-XXXXXXXXXX.",
+  "gtmContainerId": "",
+  "_gtmContainerIdNote": "Google Tag Manager container ID, e.g. GTM-XXXXXXX. Use GTM or GA4, not both for the same tag.",
+  "bingSiteVerification": "",
+  "_bingSiteVerificationNote": "Bing Webmaster Tools → HTML meta tag method: paste only the content value.",
+  "clarityProjectId": "",
+  "_clarityProjectIdNote": "Microsoft Clarity → Settings → Overview → Project ID."
+}

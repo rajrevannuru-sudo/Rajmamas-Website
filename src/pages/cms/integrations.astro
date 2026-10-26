@@ -1,0 +1,90 @@
+---
+// Analytics and search-console IDs, stored in content/settings.json and injected by components/Integrations.astro.
+import CmsLayout from '../../layouts/CmsLayout.astro';
+import Glyph from '../../components/Glyph.astro';
+import { isLoggedIn } from '../../lib/cms/auth';
+import { commit, readText, storeMode } from '../../lib/cms/store';
+import { integrationFields } from '../../lib/settings';
+
+export const prerender = false;
+if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+
+const PATH = 'content/settings.json';
+let settings = JSON.parse(await readText(PATH)) as Record<string, string>;
+const errors: string[] = [];
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  settings = JSON.parse(await readText(PATH));
+  for (const f of integrationFields) {
+    let v = String(form.get(f.key) ?? '').trim();
+    // Accept a pasted meta tag and keep only its content value.
+    const meta = v.match(/content=["']([^"']+)["']/);
+    if (meta) v = meta[1];
+    if (v && !f.pattern.test(v)) errors.push(`${f.label}: "${v}" doesn’t look right (expected something like ${f.example}).`);
+    settings[f.key] = v;
+  }
+  if (!errors.length) {
+    try {
+      await commit([{ path: PATH, content: `${JSON.stringify(settings, null, 2)}\n` }], 'Integrations: update tracking and verification IDs');
+      return Astro.redirect(`/cms/integrations?saved=${storeMode()}`, 303);
+    } catch (e) {
+      errors.push(String(e));
+    }
+  }
+}
+
+const links: Record<string, string> = {
+  googleSiteVerification: 'https://search.google.com/search-console',
+  ga4MeasurementId: 'https://analytics.google.com/',
+  gtmContainerId: 'https://tagmanager.google.com/',
+  bingSiteVerification: 'https://www.bing.com/webmasters',
+  clarityProjectId: 'https://clarity.microsoft.com/',
+};
+---
+
+<CmsLayout title="Integrations" active="integrations">
+  <div class="cms-head">
+    <div>
+      <h1>Integrations</h1>
+      <p>Connect Google Search Console, Analytics and other tools. Leave a field empty to switch it off.</p>
+    </div>
+  </div>
+  <p class="cms-note">
+    After connecting Search Console, submit the sitemap there: <b>https://vaksconsulting.com/sitemap-index.xml</b>. If you turn on analytics, update the
+    privacy policy (Site content → Privacy policy) to mention it.
+  </p>
+  {
+    errors.length > 0 && (
+      <div class="cms-error" role="alert">
+        <b>Nothing was saved. Please fix:</b>
+        <ul>{errors.map((e) => <li>{e}</li>)}</ul>
+      </div>
+    )
+  }
+  <form method="POST">
+    {
+      integrationFields.map((f) => (
+        <section class="cms-panel">
+          <div class="cms-field">
+            <label for={f.key}>
+              {f.label}
+              {settings[f.key] ? <span class="pill live">On</span> : <span class="pill draft">Off</span>}
+            </label>
+            <input id={f.key} name={f.key} value={settings[f.key] ?? ''} placeholder={f.example} autocomplete="off" spellcheck="false" />
+            <small class="cms-hint">
+              {settings[`_${f.key}Note`]}{' '}
+              <a href={links[f.key]} target="_blank" rel="noopener">
+                Open <Glyph name="external-link" />
+              </a>
+            </small>
+          </div>
+        </section>
+      ))
+    }
+    <div class="cms-actions">
+      <span class="spacer"></span>
+      <button class="cms-btn gold" type="submit">Save integrations</button>
+    </div>
+  </form>
+</CmsLayout>

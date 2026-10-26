@@ -33,7 +33,7 @@ Edit the matching file in `content/` (for example `content/services/api-document
 npm install
 npm run dev       # http://localhost:4321, shows unconfirmed testimonials and placeholders
 npm run build     # type check + static build to dist/ (pages, OG images, sitemap)
-npm run preview   # serves dist/ exactly as it will be deployed
+npm run dev       # also serves /cms locally
 ```
 
 - Copy lives in `content/`: `site.json` (business details, flows, FAQ, testimonials), `pages.json` (section headings and UI text), `services/*.md`, `case-studies/*.md`, `pages/privacy-policy.md`.
@@ -46,3 +46,17 @@ npm run preview   # serves dist/ exactly as it will be deployed
 The repo is connected to Vercel; every push to `main` builds and publishes. `vercel.json` sets clean URLs (`/about`, no `.html`), the redirects from `docs/seo-plan.md` §6 and asset caching. `public/_redirects` and `public/.htaccess` are kept for Netlify/Cloudflare or GoDaddy cPanel hosting.
 
 Set `PUBLIC_WEB3FORMS_KEY` under Project → Settings → Environment Variables, then redeploy, so the contact form works.
+
+## CMS (/cms)
+
+A small built-in CMS at `https://vaksconsulting.com/cms` for blog posts, site text and integrations.
+
+- **Blog posts:** create, edit, publish (untick Draft) or delete. Each post has one cover image; the author is always the founder. Posts live in `content/blog/` (images in `content/blog/images/`).
+- **Site content:** edit existing text in `site.json`, `pages.json`, services, case studies and the privacy policy. Structure fields (slugs, order, links) are locked; pages can't be added or removed.
+- **Integrations:** Google Search Console and Bing verification, GA4, Google Tag Manager and Microsoft Clarity IDs (`content/settings.json`), injected into every page.
+
+Every save is a Git commit to `main`, which redeploys the site on Vercel (live in about 1–2 minutes). Pull before pushing local changes (`git pull --rebase`).
+
+Required environment variables (Vercel → Settings → Environment Variables; see `.env.example`): `CMS_USERNAME`, `CMS_PASSWORD`, `CMS_SECRET` (long random string), `GITHUB_TOKEN` (fine-grained token with Contents read & write on this repo). Locally, without `GITHUB_TOKEN`, `npm run dev` saves to the files on disk.
+
+Note: the Vercel adapter doesn't support `npm run preview`; use `npm run dev` locally.

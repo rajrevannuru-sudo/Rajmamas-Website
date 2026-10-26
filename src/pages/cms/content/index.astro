@@ -1,0 +1,53 @@
+---
+import CmsLayout from '../../../layouts/CmsLayout.astro';
+import Glyph from '../../../components/Glyph.astro';
+import { isLoggedIn } from '../../../lib/cms/auth';
+import { listDocs, type Doc } from '../../../lib/cms/content';
+
+export const prerender = false;
+if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+
+let docs: Doc[] = [];
+let error = '';
+try {
+  docs = await listDocs();
+} catch (e) {
+  error = String(e);
+}
+const groups = [...new Set(docs.map((d) => d.group))];
+const icons: Record<string, string> = { Site: 'globe', Services: 'briefcase', 'Case studies': 'trophy' };
+---
+
+<CmsLayout title="Site content" active="content">
+  <div class="cms-head">
+    <div>
+      <h1>Site content</h1>
+      <p>Edit the text on existing pages. Pages can’t be added or removed here; only blog posts can be created.</p>
+    </div>
+  </div>
+  {error && <p class="cms-error">{error}</p>}
+  <p class="cms-note">Text in <b>[square brackets]</b> shows highlighted on the site as unconfirmed. Remove the brackets once the fact is confirmed.</p>
+  {
+    groups.map((g) => (
+      <section class="cms-panel">
+        <h2>
+          <Glyph name={icons[g] ?? 'file-text'} />
+          {g}
+        </h2>
+        <ul class="cms-rows">
+          {docs
+            .filter((d) => d.group === g)
+            .map((d) => (
+              <li>
+                <div class="grow">
+                  <a href={`/cms/content/${d.id}`}>{d.label}</a>
+                  <small>{d.path}</small>
+                </div>
+                <a class="cms-btn sm" href={`/cms/content/${d.id}`}>Edit</a>
+              </li>
+            ))}
+        </ul>
+      </section>
+    ))
+  }
+</CmsLayout>

@@ -1,0 +1,308 @@
+---
+// Blog post editor. /cms/blog/new creates a post; /cms/blog/<slug> edits one.
+// The author is always the founder, so there is no author field.
+import CmsLayout from '../../../layouts/CmsLayout.astro';
+import Glyph from '../../../components/Glyph.astro';
+import { isLoggedIn } from '../../../lib/cms/auth';
+import { commit, listDir, readText, storeMode, type FileChange } from '../../../lib/cms/store';
+import { emptyPost, imageRepoPath, parsePost, serializePost, slugify, SLUG_RE, type PostFields } from '../../../lib/cms/blog';
+import { site, pages } from '../../../lib/site';
+
+export const prerender = false;
+if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+
+const param = Astro.params.slug ?? '';
+const isNew = param === 'new';
+if (!isNew && !SLUG_RE.test(param)) return Astro.redirect('/cms/blog');
+
+let post: PostFields = emptyPost();
+const errors: string[] = [];
+/** Keeps a freshly chosen image across a failed save. */
+let keptImageData = '';
+
+if (!isNew) {
+  try {
+    post = parsePost(param, await readText(`content/blog/${param}.md`));
+  } catch {
+    return new Response('Post not found', { status: 404 });
+  }
+}
+
+const MAX_IMAGE = 4 * 1024 * 1024;
+const extFor: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const action = String(form.get('action') ?? 'save');
+  const done = `/cms/blog?saved=${storeMode()}`;
+
+  if (action === 'delete' && !isNew) {
+    const changes: FileChange[] = [{ path: `content/blog/${param}.md`, delete: true }];
+    const img = imageRepoPath(post.image);
+    if (img) changes.push({ path: img, delete: true });
+    try {
+      await commit(changes, `Blog: delete "${post.title}"`);
+      return Astro.redirect(done, 303);
+    } catch (e) {
+      errors.push(String(e));
+    }
+  } else {
+    const str = (k: string) => String(form.get(k) ?? '').trim();
+    const previousImage = post.image;
+    post = {
+      ...post,
+      title: str('title'),
+      slug: isNew ? slugify(str('slug') || str('title')) : param,
+      description: str('description'),
+      date: str('date'),
+      tags: str('tags').split(',').map((t) => t.trim()).filter(Boolean),
+      draft: form.get('draft') === 'on',
+      imageAlt: str('imageAlt'),
+      body: String(form.get('body') ?? '').replace(/\r\n/g, '\n'),
+      cta: { title: str('ctaTitle'), text: str('ctaText'), buttonLabel: str('ctaButtonLabel'), buttonUrl: str('ctaButtonUrl') },
+    };
+
+    if (!post.title) errors.push('Add a title.');
+    if (!post.description) errors.push('Add a short description (used in search results and link previews).');
+    if (post.description.length > 160) errors.push('Keep the description to 160 characters or fewer.');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(post.date)) errors.push('Choose a publish date.');
+    if (!post.body.trim()) errors.push('Write the article body.');
+    if (!SLUG_RE.test(post.slug)) errors.push('The web address can only use lowercase letters, numbers and hyphens.');
+    if (post.cta.buttonUrl && !/^(\/|https?:\/\/|mailto:|tel:)/.test(post.cta.buttonUrl)) errors.push('The CTA button link must start with /, https://, mailto: or tel:.');
+    if (isNew && !errors.length && (await listDir('content/blog')).includes(`${post.slug}.md`)) {
+      errors.push(`A post already uses the address /blog/${post.slug}. Change the title or web address.`);
+    }
+
+    // Cover image: a resized data URL from the browser, or the raw file if JavaScript was off.
+    let image: { buf: Buffer; ext: string } | undefined;
+    const dataUrl = str('imageData');
+    keptImageData = dataUrl;
+    const file = form.get('image');
+    if (dataUrl) {
+      const m = dataUrl.match(/^data:(image\/(?:jpeg|png|webp));base64,(.+)$/);
+      if (m) image = { buf: Buffer.from(m[2], 'base64'), ext: extFor[m[1]] };
+      else errors.push('The cover image must be a JPG, PNG or WebP.');
+    } else if (file instanceof File && file.size > 0) {
+      if (!extFor[file.type]) errors.push('The cover image must be a JPG, PNG or WebP.');
+      else image = { buf: Buffer.from(await file.arrayBuffer()), ext: extFor[file.type] };
+    }
+    if (image && image.buf.length > MAX_IMAGE) errors.push('The cover image is too large; use one under 4 MB.');
+    if (!image && !previousImage) errors.push('Add a cover image.');
+    if (!post.imageAlt) errors.push('Describe the cover image (alt text) for screen readers and search engines.');
+
+    if (!errors.length) {
+      const changes: FileChange[] = [];
+      if (image) {
+        const newPath = `content/blog/images/${post.slug}.${image.ext}`;
+        post.image = `./images/${post.slug}.${image.ext}`;
+        changes.push({ path: newPath, content: image.buf });
+        const old = imageRepoPath(previousImage);
+        if (old && old !== newPath) changes.push({ path: old, delete: true });
+      }
+      changes.push({ path: `content/blog/${post.slug}.md`, content: serializePost(post) });
+      try {
+        await commit(changes, `Blog: ${isNew ? 'add' : 'update'} "${post.title}"`);
+        return Astro.redirect(done, 303);
+      } catch (e) {
+        errors.push(String(e));
+      }
+    }
+  }
+}
+
+const preview = keptImageData || (post.image.startsWith('./images/') ? `/cms/media/${post.image.slice('./images/'.length)}` : '');
+const t = pages.blog;
+---
+
+<CmsLayout title={isNew ? 'New blog post' : `Edit: ${post.title}`} active="blog">
+  <p class="cms-crumb"><a href="/cms/blog">Blog posts</a> / {isNew ? 'New' : post.title}</p>
+  <div class="cms-head">
+    <div>
+      <h1>{isNew ? 'New blog post' : 'Edit blog post'}</h1>
+      <p>Author: <b>{site.founder.name}</b> (added automatically)</p>
+    </div>
+    {!isNew && !post.draft && <a class="cms-btn ghost" href={`/blog/${post.slug}`} target="_blank" rel="noopener"><Glyph name="external-link" />View live</a>}
+  </div>
+
+  {
+    errors.length > 0 && (
+      <div class="cms-error" role="alert">
+        <b>Please fix the following:</b>
+        <ul>{errors.map((e) => <li>{e}</li>)}</ul>
+      </div>
+    )
+  }
+
+  <form method="POST" enctype="multipart/form-data" id="post-form">
+    <div class="cms-editor">
+      <div>
+        <section class="cms-panel">
+          <div class="cms-field">
+            <label for="title">Title</label>
+            <input id="title" name="title" value={post.title} required maxlength="120" />
+          </div>
+          <div class="cms-field">
+            <label for="slug">Web address <span class="cms-count">vaksconsulting.com/blog/…</span></label>
+            <input id="slug" name="slug" value={post.slug} readonly={!isNew} placeholder="filled in from the title" pattern="[a-z0-9]+(-[a-z0-9]+)*" />
+            <small class="cms-hint">{isNew ? 'Created from the title; you can shorten it. It can’t change after publishing.' : 'The address stays the same so existing links keep working.'}</small>
+          </div>
+          <div class="cms-field">
+            <label for="description">Short description <span class="cms-count"><span data-count-for="description">{post.description.length}</span> / 160</span></label>
+            <textarea id="description" name="description" rows="2" maxlength="160" required>{post.description}</textarea>
+            <small class="cms-hint">Shown on the blog page, in Google results and in link previews.</small>
+          </div>
+        </section>
+
+        <section class="cms-panel">
+          <label class="cms-label" for="body">Article</label>
+          <div class="cms-toolbar" role="toolbar" aria-label="Formatting">
+            <button type="button" data-md="## " title="Section heading">H2</button>
+            <button type="button" data-md="### " title="Sub-heading">H3</button>
+            <button type="button" data-wrap="**" title="Bold"><b>B</b></button>
+            <button type="button" data-wrap="_" title="Italic"><i>I</i></button>
+            <button type="button" data-md="- " title="Bullet list">• List</button>
+            <button type="button" data-md="1. " title="Numbered list">1. List</button>
+            <button type="button" data-md="> " title="Quote">“ Quote</button>
+            <button type="button" data-link title="Link">Link</button>
+          </div>
+          <textarea id="body" name="body" required>{post.body}</textarea>
+          <small class="cms-hint">Formatting uses Markdown: <code>## Heading</code>, <code>**bold**</code>, <code>[link text](https://…)</code>, <code>- list item</code>. Leave a blank line between paragraphs.</small>
+        </section>
+
+        <section class="cms-panel">
+          <h2><Glyph name="megaphone" />Call to action</h2>
+          <p class="cms-hint" style="margin-bottom:12px">Shown at the end of the article. Leave blank to use the defaults shown in grey.</p>
+          <div class="cms-field">
+            <label for="ctaTitle">Heading</label>
+            <input id="ctaTitle" name="ctaTitle" value={post.cta.title} placeholder={t.ctaDefaultTitle} />
+          </div>
+          <div class="cms-field">
+            <label for="ctaText">Text</label>
+            <textarea id="ctaText" name="ctaText" rows="2" placeholder={t.ctaDefaultText}>{post.cta.text}</textarea>
+          </div>
+          <div class="cms-grid2">
+            <div class="cms-field">
+              <label for="ctaButtonLabel">Button label</label>
+              <input id="ctaButtonLabel" name="ctaButtonLabel" value={post.cta.buttonLabel} placeholder={t.ctaDefaultButton} />
+            </div>
+            <div class="cms-field">
+              <label for="ctaButtonUrl">Button link</label>
+              <input id="ctaButtonUrl" name="ctaButtonUrl" value={post.cta.buttonUrl} placeholder={site.bookingUrl} />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div>
+        <section class="cms-panel">
+          <h2><Glyph name="send" />Publish</h2>
+          <label class="cms-check">
+            <input type="checkbox" name="draft" checked={post.draft} />
+            <span>Draft (hidden from the website)</span>
+          </label>
+          <div class="cms-field">
+            <label for="date">Publish date</label>
+            <input id="date" name="date" type="date" value={post.date} required />
+          </div>
+          <div class="cms-field">
+            <label for="tags">Tags</label>
+            <input id="tags" name="tags" value={post.tags.join(', ')} placeholder="API documentation, Help centres" />
+            <small class="cms-hint">Separate with commas. The first tag shows on the blog card.</small>
+          </div>
+        </section>
+
+        <section class="cms-panel">
+          <h2><Glyph name="image" />Cover image</h2>
+          <img class="cms-cover" id="cover-preview" src={preview || undefined} alt="" hidden={!preview} />
+          <div class="cms-cover" id="cover-empty" hidden={!!preview}></div>
+          <input class="cms-file" id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" />
+          <input type="hidden" name="imageData" id="imageData" value={keptImageData} />
+          <small class="cms-hint">JPG, PNG or WebP. Landscape works best (16:9); large photos are resized automatically.</small>
+          <div class="cms-field" style="margin-top:12px">
+            <label for="imageAlt">Image description (alt text)</label>
+            <input id="imageAlt" name="imageAlt" value={post.imageAlt} required placeholder="What the image shows" />
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="cms-actions">
+      {!isNew && <button class="cms-btn danger" type="submit" name="action" value="delete" formnovalidate data-confirm="Delete this post and its image? This can’t be undone.">Delete</button>}
+      <span class="spacer"></span>
+      <a class="cms-btn ghost" href="/cms/blog">Cancel</a>
+      <button class="cms-btn gold" type="submit" name="action" value="save"><Glyph name="check" />{isNew ? 'Create post' : 'Save changes'}</button>
+    </div>
+  </form>
+</CmsLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#post-form')!;
+  const title = form.querySelector<HTMLInputElement>('#title')!;
+  const slug = form.querySelector<HTMLInputElement>('#slug')!;
+  const body = form.querySelector<HTMLTextAreaElement>('#body')!;
+  const slugify = (s: string) =>
+    s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+
+  // Web address follows the title until it's edited by hand (new posts only).
+  let slugTouched = !!slug.value;
+  slug.addEventListener('input', () => (slugTouched = true));
+  title.addEventListener('input', () => {
+    if (!slug.readOnly && !slugTouched) slug.value = slugify(title.value);
+  });
+
+  // Character counters
+  form.querySelectorAll<HTMLElement>('[data-count-for]').forEach((el) => {
+    const input = form.querySelector<HTMLTextAreaElement>(`#${el.dataset.countFor}`)!;
+    input.addEventListener('input', () => (el.textContent = String(input.value.length)));
+  });
+
+  // Markdown toolbar
+  form.querySelectorAll<HTMLButtonElement>('.cms-toolbar button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const { selectionStart: s, selectionEnd: e, value } = body;
+      const selected = value.slice(s, e);
+      let insert = selected;
+      if (btn.dataset.wrap) insert = `${btn.dataset.wrap}${selected || 'text'}${btn.dataset.wrap}`;
+      else if (btn.dataset.md) {
+        const lineStart = value.lastIndexOf('\n', s - 1) + 1;
+        body.setRangeText(btn.dataset.md, lineStart, lineStart, 'end');
+        body.focus();
+        return;
+      } else if ('link' in btn.dataset) {
+        const url = prompt('Link address (https://…)');
+        if (!url) return;
+        insert = `[${selected || 'link text'}](${url})`;
+      }
+      body.setRangeText(insert, s, e, 'end');
+      body.focus();
+    });
+  });
+
+  // Cover image: preview, and resize to max 1600px wide before upload
+  const file = form.querySelector<HTMLInputElement>('#image')!;
+  const data = form.querySelector<HTMLInputElement>('#imageData')!;
+  const preview = form.querySelector<HTMLImageElement>('#cover-preview')!;
+  const empty = form.querySelector<HTMLElement>('#cover-empty')!;
+  file.addEventListener('change', async () => {
+    const f = file.files?.[0];
+    if (!f) return;
+    const img = await createImageBitmap(f);
+    const scale = Math.min(1, 1600 / img.width);
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(img.width * scale);
+    canvas.height = Math.round(img.height * scale);
+    canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const type = f.type === 'image/png' ? 'image/png' : 'image/jpeg';
+    data.value = canvas.toDataURL(type, 0.86);
+    preview.src = data.value;
+    preview.hidden = false;
+    empty.hidden = true;
+    file.value = ''; // send the resized copy only
+  });
+
+  // Confirm destructive actions
+  form.addEventListener('submit', (e) => {
+    const submitter = (e as SubmitEvent).submitter as HTMLButtonElement | null;
+    if (submitter?.dataset.confirm && !confirm(submitter.dataset.confirm)) e.preventDefault();
+  });
+</script>

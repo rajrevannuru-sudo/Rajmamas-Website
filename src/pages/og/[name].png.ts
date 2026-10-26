@@ -1,7 +1,7 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { pages } from '../../lib/site';
 import { fill } from '../../lib/placeholder';
-import { getServices, getCaseStudies } from '../../lib/content';
+import { getServices, getCaseStudies, getPosts } from '../../lib/content';
 import { renderOg } from '../../lib/og';
 
 const strip = (s: string) => s.replace(/[[\]]/g, '');
@@ -14,6 +14,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     ['about', pages.about.seo],
     ['contact', pages.contact.seo],
     ['privacy-policy', pages.privacy.seo],
+    ['blog', pages.blog.seo],
   ] as const;
   const services = (await getServices()).map((s) => ({
     params: { name: `services-${s.id}` },
@@ -23,7 +24,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { name: `case-studies-${c.id}` },
     props: { eyebrow: fill(pages.caseStudy.ogEyebrow, { client: c.data.client }), title: c.data.title },
   }));
+  const posts = (await getPosts()).map((p) => ({
+    params: { name: `blog-${p.id}` },
+    props: { eyebrow: `Blog · ${p.data.tags[0] ?? 'VAKS Consulting'}`, title: p.data.title },
+  }));
   return [
+    ...posts,
     ...fixed.map(([name, seo]) => ({ params: { name }, props: { eyebrow: seo.ogEyebrow, title: seo.h1 } })),
     ...services,
     ...studies,

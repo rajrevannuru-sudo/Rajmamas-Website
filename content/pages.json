@@ -33,17 +33,31 @@
     },
     "hero": {
       "lead": "We make it easier for your customers to find answers, understand your product and get more value from it. A small, senior technical writing studio in Hyderabad, working with product teams worldwide.",
-      "reassure": ["NDA on request", "Working with teams worldwide"],
+      "reassure": [
+        "NDA on request",
+        "Working with teams worldwide"
+      ],
       "diagramCaption": "VAKS Consulting turns scattered notes, files and duplicates into structured, connected documentation organised around topics, people, actions and sources.",
       "diagram": {
         "before": "Before · raw input",
-        "fragments": ["Meeting notes", "Spec_v3_final.docx", "Slack thread", "Tracker.xlsx", "Old wiki page (copy)"],
+        "fragments": [
+          "Meeting notes",
+          "Spec_v3_final.docx",
+          "Slack thread",
+          "Tracker.xlsx",
+          "Old wiki page (copy)"
+        ],
         "engine": "VAKS",
         "engineSub": "Structure",
         "after": "After · structured content",
         "search": "Search the docs…",
         "core": "Core information",
-        "nodes": ["Topics", "People", "Actions", "Sources"],
+        "nodes": [
+          "Topics",
+          "People",
+          "Actions",
+          "Sources"
+        ],
         "footer": "Connected · searchable · understandable"
       }
     },
@@ -65,9 +79,18 @@
     "founder": {
       "eyebrow": "Who you work with",
       "facts": [
-        { "label": "Experience", "value": "26+ years" },
-        { "label": "Support tickets, across his career", "value": "Up to 70% fewer" },
-        { "label": "Based in", "value": "Hyderabad" }
+        {
+          "label": "Experience",
+          "value": "26+ years"
+        },
+        {
+          "label": "Support tickets, across his career",
+          "value": "Up to 70% fewer"
+        },
+        {
+          "label": "Based in",
+          "value": "Hyderabad"
+        }
       ]
     },
     "process": {
@@ -156,9 +179,18 @@
     "factTimeline": "Timeline",
     "glanceEyebrow": "At a glance",
     "glanceTitle": "The project in three steps",
-    "glanceLabels": ["The challenge", "Our approach", "The outcome"],
+    "glanceLabels": [
+      "The challenge",
+      "Our approach",
+      "The outcome"
+    ],
     "tocLabel": "On this page",
-    "toc": ["Challenge", "Approach", "Outcome", "Deliverables"],
+    "toc": [
+      "Challenge",
+      "Approach",
+      "Outcome",
+      "Deliverables"
+    ],
     "outcomeEyebrow": "The outcome",
     "deliverablesEyebrow": "Deliverables",
     "deliverablesTitle": "What we handed over",
@@ -242,6 +274,31 @@
       "invalid": "A few details are missing. Please check the highlighted fields."
     }
   },
+  "blog": {
+    "seo": {
+      "title": "Documentation Insights & Guides | VAKS Consulting Blog",
+      "description": "Practical articles on technical writing, API docs, help centres, SOPs and documentation strategy from VAKS Consulting.",
+      "h1": "Insights on clear documentation",
+      "ogEyebrow": "Blog"
+    },
+    "eyebrow": "Blog",
+    "lead": "Practical advice on technical writing, API documentation, help centres and SOPs, from our work with product teams.",
+    "empty": "New articles are on their way. In the meantime, see our case studies.",
+    "readMore": "Read article",
+    "minRead": "min read",
+    "by": "By",
+    "published": "Published",
+    "sidebarTitle": "Talk to us about your docs",
+    "sidebarText": "Tell us what you're working on. We reply within one business day.",
+    "sidebarSubmit": "Send",
+    "sidebarName": "Name",
+    "sidebarEmail": "Email",
+    "sidebarMessage": "What do you need help with?",
+    "ctaDefaultTitle": "Need documentation like this for your product?",
+    "ctaDefaultText": "Book a free 30-minute call. You'll leave knowing what to document first and what it will take.",
+    "ctaDefaultButton": "Book a call",
+    "aboutAuthor": "About the author"
+  },
   "privacy": {
     "seo": {
       "title": "Privacy Policy | VAKS Consulting",
@@ -262,9 +319,18 @@
     "eyebrow": "Error 404",
     "lead": "The page may have moved, or the link may be out of date. These pages should help you find what you need.",
     "links": [
-      { "label": "Home", "href": "/" },
-      { "label": "Services", "href": "/services" },
-      { "label": "Contact", "href": "/contact" }
+      {
+        "label": "Home",
+        "href": "/"
+      },
+      {
+        "label": "Services",
+        "href": "/services"
+      },
+      {
+        "label": "Contact",
+        "href": "/contact"
+      }
     ]
   }
 }

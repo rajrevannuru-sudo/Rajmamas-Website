@@ -3,6 +3,8 @@ import '../styles/tokens.css';
 import '../styles/global.css';
 import Seo from '../components/Seo.astro';
 import JsonLd from '../components/JsonLd.astro';
+import Integrations from '../components/Integrations.astro';
+import { integrations } from '../lib/settings';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { pages } from '../lib/site';
@@ -46,8 +48,22 @@ const ld = graph(schema, person ? await founderSchemaImage() : undefined);
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
     />
     <JsonLd data={ld} />
+    <Integrations />
   </head>
   <body class="vk">
+    {
+      integrations.gtmContainerId && (
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${integrations.gtmContainerId}`}
+            height="0"
+            width="0"
+            style="display:none;visibility:hidden"
+            title="Google Tag Manager"
+          />
+        </noscript>
+      )
+    }
     <a class="skip-link" href="#main">{pages.ui.skipLink}</a>
     <Header onDark={headerOnDark} />
     <main id="main" tabindex="-1">

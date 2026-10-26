@@ -75,4 +75,28 @@ const pages = defineCollection({
   schema: z.object({ title: z.string().optional() }),
 });
 
-export const collections = { services, caseStudies, pages };
+// Blog posts are created and edited in the CMS (/cms). The author is always the founder (site.json).
+const blog = defineCollection({
+  loader: glob({ pattern: '*.md', base: './content/blog' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string().max(160),
+      date: z.coerce.date(),
+      updated: z.coerce.date().optional(),
+      image: image(),
+      imageAlt: z.string(),
+      tags: z.array(z.string()).default([]),
+      draft: z.boolean().default(false),
+      cta: z
+        .object({
+          title: z.string().optional(),
+          text: z.string().optional(),
+          buttonLabel: z.string().optional(),
+          buttonUrl: z.string().optional(),
+        })
+        .default({}),
+    }),
+});
+
+export const collections = { services, caseStudies, pages, blog };

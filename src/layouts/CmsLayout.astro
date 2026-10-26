@@ -1,0 +1,79 @@
+---
+import '../styles/tokens.css';
+import '../styles/cms.css';
+import Glyph from '../components/Glyph.astro';
+
+interface Props {
+  title: string;
+  active?: 'dashboard' | 'blog' | 'content' | 'integrations';
+  /** Hide the sidebar (login screen). */
+  bare?: boolean;
+}
+const { title, active, bare = false } = Astro.props;
+const flash = Astro.url.searchParams.get('saved');
+const nav = [
+  { id: 'dashboard', label: 'Dashboard', href: '/cms', icon: 'layout-dashboard' },
+  { id: 'blog', label: 'Blog posts', href: '/cms/blog', icon: 'newspaper' },
+  { id: 'content', label: 'Site content', href: '/cms/content', icon: 'file-pen-line' },
+  { id: 'integrations', label: 'Integrations', href: '/cms/integrations', icon: 'plug' },
+];
+---
+
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} · VAKS CMS</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@400;500;600&display=swap" />
+  </head>
+  <body class:list={['cms', { 'cms-bare': bare }]}>
+    {
+      !bare && (
+        <aside class="cms-side">
+          <a class="cms-brand" href="/cms">
+            <span>VAKS</span>
+            <small>CMS</small>
+          </a>
+          <nav aria-label="CMS">
+            {nav.map((n) => (
+              <a href={n.href} aria-current={active === n.id ? 'page' : undefined}>
+                <Glyph name={n.icon} />
+                {n.label}
+              </a>
+            ))}
+          </nav>
+          <div class="cms-side-foot">
+            <a href="/" target="_blank" rel="noopener">
+              <Glyph name="external-link" />
+              View website
+            </a>
+            <form method="POST" action="/cms/logout">
+              <button type="submit">
+                <Glyph name="log-out" />
+                Log out
+              </button>
+            </form>
+          </div>
+        </aside>
+      )
+    }
+    <main class="cms-main">
+      {
+        flash && (
+          <p class="cms-flash" role="status">
+            <Glyph name="circle-check" />
+            <span>
+              <b>Saved.</b> {flash === 'local' ? 'Written to the local files.' : 'The live website updates in about 1–2 minutes.'}
+            </span>
+          </p>
+        )
+      }
+      <slot />
+    </main>
+  </body>
+</html>

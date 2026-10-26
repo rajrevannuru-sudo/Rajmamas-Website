@@ -1,0 +1,91 @@
+---
+// Compact sidebar enquiry form for blog posts (name, email, message) → Web3Forms.
+import Glyph from './Glyph.astro';
+import Icon from './Icon.astro';
+import { pages } from '../lib/site';
+
+interface Props {
+  /** Shown in the email subject so Raj knows which article prompted it. */
+  source: string;
+}
+const t = pages.blog;
+const f = pages.contact.form;
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+---
+
+<aside class="quick-card" aria-labelledby="quick-h">
+  <div class="quick-panel">
+    <span class="badge sm"><Glyph name="message-square-text" /></span>
+    <h2 id="quick-h">{t.sidebarTitle}</h2>
+    <p class="quick-intro">{t.sidebarText}</p>
+    <form class="quick-form" action="https://api.web3forms.com/submit" method="POST" novalidate data-error={f.error} data-sending={f.sending}>
+      <input type="hidden" name="access_key" value={accessKey} />
+      <input type="hidden" name="subject" value={`Blog enquiry: ${Astro.props.source}`} />
+      <input type="hidden" name="from_name" value="vaksconsulting.com" />
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      <div class="field">
+        <label for="q-name">{t.sidebarName}<span class="req" aria-hidden="true">*</span></label>
+        <input id="q-name" name="name" autocomplete="name" required />
+      </div>
+      <div class="field">
+        <label for="q-email">{t.sidebarEmail}<span class="req" aria-hidden="true">*</span></label>
+        <input id="q-email" name="email" type="email" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="q-msg">{t.sidebarMessage}<span class="req" aria-hidden="true">*</span></label>
+        <textarea id="q-msg" name="message" rows="4" required></textarea>
+      </div>
+      <p class="form-status" role="alert" hidden></p>
+      <button class="btn btn-primary btn-send" type="submit"><span class="label">{t.sidebarSubmit}</span><Icon name="arrow" /></button>
+      <p class="quick-note"><Glyph name="shield-check" class="privacy-ico" /><span>{f.privacyNote} <a href="/privacy-policy">{f.privacyLink}</a>.</span></p>
+    </form>
+  </div>
+  <div class="quick-success" hidden tabindex="-1">
+    <span class="success-ico"><Glyph name="check" strokeWidth={2.25} /></span>
+    <p class="h3">{f.successTitle}</p>
+    <p>{f.success}</p>
+  </div>
+</aside>
+
+<script>
+  const card = document.querySelector<HTMLElement>('.quick-card');
+  const form = card?.querySelector<HTMLFormElement>('form');
+  if (card && form) {
+    const status = form.querySelector<HTMLElement>('.form-status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const label = button.querySelector<HTMLElement>('.label')!;
+    const idle = label.textContent ?? '';
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fields = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]')];
+      const bad = fields.filter((el) => !el.value.trim() || !el.checkValidity());
+      fields.forEach((el) => {
+        if (bad.includes(el)) el.setAttribute('aria-invalid', 'true');
+        else el.removeAttribute('aria-invalid');
+        el.closest('.field')?.classList.toggle('has-error', bad.includes(el));
+      });
+      if (bad.length) {
+        bad[0].focus();
+        return;
+      }
+      button.disabled = true;
+      label.textContent = form.dataset.sending ?? idle;
+      status.hidden = true;
+      try {
+        const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.success) throw new Error();
+        card.querySelector<HTMLElement>('.quick-panel')!.hidden = true;
+        const ok = card.querySelector<HTMLElement>('.quick-success')!;
+        ok.hidden = false;
+        ok.focus();
+      } catch {
+        status.hidden = false;
+        status.textContent = form.dataset.error ?? '';
+      } finally {
+        button.disabled = false;
+        label.textContent = idle;
+      }
+    });
+  }
+</script>

@@ -1,0 +1,104 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Button from '../../components/Button.astro';
+import Icon from '../../components/Icon.astro';
+import QuickForm from '../../components/QuickForm.astro';
+import { site, pages } from '../../lib/site';
+import { founderPhoto } from '../../lib/images';
+import { breadcrumbNode, blogPostingNode, type Crumb } from '../../lib/schema';
+import { getPosts, postHref, formatDate, readingMinutes, type Post } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+const d = post.data;
+const t = pages.blog;
+const f = site.founder;
+const path = postHref(post);
+const { Content } = await render(post);
+const cover = await getImage({ src: d.image, width: 1200, format: 'jpg' });
+const cta = {
+  title: d.cta.title || t.ctaDefaultTitle,
+  text: d.cta.text || t.ctaDefaultText,
+  buttonLabel: d.cta.buttonLabel || t.ctaDefaultButton,
+  buttonUrl: d.cta.buttonUrl || site.bookingUrl,
+};
+const crumbs: Crumb[] = [
+  { name: pages.ui.home, path: '/' },
+  { name: t.eyebrow, path: '/blog' },
+  { name: d.title, path },
+];
+const schema = [
+  blogPostingNode({
+    headline: d.title,
+    description: d.description,
+    path,
+    image: new URL(cover.src, site.url).href,
+    datePublished: d.date,
+    dateModified: d.updated,
+    keywords: d.tags,
+  }),
+  breadcrumbNode(crumbs),
+];
+---
+
+<BaseLayout title={`${d.title} | VAKS Consulting`} description={d.description} path={path} og={`blog-${post.id}`} type="article" schema={schema} noindex={d.draft}>
+  <section class="page-hero dark post-hero" aria-labelledby="h1">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      {d.tags.length > 0 && <ul class="tags">{d.tags.map((tag) => <li class="tag">{tag}</li>)}</ul>}
+      <h1 id="h1">{d.title}</h1>
+      <p class="lead">{d.description}</p>
+      <div class="byline">
+        <span class="photo byline-photo"><Image src={founderPhoto} alt={f.name} width={88} height={132} loading="eager" /></span>
+        <div>
+          <p class="byline-name">{t.by} <a href="/about">{f.name}</a></p>
+          <p class="byline-meta">
+            <time datetime={d.date.toISOString()}>{formatDate(d.date)}</time> · {readingMinutes(post.body)} {t.minRead}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section post-section">
+    <div class="wrap post-layout">
+      <article class="post-article">
+        <figure class="post-cover">
+          <Image src={d.image} alt={d.imageAlt} widths={[640, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 760px" loading="eager" fetchpriority="high" />
+        </figure>
+        <div class="prose-md post-prose"><Content /></div>
+
+        <aside class="post-cta" aria-labelledby="post-cta-h">
+          <span class="badge"><Icon name="calendar" /></span>
+          <div>
+            <h2 id="post-cta-h">{cta.title}</h2>
+            <p>{cta.text}</p>
+          </div>
+          <Button href={cta.buttonUrl} icon="calendar">{cta.buttonLabel}</Button>
+        </aside>
+
+        <aside class="author-box" aria-labelledby="author-h">
+          <span class="photo author-photo"><Image src={founderPhoto} alt={f.name} width={128} height={192} /></span>
+          <div>
+            <p class="career-label" id="author-h">{t.aboutAuthor}</p>
+            <p class="author-name">{f.name}</p>
+            <p class="author-role">{f.jobTitle}</p>
+            <p class="muted">{f.shortBio}</p>
+            <a class="link-arrow" href={f.linkedin}><Icon name="linkedin" /><span>{pages.ui.connectLinkedIn}</span></a>
+          </div>
+        </aside>
+      </article>
+
+      <div class="post-sidebar">
+        <QuickForm source={d.title} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

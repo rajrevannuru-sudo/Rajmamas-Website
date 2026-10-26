@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { pages } from '../lib/site';
+import { breadcrumbNode, type Crumb } from '../lib/schema';
+import { getPosts, postHref, formatDate, readingMinutes } from '../lib/content';
+
+const p = pages.blog;
+const posts = await getPosts();
+const crumbs: Crumb[] = [
+  { name: pages.ui.home, path: '/' },
+  { name: p.eyebrow, path: '/blog' },
+];
+---
+
+<BaseLayout title={p.seo.title} description={p.seo.description} path="/blog" og="blog" schema={[breadcrumbNode(crumbs)]}>
+  <section class="page-hero dark" aria-labelledby="h1">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <p class="eyebrow">{p.eyebrow}</p>
+      <h1 id="h1">{p.seo.h1}</h1>
+      <p class="lead lead-last">{p.lead}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-label={p.eyebrow}>
+    <div class="wrap">
+      {
+        posts.length === 0 ? (
+          <p class="lead blog-empty">
+            {p.empty} <a class="link-inline" href="/case-studies">{pages.ui.allCaseStudies}</a>
+          </p>
+        ) : (
+          <ul class="post-grid">
+            {posts.map((post, i) => (
+              <li>
+                <a class="card post-card" href={postHref(post)}>
+                  <div class="post-thumb">
+                    <Image
+                      src={post.data.image}
+                      alt={post.data.imageAlt}
+                      widths={[480, 800]}
+                      sizes="(max-width: 760px) calc(100vw - 40px), 400px"
+                      loading={i < 3 ? 'eager' : 'lazy'}
+                    />
+                    {post.data.draft && <span class="draft-pill">Draft</span>}
+                  </div>
+                  <div class="post-body">
+                    <p class="post-meta">
+                      {post.data.tags[0] && <span class="tag">{post.data.tags[0]}</span>}
+                      <span>
+                        {formatDate(post.data.date)} · {readingMinutes(post.body)} {p.minRead}
+                      </span>
+                    </p>
+                    <h2 class="h3">{post.data.title}</h2>
+                    <p class="muted">{post.data.description}</p>
+                    <span class="link-arrow">
+                      <span>{p.readMore}</span>
+                      <Icon name="arrow" />
+                    </span>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

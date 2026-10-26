@@ -1,0 +1,73 @@
+---
+// Generic editor for one content file (JSON or Markdown with frontmatter).
+import CmsLayout from '../../../layouts/CmsLayout.astro';
+import FieldTree from '../../../components/cms/FieldTree.astro';
+import { isLoggedIn } from '../../../lib/cms/auth';
+import { applyForm, getDoc, loadDoc, serialize } from '../../../lib/cms/content';
+import { commit, storeMode } from '../../../lib/cms/store';
+
+export const prerender = false;
+if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+
+const doc = await getDoc(Astro.params.id ?? '');
+if (!doc) return new Response('Not found', { status: 404 });
+
+let { data, body } = await loadDoc(doc);
+const isService = doc.id.startsWith('services/');
+let errors: string[] = [];
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  // Re-read the latest version, then apply the edits on top of it.
+  ({ data, body } = await loadDoc(doc));
+  errors = applyForm(data, form, { serviceIconAtRoot: isService });
+  if (doc.kind === 'md' && form.has('body')) body = String(form.get('body')).replace(/\r\n/g, '\n');
+  if (!errors.length) {
+    try {
+      await commit([{ path: doc.path, content: serialize(doc.kind, data, body) }], `Content: update ${doc.label}`);
+      return Astro.redirect(`/cms/content/${doc.id}?saved=${storeMode()}`, 303);
+    } catch (e) {
+      errors = [String(e)];
+    }
+  }
+}
+---
+
+<CmsLayout title={`Edit: ${doc.label}`} active="content">
+  <p class="cms-crumb"><a href="/cms/content">Site content</a> / {doc.group}</p>
+  <div class="cms-head">
+    <div>
+      <h1>{doc.label}</h1>
+      <p>Fields marked <span class="cms-lock">locked</span> control links and page structure, so they can’t be changed here.</p>
+    </div>
+  </div>
+  {
+    errors.length > 0 && (
+      <div class="cms-error" role="alert">
+        <b>Nothing was saved. Please fix:</b>
+        <ul>{errors.map((e) => <li>{e}</li>)}</ul>
+      </div>
+    )
+  }
+  <form method="POST">
+    <section class="cms-panel">
+      <FieldTree value={data} path={[]} lockRoot={isService ? ['icon'] : []} />
+    </section>
+    {
+      doc.kind === 'md' && (
+        <section class="cms-panel">
+          <div class="cms-field">
+            <label for="body">Page text (Markdown)</label>
+            <textarea id="body" name="body" rows="14">{body}</textarea>
+            <small class="cms-hint">Use <code>## Heading</code> for section headings and leave a blank line between paragraphs.</small>
+          </div>
+        </section>
+      )
+    }
+    <div class="cms-actions">
+      <span class="spacer"></span>
+      <a class="cms-btn ghost" href="/cms/content">Cancel</a>
+      <button class="cms-btn gold" type="submit">Save changes</button>
+    </div>
+  </form>
+</CmsLayout>

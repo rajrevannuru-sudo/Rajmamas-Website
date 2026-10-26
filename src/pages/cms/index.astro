@@ -1,0 +1,113 @@
+---
+// /cms — login screen, or the dashboard once signed in.
+import CmsLayout from '../../layouts/CmsLayout.astro';
+import Glyph from '../../components/Glyph.astro';
+import { checkCredentials, delay, isConfigured, isLoggedIn, startSession } from '../../lib/cms/auth';
+import { storeMode } from '../../lib/cms/store';
+import { listPosts } from '../../lib/cms/blog';
+
+export const prerender = false;
+
+let error = '';
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  if (checkCredentials(String(form.get('username') ?? ''), String(form.get('password') ?? ''))) {
+    startSession(Astro.cookies, Astro.url.protocol === 'https:');
+    return Astro.redirect('/cms', 303);
+  }
+  await delay(800);
+  error = 'That username and password don’t match.';
+}
+
+const loggedIn = isLoggedIn(Astro.cookies);
+const mode = storeMode();
+let posts: Awaited<ReturnType<typeof listPosts>> = [];
+let loadError = '';
+if (loggedIn) {
+  try {
+    posts = (await listPosts()).slice(0, 5);
+  } catch (e) {
+    loadError = String(e);
+  }
+}
+---
+
+{
+  !loggedIn ? (
+    <CmsLayout title="Log in" bare>
+      <form class="cms-login" method="POST">
+        <div class="cms-brand">
+          <span>VAKS</span>
+          <small>CMS</small>
+        </div>
+        <p>Sign in to edit the website and write blog posts.</p>
+        {!isConfigured() && (
+          <p class="cms-error">The CMS isn’t configured yet. Set CMS_USERNAME, CMS_PASSWORD and CMS_SECRET in the environment.</p>
+        )}
+        {error && <p class="cms-error" role="alert">{error}</p>}
+        <div class="cms-field">
+          <label for="u">Username</label>
+          <input id="u" name="username" autocomplete="username" required autofocus />
+        </div>
+        <div class="cms-field">
+          <label for="p">Password</label>
+          <input id="p" name="password" type="password" autocomplete="current-password" required />
+        </div>
+        <button class="cms-btn gold" type="submit">Log in</button>
+      </form>
+    </CmsLayout>
+  ) : (
+    <CmsLayout title="Dashboard" active="dashboard">
+      <div class="cms-head">
+        <div>
+          <h1>Welcome back</h1>
+          <p>Write a blog post, update the site’s text, or connect analytics.</p>
+        </div>
+        <a class="cms-btn gold" href="/cms/blog/new"><Glyph name="plus" />New blog post</a>
+      </div>
+
+      {mode === 'none' && <p class="cms-error">Saving is switched off: set GITHUB_TOKEN in the Vercel environment variables.</p>}
+      {mode === 'local' && <p class="cms-note">Local mode: changes are written to the files on this computer, not GitHub.</p>}
+      {loadError && <p class="cms-error">{loadError}</p>}
+
+      <div class="cms-cards">
+        <a class="cms-card" href="/cms/blog">
+          <span class="ico"><Glyph name="newspaper" /></span>
+          <b>Blog posts</b>
+          <span>Create, edit, publish or delete articles.</span>
+        </a>
+        <a class="cms-card" href="/cms/content">
+          <span class="ico"><Glyph name="file-pen-line" /></span>
+          <b>Site content</b>
+          <span>Edit text on the home, services, case study and other pages.</span>
+        </a>
+        <a class="cms-card" href="/cms/integrations">
+          <span class="ico"><Glyph name="plug" /></span>
+          <b>Integrations</b>
+          <span>Search Console, Google Analytics 4, Tag Manager, Bing, Clarity.</span>
+        </a>
+      </div>
+
+      <section class="cms-panel">
+        <h2><Glyph name="newspaper" />Recent posts</h2>
+        {posts.length === 0 ? (
+          <p class="cms-hint">No posts yet. <a href="/cms/blog/new">Write the first one</a>.</p>
+        ) : (
+          <ul class="cms-rows">
+            {posts.map((p) => (
+              <li>
+                <div class="grow">
+                  <a href={`/cms/blog/${p.slug}`}>{p.title}</a>
+                  <small>{p.date}</small>
+                </div>
+                <span class:list={['pill', p.draft ? 'draft' : 'live']}>{p.draft ? 'Draft' : 'Published'}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <p class="cms-hint">Every save updates the website automatically. Changes appear on the live site in about 1–2 minutes.</p>
+    </CmsLayout>
+  )
+}

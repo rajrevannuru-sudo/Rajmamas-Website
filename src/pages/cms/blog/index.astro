@@ -1,0 +1,57 @@
+---
+import CmsLayout from '../../../layouts/CmsLayout.astro';
+import Glyph from '../../../components/Glyph.astro';
+import { isLoggedIn } from '../../../lib/cms/auth';
+import { listPosts } from '../../../lib/cms/blog';
+
+export const prerender = false;
+if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+
+let posts: Awaited<ReturnType<typeof listPosts>> = [];
+let error = '';
+try {
+  posts = await listPosts();
+} catch (e) {
+  error = String(e);
+}
+const thumb = (image: string) => (image.startsWith('./images/') ? `/cms/media/${image.slice('./images/'.length)}` : '');
+---
+
+<CmsLayout title="Blog posts" active="blog">
+  <div class="cms-head">
+    <div>
+      <h1>Blog posts</h1>
+      <p>Drafts are hidden from the website until you publish them.</p>
+    </div>
+    <a class="cms-btn gold" href="/cms/blog/new"><Glyph name="plus" />New blog post</a>
+  </div>
+  {error && <p class="cms-error">{error}</p>}
+  <section class="cms-panel">
+    {
+      posts.length === 0 ? (
+        <p class="cms-hint">No posts yet. <a href="/cms/blog/new">Write the first one</a>.</p>
+      ) : (
+        <ul class="cms-rows">
+          {posts.map((p) => (
+            <li>
+              {thumb(p.image) ? <img class="cms-thumb" src={thumb(p.image)} alt="" loading="lazy" /> : <span class="cms-thumb" />}
+              <div class="grow">
+                <a href={`/cms/blog/${p.slug}`}>{p.title}</a>
+                <small>
+                  {p.date} · /blog/{p.slug}
+                </small>
+              </div>
+              <span class:list={['pill', p.draft ? 'draft' : 'live']}>{p.draft ? 'Draft' : 'Published'}</span>
+              {!p.draft && (
+                <a class="cms-btn ghost sm" href={`/blog/${p.slug}`} target="_blank" rel="noopener">
+                  View
+                </a>
+              )}
+              <a class="cms-btn sm" href={`/cms/blog/${p.slug}`}>Edit</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</CmsLayout>

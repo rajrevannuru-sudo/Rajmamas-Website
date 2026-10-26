@@ -1,0 +1,67 @@
+---
+// Renders any JSON/frontmatter value as form fields. Arrays/objects become fieldsets; notes (keys starting "_") become hints.
+import { LOCKED } from '../../lib/cms/content';
+
+interface Props {
+  value: unknown;
+  path: string[];
+  label?: string;
+  hint?: string;
+  /** Top-level keys to show read-only for this document (e.g. a service's own icon). */
+  lockRoot?: string[];
+}
+const { value, path, label, hint, lockRoot = [] } = Astro.props;
+const key = path[path.length - 1] ?? '';
+const name = path.join('.');
+const human = (k: string) =>
+  /^\d+$/.test(k) ? `Item ${Number(k) + 1}` : k.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[-_]/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+const title = label ?? human(key);
+const locked = LOCKED.has(key) || (path.length === 1 && lockRoot.includes(key));
+const isLong = typeof value === 'string' && (value.length > 90 || value.includes('\n'));
+const entries = value && typeof value === 'object' ? Object.entries(value as Record<string, unknown>) : [];
+const notes = Object.fromEntries(entries.filter(([k]) => k.startsWith('_')).map(([k, v]) => [k.replace(/^_/, '').replace(/Note$/, ''), String(v)]));
+---
+
+{
+  Array.isArray(value) || (value && typeof value === 'object') ? (
+    <fieldset class:list={['cms-group', { 'cms-list': Array.isArray(value) }]}>
+      {path.length > 0 && <legend>{title}</legend>}
+      {hint && <p class="cms-hint">{hint}</p>}
+      {notes.note && <p class="cms-hint">{notes.note}</p>}
+      {entries
+        .filter(([k]) => !k.startsWith('_'))
+        .map(([k, v]) => <Astro.self value={v} path={[...path, k]} hint={notes[k]} lockRoot={lockRoot} />)}
+    </fieldset>
+  ) : typeof value === 'boolean' ? (
+    <label class="cms-check">
+      <input type="hidden" name={`b.${name}`} value="1" />
+      <input type="checkbox" name="bool-on" value={name} checked={value} disabled={locked} />
+      <span>{title}</span>
+      {hint && <small class="cms-hint">{hint}</small>}
+    </label>
+  ) : (
+    <div class="cms-field">
+      <label for={`fld-${name}`}>
+        {title}
+        {locked && <span class="cms-lock">locked</span>}
+      </label>
+      {isLong ? (
+        <textarea id={`fld-${name}`} name={`f.${name}`} rows={Math.min(8, Math.ceil(String(value).length / 90) + 1)} readonly={locked} set:text={String(value ?? '')} />
+      ) : (
+        <input
+          id={`fld-${name}`}
+          name={`f.${name}`}
+          type={typeof value === 'number' ? 'number' : 'text'}
+          value={String(value ?? '')}
+          readonly={locked}
+        />
+      )}
+      {key === 'icon' && !locked && (
+        <small class="cms-hint">
+          Icon name from <a href="https://lucide.dev/icons" target="_blank" rel="noopener">lucide.dev/icons</a>, e.g. rocket, pen-line.
+        </small>
+      )}
+      {hint && <small class="cms-hint">{hint}</small>}
+    </div>
+  )
+}

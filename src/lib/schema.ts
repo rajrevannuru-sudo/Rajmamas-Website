@@ -111,6 +111,31 @@ export function articleNode(opts: { headline: string; description: string; path:
   };
 }
 
+export function blogPostingNode(opts: {
+  headline: string;
+  description: string;
+  path: string;
+  image: string;
+  datePublished: Date;
+  dateModified?: Date;
+  keywords?: string[];
+}): Node {
+  return {
+    '@type': 'BlogPosting',
+    headline: opts.headline,
+    description: plain(opts.description),
+    url: absoluteUrl(opts.path),
+    mainEntityOfPage: absoluteUrl(opts.path),
+    image: opts.image,
+    datePublished: opts.datePublished.toISOString(),
+    dateModified: (opts.dateModified ?? opts.datePublished).toISOString(),
+    keywords: opts.keywords?.join(', ') || undefined,
+    inLanguage: 'en-IN',
+    author: { '@id': PERSON_ID, '@type': 'Person', name: site.founder.name, url: absoluteUrl('/about') },
+    publisher: { '@id': ORG_ID },
+  };
+}
+
 export function graph(extra: Node[] = [], withPerson?: string): Node {
   // Person is always referenced by @id from Organization.founder; define it fully on Home and About only.
   const person = withPerson
