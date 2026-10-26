@@ -10,6 +10,8 @@ export default defineConfig({
   site: 'https://vaksconsulting.com',
   output: 'static',
   adapter: vercel(),
+  // CMS posts are origin-checked in src/middleware.ts (Astro's check misreads the host behind Vercel's proxy).
+  security: { checkOrigin: false },
   trailingSlash: 'never',
   build: { format: 'file' },
   markdown: { remarkPlugins: [remarkPlaceholders] },
