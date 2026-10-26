@@ -10,7 +10,7 @@ export const cmsEnv = {
   password: () => read('CMS_PASSWORD'),
   secret: () => read('CMS_SECRET'),
   githubToken: () => read('GITHUB_TOKEN'),
-  githubRepo: () => read('GITHUB_REPO') || 'varun-deg/Rajmamas-Website',
+  githubRepo: () => read('GITHUB_REPO') || 'rajrevannuru-sudo/Rajmamas-Website',
   githubBranch: () => read('GITHUB_BRANCH') || 'main',
   // Leads database: Upstash Redis (Vercel Marketplace). Either naming scheme works.
   redisUrl: () => read('UPSTASH_REDIS_REST_URL') || read('KV_REST_API_URL'),
