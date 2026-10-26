@@ -1,9 +1,21 @@
 ---
+// The VAKS Consulting logo. Gold on dark backgrounds, navy on light ones (gold is never used on light grounds).
+import { Image } from 'astro:assets';
+import goldLogo from '../assets/images/brand/vaks-consulting-logo-gold.png';
+import navyLogo from '../assets/images/brand/vaks-consulting-logo-navy.png';
 import { site } from '../lib/site';
+
+interface Props {
+  tone?: 'gold' | 'navy';
+  /** Rendered height in px (width follows the logo's proportions). */
+  height?: number;
+  class?: string;
+}
+const { tone = 'navy', height = 54, class: className } = Astro.props;
+const logo = tone === 'gold' ? goldLogo : navyLogo;
+const width = Math.round((logo.width / logo.height) * height);
 ---
 
-<a class="logo" href="/" aria-label={`VAKS Consulting, home`} title={site.name}>
-  <span class="mark">VAKS</span><span class="rule" aria-hidden="true"></span><span class="sr-only">&nbsp;</span><span class="word"
-    >Consulting</span
-  >
+<a class:list={['logo', className]} href="/" aria-label={`${site.name}, home`}>
+  <Image src={logo} alt={site.name} width={width} height={height} densities={[1, 2]} loading="eager" class="logo-img" />
 </a>

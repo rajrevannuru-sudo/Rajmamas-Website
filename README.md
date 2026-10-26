@@ -38,7 +38,7 @@ npm run dev       # also serves /cms locally
 
 - Copy lives in `content/`: `site.json` (business details, flows, FAQ, testimonials), `pages.json` (section headings and UI text), `services/*.md`, `case-studies/*.md`, `pages/privacy-policy.md`.
 - Share images in `dist/og/` are generated at build time from each page's title (`src/lib/og.ts`).
-- Favicons: edit `public/favicon.svg`, then run `node scripts/make-icons.mjs`.
+- Logo: `src/assets/images/brand/` (gold for dark backgrounds, navy for light). The original is in `assets-brand/`; favicons and `public/logo.png` are generated from it with `node scripts/make-icons.mjs`.
 - Contact form: put the Web3Forms key in `.env` as `PUBLIC_WEB3FORMS_KEY` before building.
 
 ## Deploying (Vercel)

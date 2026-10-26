@@ -209,3 +209,11 @@ body.cms { font: 15px/1.55 "Inter", system-ui, sans-serif; color: var(--midnight
 .ve-m-card p { margin: 0 0 20px; color: var(--text-muted); font-size: 14.5px; }
 .ve-m-actions { display: flex; flex-direction: column; gap: 8px; }
 .ve-m-actions .cms-btn { width: 100%; min-height: 44px; }
+.cms-brand { align-items: center; }
+.cms-brand img { display: block; height: 34px; width: auto; }
+.cms-login .cms-brand { flex-direction: column; gap: 6px; }
+.cms-login .cms-brand img { height: 44px; }
+/* login screen: centred card on midnight */
+body.cms.cms-bare { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--midnight); }
+.cms-bare .cms-main { max-width: none; display: flex; justify-content: center; padding: 24px; }
+.cms-login .cms-brand small { color: var(--harbor-blue); }

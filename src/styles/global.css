@@ -1232,3 +1232,18 @@ html, body { margin: 0; }
   .vk .post-sidebar { position: static; }
 }
 @media (prefers-reduced-motion: reduce) { .vk .post-card:hover .post-thumb img { transform: none; } }
+
+/* logo image (replaces the typeset wordmark) */
+.vk .logo { display: inline-flex; align-items: center; min-height: 44px; line-height: 0; }
+.vk .logo .logo-img { display: block; height: 44px; width: auto; }
+.vk .logo-footer .logo-img { height: 52px; }
+@media (max-width: 760px) {
+  .vk .logo .logo-img { height: 36px; }
+  .vk .logo-footer .logo-img { height: 44px; }
+}
+.vk .logo .logo-img { height: 54px; }
+.vk .logo-footer .logo-img { height: 62px; }
+@media (max-width: 760px) {
+  .vk .logo .logo-img { height: 42px; }
+  .vk .logo-footer .logo-img { height: 52px; }
+}

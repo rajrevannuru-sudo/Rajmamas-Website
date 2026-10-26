@@ -12,6 +12,12 @@ const fonts = [
   { name: 'Inter', data: font('inter', 'inter-latin-600-normal.woff'), weight: 600 as const, style: 'normal' as const },
 ];
 
+// Gold logo (bottom-left), embedded as a data URL for satori.
+const logoPng = fs.readFileSync(path.resolve('src/assets/images/brand/vaks-consulting-logo-gold.png'));
+const logoDataUrl = `data:image/png;base64,${logoPng.toString('base64')}`;
+const logoRatio = logoPng.readUInt32BE(16) / logoPng.readUInt32BE(20); // PNG IHDR width / height
+const LOGO_H = 56;
+
 const C = { midnight: '#0b1d33', gold: '#c6a56b', parchment: '#f4efe5', muted: '#b4c0cf' };
 
 type El = { type: string; props: Record<string, unknown> & { children?: unknown } };
@@ -32,11 +38,7 @@ export async function renderOg(eyebrow: string, title: string): Promise<Buffer> 
         h('div', { display: 'flex', fontFamily: 'Manrope', fontWeight: 700, fontSize: size, lineHeight: 1.15, letterSpacing: -1.2, maxWidth: 1000 }, title),
       ]),
       h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 22, color: C.muted }, [
-        h('div', { display: 'flex', alignItems: 'center', color: C.parchment }, [
-          h('div', { display: 'flex', fontFamily: 'Manrope', fontWeight: 700, fontSize: 32, letterSpacing: 3.8 }, 'VAKS'),
-          h('div', { width: 1, height: 28, background: C.gold, margin: '0 12px 0 8px' }),
-          h('div', { display: 'flex', fontSize: 14, fontWeight: 600, letterSpacing: 3.9, textTransform: 'uppercase' }, 'Consulting'),
-        ]),
+        { type: 'img', props: { src: logoDataUrl, width: LOGO_H * logoRatio, height: LOGO_H, style: { display: 'flex' } } },
         h('div', { display: 'flex' }, 'vaksconsulting.com'),
       ]),
     ],
