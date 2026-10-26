@@ -47,6 +47,10 @@ The repo is connected to Vercel; every push to `main` builds and publishes. `ver
 
 Set `PUBLIC_WEB3FORMS_KEY` under Project → Settings → Environment Variables, then redeploy, so the contact form works.
 
+### If deployments show "Blocked" in Vercel
+
+On Vercel's free plan, pushes to a private repo by anyone other than the project owner are blocked. `.github/workflows/vercel-deploy.yml` deploys every push through a Deploy Hook instead: create one in Vercel (Settings → Git → Deploy Hooks, branch `main`) and save its URL as the GitHub repository secret `VERCEL_DEPLOY_HOOK` (Settings → Secrets and variables → Actions).
+
 ## CMS (/cms)
 
 A small built-in CMS at `https://vaksconsulting.com/cms` for blog posts, site text and integrations.

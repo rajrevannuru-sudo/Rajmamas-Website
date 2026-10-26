@@ -1,0 +1,34 @@
+# Deploys every push to main through a Vercel Deploy Hook.
+#
+# Why: on Vercel's free (Hobby) plan, pushes to a private repo by anyone other than the
+# project owner show as "Blocked". A Deploy Hook deploys as the project owner instead.
+#
+# Setup (once, by the repo owner):
+#   1. Vercel → project → Settings → Git → Deploy Hooks → name "main", branch "main" → Create Hook → copy the URL.
+#   2. GitHub → this repo → Settings → Secrets and variables → Actions → New repository secret
+#      Name: VERCEL_DEPLOY_HOOK   Value: the URL from step 1.
+# Until the secret exists, this workflow does nothing.
+
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # CMS saves are committed with Raj's token and already deploy on their own.
+    if: ${{ !contains(github.event.head_commit.message, 'Edited in the VAKS CMS') }}
+    steps:
+      - name: Trigger Vercel Deploy Hook
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "VERCEL_DEPLOY_HOOK secret is not set yet; skipping."
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK" > /dev/null
+          echo "Vercel deploy started."
