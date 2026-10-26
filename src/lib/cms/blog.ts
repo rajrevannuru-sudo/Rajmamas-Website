@@ -25,7 +25,7 @@ export const emptyPost = (): PostFields => ({
   description: '',
   date: new Date().toISOString().slice(0, 10),
   tags: [],
-  draft: true,
+  draft: false,
   image: '',
   imageAlt: '',
   body: '',

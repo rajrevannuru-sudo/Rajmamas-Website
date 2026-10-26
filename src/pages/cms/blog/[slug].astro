@@ -198,8 +198,9 @@ const t = pages.blog;
           <h2><Glyph name="send" />Publish</h2>
           <label class="cms-check">
             <input type="checkbox" name="draft" checked={post.draft} />
-            <span>Draft (hidden from the website)</span>
+            <span>Save as draft (hidden from the website)</span>
           </label>
+          <p class="cms-hint" style="margin:-6px 0 14px">Published posts are added to the blog page and the sitemap automatically when you save.</p>
           <div class="cms-field">
             <label for="date">Publish date</label>
             <input id="date" name="date" type="date" value={post.date} required />

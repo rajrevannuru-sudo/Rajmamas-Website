@@ -69,6 +69,19 @@ const groups = [...new Set(options.map((o) => o.group))];
     <p class="ve-help"><Glyph name="mouse-pointer-click" />Click any outlined text to edit it. Links are paused while editing, so use the page menu to switch pages.</p>
     <p class="ve-toast" id="ve-toast" role="status" hidden></p>
 
+    <div class="ve-modal" id="ve-modal" role="dialog" aria-modal="true" aria-labelledby="ve-m-title" hidden>
+      <div class="ve-m-card">
+        <span class="ve-m-ico"><Glyph name="triangle-alert" /></span>
+        <h2 id="ve-m-title">You have unpublished changes</h2>
+        <p id="ve-m-text">Your edits on this page aren’t live yet.</p>
+        <div class="ve-m-actions">
+          <button class="cms-btn gold" type="button" data-choice="publish"><Glyph name="send" />Publish and continue</button>
+          <button class="cms-btn danger" type="button" data-choice="leave">Leave without publishing</button>
+          <button class="cms-btn ghost" type="button" data-choice="stay">Keep editing</button>
+        </div>
+      </div>
+    </div>
+
     <div class="ve-stage">
       <iframe id="ve-frame" src={`${current.url}?cms=edit`} title={`Preview of ${current.label}`}></iframe>
 
@@ -157,18 +170,47 @@ const groups = [...new Set(options.map((o) => o.group))];
   const frameDoc = () => frame.contentDocument;
   const nodesFor = (src: string) => [...(frameDoc()?.querySelectorAll<HTMLElement>('[data-cms]') ?? [])].filter((el) => el.dataset.cms === src);
 
-  function paint(src: string) {
+  type Rendered = { html: string; sections: { heading: string; html: string }[] };
+  async function renderMarkdown(markdown: string): Promise<Rendered> {
+    const r = await fetch('/cms/api/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ markdown }) });
+    if (!r.ok) throw new Error('Preview unavailable');
+    return r.json();
+  }
+
+  /** Shows a pending value in the preview (or restores the original). Markdown bodies are rendered by the server. */
+  async function paint(src: string) {
     const value = pending.get(src);
-    for (const el of nodesFor(src)) {
-      if (!originals.has(el)) originals.set(el, el.innerHTML);
-      if (value === undefined) {
+    const els = nodesFor(src);
+    els.forEach((el) => !originals.has(el) && originals.set(el, el.innerHTML));
+    if (value === undefined) {
+      els.forEach((el) => {
         el.innerHTML = originals.get(el)!;
         el.classList.remove('cms-pending');
-      } else {
-        if (!src.endsWith('|__body')) el.textContent = value;
-        el.classList.add('cms-pending');
-      }
+      });
+      return;
     }
+    if (!src.endsWith('|__body')) {
+      els.forEach((el) => {
+        el.textContent = value;
+        el.classList.add('cms-pending');
+      });
+      return;
+    }
+    let rendered: Rendered | undefined;
+    try {
+      rendered = await renderMarkdown(value);
+    } catch {
+      say('The change is saved for publishing, but the preview couldn’t be updated.', 'error');
+    }
+    els.forEach((el) => {
+      el.classList.add('cms-pending');
+      if (!rendered) return;
+      const [kind, index] = (el.dataset.cmsPart ?? '').split(':');
+      const section = rendered.sections[Number(index)];
+      if (kind === 'heading') el.textContent = section?.heading ?? '';
+      else if (kind === 'html') el.innerHTML = section?.html ?? '';
+      else el.innerHTML = rendered.html;
+    });
   }
 
   // ---------- drawer ----------
@@ -235,7 +277,7 @@ const groups = [...new Set(options.map((o) => o.group))];
       field(srcs[0], isBody ? 'Page text (Markdown)' : 'Text', values[0], {
         long: isBody,
         hint: isBody
-          ? 'Use <code>## Heading</code> for headings and a blank line between paragraphs. The preview updates after publishing.'
+          ? 'Use <code>## Heading</code> for headings and a blank line between paragraphs. Apply shows the result on the page; Publish makes it live.'
           : 'Text in [square brackets] shows highlighted as unconfirmed; remove the brackets once confirmed.',
       }),
     ]);
@@ -268,7 +310,7 @@ const groups = [...new Set(options.map((o) => o.group))];
       pending.delete(src);
       const base = await rawValue(src).catch(() => '');
       if (value !== base) pending.set(src, value);
-      paint(src);
+      await paint(src);
     }
     refreshBar();
     closeDrawer();
@@ -276,7 +318,7 @@ const groups = [...new Set(options.map((o) => o.group))];
   btnRevert.addEventListener('click', () => {
     editing?.srcs.forEach((s) => {
       pending.delete(s);
-      paint(s);
+      void paint(s);
     });
     refreshBar();
     closeDrawer();
@@ -287,23 +329,78 @@ const groups = [...new Set(options.map((o) => o.group))];
   document.addEventListener('keydown', (e) => e.key === 'Escape' && !drawer.hidden && closeDrawer());
 
   // ---------- page switching, discard, publish ----------
-  document.querySelector<HTMLSelectElement>('#ve-page')!.addEventListener('change', (e) => {
-    const url = (e.target as HTMLSelectElement).value;
-    if (pending.size && !confirm('You have unpublished changes on this page. Leave without publishing?')) {
-      (e.target as HTMLSelectElement).value = page;
-      return;
-    }
+  // ---------- unpublished-changes popup ----------
+  const modal = document.querySelector<HTMLElement>('#ve-modal')!;
+  const modalText = document.querySelector<HTMLElement>('#ve-m-text')!;
+  let leaving = false;
+  function askBeforeLeaving(): Promise<'publish' | 'leave' | 'stay'> {
+    const n = pending.size;
+    modalText.textContent = `You have ${n} change${n === 1 ? '' : 's'} on this page that ${n === 1 ? 'isn’t' : 'aren’t'} live yet. Publish them before you go?`;
+    modal.hidden = false;
+    modal.querySelector<HTMLButtonElement>('[data-choice="publish"]')!.focus();
+    return new Promise((resolve) => {
+      const done = (choice: 'publish' | 'leave' | 'stay') => {
+        modal.hidden = true;
+        modal.removeEventListener('click', onClick);
+        document.removeEventListener('keydown', onKey);
+        resolve(choice);
+      };
+      const onClick = (e: Event) => {
+        const choice = (e.target as Element).closest<HTMLElement>('[data-choice]')?.dataset.choice as 'publish' | 'leave' | 'stay' | undefined;
+        if (choice) done(choice);
+        else if (e.target === modal) done('stay');
+      };
+      const onKey = (e: KeyboardEvent) => e.key === 'Escape' && done('stay');
+      modal.addEventListener('click', onClick);
+      document.addEventListener('keydown', onKey);
+    });
+  }
+  /** Runs `go` now if nothing is pending, otherwise after the visitor chooses in the popup. */
+  async function guard(go: () => void) {
+    if (!pending.size) return go();
+    const choice = await askBeforeLeaving();
+    if (choice === 'stay') return;
+    if (choice === 'publish' && !(await publish())) return;
     pending.clear();
-    location.href = `/cms/visual?page=${encodeURIComponent(url)}`;
+    leaving = true;
+    go();
+  }
+
+  const pageSelect = document.querySelector<HTMLSelectElement>('#ve-page')!;
+  pageSelect.addEventListener('change', () => {
+    const url = pageSelect.value;
+    pageSelect.value = page; // stay put until confirmed
+    guard(() => (location.href = `/cms/visual?page=${encodeURIComponent(url)}`));
   });
+  // Sidebar links, "View website", the URL chip and Log out
+  document.addEventListener(
+    'click',
+    (e) => {
+      const a = (e.target as Element).closest<HTMLAnchorElement>('a[href]');
+      if (!a || !pending.size || a.closest('.ve-drawer, .ve-modal')) return;
+      e.preventDefault();
+      const opensNewTab = a.target === '_blank';
+      guard(() => (opensNewTab ? window.open(a.href, '_blank', 'noopener') : (location.href = a.href)));
+    },
+    true,
+  );
+  document.querySelectorAll<HTMLFormElement>('.cms-side form').forEach((form) =>
+    form.addEventListener('submit', (e) => {
+      if (!pending.size) return;
+      e.preventDefault();
+      guard(() => form.submit());
+    }),
+  );
   btnDiscard.addEventListener('click', () => {
     if (!confirm('Discard all unpublished changes?')) return;
     const srcs = [...pending.keys()];
     pending.clear();
-    srcs.forEach(paint);
+    srcs.forEach((k) => void paint(k));
     refreshBar();
   });
-  btnPublish.addEventListener('click', async () => {
+  btnPublish.addEventListener('click', () => publish());
+  async function publish(): Promise<boolean> {
+    if (!pending.size) return true;
     btnPublish.disabled = true;
     const label = btnPublish.innerHTML;
     btnPublish.textContent = 'Publishing…';
@@ -325,15 +422,18 @@ const groups = [...new Set(options.map((o) => o.group))];
           ? `Published ${n} change${n === 1 ? '' : 's'} to the local files.`
           : `Published ${n} change${n === 1 ? '' : 's'}. The live website updates in about 1–2 minutes.`,
       );
+      return true;
     } catch (e) {
       say(`Couldn’t publish: ${(e as Error).message}`, 'error');
+      return false;
     } finally {
       btnPublish.innerHTML = label;
       refreshBar();
     }
-  });
+  }
+  // Closing the tab or reloading still gets the browser's own warning.
   window.addEventListener('beforeunload', (e) => {
-    if (pending.size) e.preventDefault();
+    if (pending.size && !leaving) e.preventDefault();
   });
 
   // ---------- wire up the page inside the frame ----------
@@ -351,7 +451,7 @@ const groups = [...new Set(options.map((o) => o.group))];
     doc.head.append(style);
     doc.querySelectorAll<HTMLElement>('[data-cms]').forEach((el) => (el.title = 'Click to edit'));
     // Re-apply unpublished edits if the frame reloads
-    [...pending.keys()].forEach(paint);
+    [...pending.keys()].forEach((k) => void paint(k));
 
     doc.addEventListener(
       'click',

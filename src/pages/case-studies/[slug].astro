@@ -113,11 +113,11 @@ const toc = [
       </nav>
       <div class="cs-body">
         {
-          sections.map((s) => (
+          sections.map((s, si) => (
             <section id={s.key} aria-labelledby={`${s.key}-h`}>
-              <p class="eyebrow" {...at(S('__body'))}>{s.eyebrow}</p>
-              <h2 id={`${s.key}-h`} {...at(d.headings[s.key] ? S(`headings.${s.key}`) : S('__body'))} set:html={ph(s.title)} />
-              {s.html && <div class="prose prose-md" {...at(S('__body'))} set:html={s.html} />}
+              <p class="eyebrow" {...at(S('__body'))} data-cms-part={`heading:${si}`}>{s.eyebrow}</p>
+              <h2 id={`${s.key}-h`} {...at(d.headings[s.key] ? S(`headings.${s.key}`) : S('__body'))} data-cms-part={d.headings[s.key] ? undefined : `heading:${si}`} set:html={ph(s.title)} />
+              {s.html && <div class="prose prose-md" {...at(S('__body'))} data-cms-part={`html:${si}`} set:html={s.html} />}
               {s.key === 'approach' && <Flow items={d.approach} label={s.eyebrow} src={S('approach')} />}
               {s.key === 'outcome' && (
                 <ul class="outcome">
