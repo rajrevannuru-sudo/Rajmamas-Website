@@ -5,6 +5,7 @@ import Button from '../components/Button.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { site, pages } from '../lib/site';
 import { ph } from '../lib/placeholder';
+import { at, src } from '../lib/cms-attr';
 
 const p = pages.contact;
 // Until a booking link exists, bookingUrl points here, so the button jumps to the form instead.
@@ -15,35 +16,35 @@ const bookHref = site.bookingUrl === '/contact' ? '#contact-form' : site.booking
   <section class="section">
     <div class="wrap contact-grid">
       <div>
-        <p class="eyebrow">{p.eyebrow}</p>
-        <h1 id="h1">{p.seo.h1}</h1>
-        <p class="reply"><i aria-hidden="true"></i>{site.responseTime}</p>
-        <p class="lead" set:html={`${ph(site.availability)} ${ph(site.callHours)}`} />
+        <p class="eyebrow" {...at(src('pages', 'contact.eyebrow'))}>{p.eyebrow}</p>
+        <h1 id="h1" {...at(src('pages', 'contact.seo.h1'))}>{p.seo.h1}</h1>
+        <p class="reply"><i aria-hidden="true"></i><span {...at(src('site', 'responseTime'))}>{site.responseTime}</span></p>
+        <p class="lead"><span {...at(src('site', 'availability'))} set:html={ph(site.availability)} /> <span {...at(src('site', 'callHours'))} set:html={ph(site.callHours)} /></p>
         <ul class="contact-list">
           <li>
             <span class="ico"><Icon name="mail" /></span>
             <div>
-              <small>{p.emailLabel}</small>
-              <a href={`mailto:${site.email}`}>{site.email}</a>
+              <small {...at(src('pages', 'contact.emailLabel'))}>{p.emailLabel}</small>
+              <a href={`mailto:${site.email}`} {...at(src('site', 'email'))}>{site.email}</a>
             </div>
           </li>
           <li>
             <span class="ico"><Icon name="whatsapp" /></span>
             <div>
-              <small>{p.phoneLabel}</small>
-              <a href={site.phoneHref}>{site.phone}</a>
+              <small {...at(src('pages', 'contact.phoneLabel'))}>{p.phoneLabel}</small>
+              <a href={site.phoneHref} {...at(src('site', 'phone'))}>{site.phone}</a>
               <a class="alt" href={site.whatsappHref}>{pages.cta.whatsapp}</a>
             </div>
           </li>
           <li>
             <span class="ico"><Icon name="pin" /></span>
             <div>
-              <small>{p.locationLabel}</small>
-              <span class="v">{site.address.display}</span>
+              <small {...at(src('pages', 'contact.locationLabel'))}>{p.locationLabel}</small>
+              <span class="v" {...at(src('site', 'address.display'))}>{site.address.display}</span>
             </div>
           </li>
         </ul>
-        <Button href={bookHref} icon="calendar">{p.bookButton}</Button>
+        <Button href={bookHref} icon="calendar"><span {...at(src('pages', 'contact.bookButton'))}>{p.bookButton}</span></Button>
       </div>
       <ContactForm />
     </div>

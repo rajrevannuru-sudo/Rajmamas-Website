@@ -2,6 +2,7 @@
 // Services hero diagram: the six core services around one VAKS hub. Each node links to its service page.
 import Icon from './Icon.astro';
 import { pages } from '../lib/site';
+import { at, src } from '../lib/cms-attr';
 import { serviceHref, type Service } from '../lib/content';
 
 interface Props {
@@ -32,8 +33,8 @@ const h = pages.services.hero;
   </ul>
   <div class="hub-core" aria-hidden="true">
     <span class="hub-ring">
-      <b>{h.hubTitle}</b>
-      <small>{h.hubText}</small>
+      <b {...at(src('pages', 'services.hero.hubTitle'))}>{h.hubTitle}</b>
+      <small {...at(src('pages', 'services.hero.hubText'))}>{h.hubText}</small>
     </span>
   </div>
   <ul class="hub-col">

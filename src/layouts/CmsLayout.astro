@@ -8,8 +8,10 @@ interface Props {
   active?: 'dashboard' | 'blog' | 'content' | 'integrations';
   /** Hide the sidebar (login screen). */
   bare?: boolean;
+  /** Full-width main area (visual editor). */
+  wide?: boolean;
 }
-const { title, active, bare = false } = Astro.props;
+const { title, active, bare = false, wide = false } = Astro.props;
 const flash = Astro.url.searchParams.get('saved');
 const nav = [
   { id: 'dashboard', label: 'Dashboard', href: '/cms', icon: 'layout-dashboard' },
@@ -62,7 +64,7 @@ const nav = [
         </aside>
       )
     }
-    <main class="cms-main">
+    <main class:list={['cms-main', { 'cms-wide': wide }]}>
       {
         flash && (
           <p class="cms-flash" role="status">

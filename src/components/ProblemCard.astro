@@ -1,14 +1,17 @@
 ---
 import Glyph from './Glyph.astro';
 import { ph } from '../lib/placeholder';
+import { at, sub, type Src } from '../lib/cms-attr';
 
 interface Props {
   n: number;
   title: string;
   text: string;
   icon?: string;
+  /** Source of the item object (→ src.title / src.text). */
+  src?: Src;
 }
-const { n, title, text, icon } = Astro.props;
+const { n, title, text, icon, src } = Astro.props;
 ---
 
 <li class="card problem-card">
@@ -16,6 +19,6 @@ const { n, title, text, icon } = Astro.props;
     {icon && <span class="badge"><Glyph name={icon} /></span>}
     <span class="num-n">{String(n).padStart(2, '0')}</span>
   </div>
-  <h3 set:html={ph(title)} />
-  <p class="muted" set:html={ph(text)} />
+  <h3 {...at(sub(src, 'title'))} set:html={ph(title)} />
+  <p class="muted" {...at(sub(src, 'text'))} set:html={ph(text)} />
 </li>

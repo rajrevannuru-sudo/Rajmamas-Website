@@ -5,6 +5,7 @@ import Button from './Button.astro';
 import { site, pages } from '../lib/site';
 import { ph } from '../lib/placeholder';
 import { founderPhoto } from '../lib/images';
+import { at, src } from '../lib/cms-attr';
 
 interface Props {
   variant: 'home' | 'about';
@@ -30,20 +31,20 @@ const about = pages.about.founder;
     </figure>
   </div>
   <div>
-    <p class="eyebrow">{variant === 'home' ? home.eyebrow : about.eyebrow}</p>
-    <h2 class="name" id="founder-h">{f.name}</h2>
-    <p class="role">{f.jobTitle}</p>
+    <p class="eyebrow" {...at(src('pages', variant === 'home' ? 'home.founder.eyebrow' : 'about.founder.eyebrow'))}>{variant === 'home' ? home.eyebrow : about.eyebrow}</p>
+    <h2 class="name" id="founder-h" {...at(src('site', 'founder.name'))}>{f.name}</h2>
+    <p class="role" {...at(src('site', 'founder.jobTitle'))}>{f.jobTitle}</p>
     {
       variant === 'home' ? (
         <>
           <div class="prose bio">
-            <p set:html={ph(f.shortBio)} />
+            <p {...at(src('site', 'founder.shortBio'))} set:html={ph(f.shortBio)} />
           </div>
           <dl class="facts">
-            {home.facts.map((fact) => (
+            {home.facts.map((fact, i) => (
               <div>
-                <dt>{fact.label}</dt>
-                <dd set:html={ph(fact.value)} />
+                <dt {...at(src('pages', `home.founder.facts.${i}.label`))}>{fact.label}</dt>
+                <dd {...at(src('pages', `home.founder.facts.${i}.value`))} set:html={ph(fact.value)} />
               </div>
             ))}
           </dl>
@@ -55,24 +56,24 @@ const about = pages.about.founder;
       ) : (
         <>
           <div class="prose bio">
-            {f.bio.map((p) => <p set:html={ph(p)} />)}
+            {f.bio.map((p, i) => <p {...at(src('site', `founder.bio.${i}`))} set:html={ph(p)} />)}
           </div>
           <div class="career">
-            <p class="career-label">{about.careerLabel}</p>
+            <p class="career-label" {...at(src('pages', 'about.founder.careerLabel'))}>{about.careerLabel}</p>
             <dl>
-              {f.careerResults.map((r) => (
+              {f.careerResults.map((r, i) => (
                 <div>
-                  <dt class="numeral">{r.value}</dt>
-                  <dd>{r.label}</dd>
+                  <dt class="numeral" {...at(src('site', `founder.careerResults.${i}.value`))}>{r.value}</dt>
+                  <dd {...at(src('site', `founder.careerResults.${i}.label`))}>{r.label}</dd>
                 </div>
               ))}
             </dl>
-            <p class="career-note">{f.careerResultsNote}</p>
+            <p class="career-note" {...at(src('site', 'founder.careerResultsNote'))}>{f.careerResultsNote}</p>
           </div>
           <div class="expertise">
             <p class="career-label">{about.expertiseLabel}</p>
             <ul class="tags">
-              {f.expertise.map((t) => <li class="tag">{t}</li>)}
+              {f.expertise.map((t, i) => <li class="tag" {...at(src('site', `founder.expertise.${i}`))}>{t}</li>)}
             </ul>
           </div>
           <div class="btn-row">

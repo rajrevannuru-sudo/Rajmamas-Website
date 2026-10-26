@@ -8,6 +8,7 @@ import Flow from '../../components/Flow.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import { site, pages, showUnconfirmed } from '../../lib/site';
 import { ph } from '../../lib/placeholder';
+import { at, src } from '../../lib/cms-attr';
 import { md, splitSections } from '../../lib/markdown';
 import { breadcrumbNode, articleNode, type Crumb } from '../../lib/schema';
 import { getCaseStudies, getService, getCaseStudy, serviceHref, caseHref, type CaseStudy } from '../../lib/content';
@@ -52,6 +53,9 @@ const summary = [
   { title: t.glanceLabels[1], text: d.summary.approach },
   { title: t.glanceLabels[2], text: d.summary.outcome },
 ];
+const doc = `case-studies/${study.id}`;
+const S = (path: string) => src(doc, path);
+const P = (path: string) => src('pages', path);
 const toc = [
   { id: 'challenge', label: t.toc[0] },
   { id: 'approach', label: t.toc[1] },
@@ -74,23 +78,30 @@ const toc = [
       <div class="cs-logo"><ClientLogo name={d.client} height={40} plate eager /></div>
       <ul class="tags">
         <li class="tag">{t.tagClient}: {d.client}</li>
-        <li class="tag">{t.tagIndustry}:&nbsp;<span set:html={ph(d.industry)} /></li>
-        <li class="tag">{t.tagService}: {d.serviceLabel}</li>
+        <li class="tag">{t.tagIndustry}:&nbsp;<span {...at(S('industry'))} set:html={ph(d.industry)} /></li>
+        <li class="tag">{t.tagService}: <span {...at(S('serviceLabel'))}>{d.serviceLabel}</span></li>
       </ul>
-      <h1 id="h1" class="cs-title">{d.title}</h1>
+      <h1 id="h1" class="cs-title" {...at(S('title'))}>{d.title}</h1>
       <dl class="facts-bar">
         <div><dt>{t.tagClient}</dt><dd>{d.client}</dd></div>
-        <div><dt>{t.tagIndustry}</dt><dd set:html={ph(d.industry)} /></div>
-        <div><dt>{t.tagService}</dt><dd>{d.serviceLabel}</dd></div>
-        <div><dt>{t.factTimeline}</dt><dd set:html={ph(d.timeline)} /></div>
+        <div><dt>{t.tagIndustry}</dt><dd {...at(S('industry'))} set:html={ph(d.industry)} /></div>
+        <div><dt>{t.tagService}</dt><dd {...at(S('serviceLabel'))}>{d.serviceLabel}</dd></div>
+        <div><dt>{t.factTimeline}</dt><dd {...at(S('timeline'))} set:html={ph(d.timeline)} /></div>
       </dl>
     </div>
   </section>
 
   <section class="section tight glance" aria-labelledby="glance-h">
     <div class="wrap">
-      <SectionHead id="glance-h" eyebrow={t.glanceEyebrow} title={t.glanceTitle} />
-      <Flow items={summary} label={t.glanceEyebrow} variant="summary" metric={d.headlineMetric} />
+      <SectionHead id="glance-h" eyebrow={t.glanceEyebrow} title={t.glanceTitle} eyebrowSrc={P('caseStudy.glanceEyebrow')} titleSrc={P('caseStudy.glanceTitle')} />
+      <Flow
+        items={summary}
+        label={t.glanceEyebrow}
+        variant="summary"
+        metric={d.headlineMetric}
+        metricSrc={S('headlineMetric')}
+        srcs={(["challenge", "approach", "outcome"] as const).map((k, i) => ({ title: P(`caseStudy.glanceLabels.${i}`), text: S(`summary.${k}`) }))}
+      />
     </div>
   </section>
 
@@ -104,17 +115,17 @@ const toc = [
         {
           sections.map((s) => (
             <section id={s.key} aria-labelledby={`${s.key}-h`}>
-              <p class="eyebrow">{s.eyebrow}</p>
-              <h2 id={`${s.key}-h`} set:html={ph(s.title)} />
-              {s.html && <div class="prose prose-md" set:html={s.html} />}
-              {s.key === 'approach' && <Flow items={d.approach} label={s.eyebrow} />}
+              <p class="eyebrow" {...at(S('__body'))}>{s.eyebrow}</p>
+              <h2 id={`${s.key}-h`} {...at(d.headings[s.key] ? S(`headings.${s.key}`) : S('__body'))} set:html={ph(s.title)} />
+              {s.html && <div class="prose prose-md" {...at(S('__body'))} set:html={s.html} />}
+              {s.key === 'approach' && <Flow items={d.approach} label={s.eyebrow} src={S('approach')} />}
               {s.key === 'outcome' && (
                 <ul class="outcome">
-                  {d.outcomes.map((o) => (
+                  {d.outcomes.map((o, i) => (
                     <li class="m">
-                      <div class="numeral" set:html={ph(o.value)} />
+                      <div class="numeral" {...at(S(`outcomes.${i}.value`))} set:html={ph(o.value)} />
                       <span aria-hidden="true" />
-                      <p set:html={ph(o.label)} />
+                      <p {...at(S(`outcomes.${i}.label`))} set:html={ph(o.label)} />
                     </li>
                   ))}
                 </ul>
@@ -124,10 +135,10 @@ const toc = [
         }
 
         <section id="deliverables" aria-labelledby="deliverables-h">
-          <p class="eyebrow">{t.deliverablesEyebrow}</p>
-          <h2 id="deliverables-h">{t.deliverablesTitle}</h2>
+          <p class="eyebrow" {...at(P('caseStudy.deliverablesEyebrow'))}>{t.deliverablesEyebrow}</p>
+          <h2 id="deliverables-h" {...at(P('caseStudy.deliverablesTitle'))}>{t.deliverablesTitle}</h2>
           <ul class="deliverables">
-            {d.deliverables.map((item) => <li><Icon name="doc" /><span set:html={ph(item)} /></li>)}
+            {d.deliverables.map((item, i) => <li><Icon name="doc" /><span {...at(S(`deliverables.${i}`))} set:html={ph(item)} /></li>)}
           </ul>
         </section>
 
@@ -135,9 +146,9 @@ const toc = [
           quote && (
             <section aria-label={t.quoteLabel}>
               <figure class="pull">
-                <blockquote set:html={ph(quote.text)} />
+                <blockquote {...at(S('quote.text'))} set:html={ph(quote.text)} />
                 <figcaption>
-                  <b set:html={ph(quote.name)} /> · <span set:html={ph(`${quote.role}, ${d.client}`)} />
+                  <b {...at(S('quote.name'))} set:html={ph(quote.name)} /> · <span {...at(S('quote.role'))} set:html={ph(quote.role)} />, {d.client}
                 </figcaption>
               </figure>
             </section>

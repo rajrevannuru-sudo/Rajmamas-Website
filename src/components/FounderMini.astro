@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { site, pages } from '../lib/site';
 import { founderPhoto } from '../lib/images';
+import { at, src } from '../lib/cms-attr';
 
 const f = site.founder;
 ---
@@ -12,8 +13,8 @@ const f = site.founder;
     <Image src={founderPhoto} alt={f.name} width={112} height={168} loading="eager" class="founder-avatar" />
   </span>
   <div>
-    <b>{f.name}</b>
-    <span>{f.jobTitle}</span>
+    <b {...at(src('site', 'founder.name'))}>{f.name}</b>
+    <span {...at(src('site', 'founder.jobTitle'))}>{f.jobTitle}</span>
   </div>
   <a href={f.linkedin} aria-label={pages.ui.linkedinLabel}><Icon name="linkedin" /></a>
 </div>

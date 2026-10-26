@@ -50,7 +50,7 @@ if (Astro.request.method === 'POST') {
       </div>
       <p>Fields marked <span class="cms-lock">locked</span> control links and page structure, so they can’t be changed here.</p>
     </div>
-    <a class="cms-btn ghost" href={doc.pages[0].url} target="_blank" rel="noopener"><Glyph name="external-link" />View page</a>
+    <a class="cms-btn" href={`/cms/visual?page=${encodeURIComponent(doc.pages[0].url)}`}><Glyph name="pencil" />Edit on page instead</a>
   </div>
   {
     errors.length > 0 && (

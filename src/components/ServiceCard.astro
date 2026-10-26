@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { pages } from '../lib/site';
+import { at, src } from '../lib/cms-attr';
 import { serviceHref, type Service } from '../lib/content';
 
 interface Props {
@@ -9,6 +10,9 @@ interface Props {
 const { service } = Astro.props;
 const { name, icon, cardDescription, secondary } = service.data;
 const link = pages.ui.learnMore;
+const doc = `services/${service.id}`;
+const nameAttr = at(src(doc, 'name'));
+const descAttr = at(src(doc, 'cardDescription'));
 ---
 
 <li class:list={['card lift service-card', { secondary }]}>
@@ -16,13 +20,13 @@ const link = pages.ui.learnMore;
   {
     secondary ? (
       <div class="txt">
-        <h3>{name}</h3>
-        <p>{cardDescription}</p>
+        <h3 {...nameAttr}>{name}</h3>
+        <p {...descAttr}>{cardDescription}</p>
       </div>
     ) : (
       <>
-        <h3>{name}</h3>
-        <p>{cardDescription}</p>
+        <h3 {...nameAttr}>{name}</h3>
+        <p {...descAttr}>{cardDescription}</p>
       </>
     )
   }

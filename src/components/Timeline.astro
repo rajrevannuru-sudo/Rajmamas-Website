@@ -1,20 +1,22 @@
 ---
 import { ph } from '../lib/placeholder';
+import { at, sub, type Src } from '../lib/cms-attr';
 
 interface Props {
   items: { label: string; title: string; text: string }[];
   label: string;
+  src?: Src;
 }
-const { items, label } = Astro.props;
+const { items, label, src } = Astro.props;
 ---
 
 <ol class="timeline" aria-label={label} style={`--steps:${items.length}`}>
   {
-    items.map((s) => (
+    items.map((s, i) => (
       <li>
-        <span class="wk" set:html={ph(s.label)} />
-        <h3 set:html={ph(s.title)} />
-        <p set:html={ph(s.text)} />
+        <span class="wk" {...at(sub(sub(src, i), 'label'))} set:html={ph(s.label)} />
+        <h3 {...at(sub(sub(src, i), 'title'))} set:html={ph(s.title)} />
+        <p {...at(sub(sub(src, i), 'text'))} set:html={ph(s.text)} />
       </li>
     ))
   }

@@ -143,3 +143,81 @@ export function applyForm(data: Record<string, unknown>, form: FormData, opts: {
 export async function loadDoc(doc: Doc) {
   return parse(doc.kind, await readText(doc.path));
 }
+
+// ---------- visual editor ----------
+
+const FIXED: Record<string, Pick<Doc, 'label' | 'path' | 'kind'>> = {
+  site: { label: 'Business details & shared content', path: 'content/site.json', kind: 'json' },
+  pages: { label: 'Page headings & interface text', path: 'content/pages.json', kind: 'json' },
+  privacy: { label: 'Privacy policy', path: 'content/pages/privacy-policy.md', kind: 'md' },
+};
+
+/** Resolves a doc id (site, pages, privacy, services/<slug>, case-studies/<slug>) without listing folders. */
+export function resolveDoc(id: string): Pick<Doc, 'id' | 'label' | 'path' | 'kind'> | undefined {
+  if (FIXED[id]) return { id, ...FIXED[id] };
+  const m = id.match(/^(services|case-studies)\/([a-z0-9]+(?:-[a-z0-9]+)*)$/);
+  if (!m) return undefined;
+  return { id, label: `${m[1] === 'services' ? 'Service' : 'Case study'}: ${human(m[2])}`, path: `content/${id}.md`, kind: 'md' };
+}
+
+export function getAt(data: unknown, path: string): unknown {
+  return path.split('.').reduce<unknown>((o, k) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[k] : undefined), data);
+}
+
+export type Edit = { src: string; value: string };
+
+/** Applies "doc|path" edits grouped by file. Returns file changes or problems (nothing partial). */
+export async function applyEdits(edits: Edit[]) {
+  const problems: string[] = [];
+  const byDoc = new Map<string, Edit[]>();
+  for (const e of edits) {
+    const [docId, path] = String(e.src).split('|');
+    if (!docId || !path) {
+      problems.push(`Unknown field "${e.src}".`);
+      continue;
+    }
+    byDoc.set(docId, [...(byDoc.get(docId) ?? []), e]);
+  }
+  const files: { path: string; content: string }[] = [];
+  for (const [docId, list] of byDoc) {
+    const doc = resolveDoc(docId);
+    if (!doc) {
+      problems.push(`Unknown content file "${docId}".`);
+      continue;
+    }
+    let parsed;
+    try {
+      parsed = await loadDoc(doc as Doc);
+    } catch {
+      problems.push(`Couldn't read ${doc.path}.`);
+      continue;
+    }
+    let { data, body } = parsed;
+    const form = new FormData();
+    for (const e of list) {
+      const path = e.src.split('|')[1];
+      if (path === '__body') {
+        if (doc.kind !== 'md') problems.push(`${doc.label} has no page text body.`);
+        else body = String(e.value).replace(/\r\n/g, '\n');
+        continue;
+      }
+      const key = path.split('.').pop() ?? '';
+      if (LOCKED.has(key) || key.startsWith('_')) {
+        problems.push(`"${path}" is locked.`);
+        continue;
+      }
+      if (typeof getAt(data, path) !== 'string') {
+        problems.push(`"${path}" can't be edited here.`);
+        continue;
+      }
+      if (!String(e.value).trim()) {
+        problems.push(`"${path}" can't be empty.`);
+        continue;
+      }
+      form.append(`f.${path}`, String(e.value));
+    }
+    problems.push(...applyForm(data, form, { serviceIconAtRoot: docId.startsWith('services/') }));
+    files.push({ path: doc.path, content: serialize(doc.kind, data, body) });
+  }
+  return { problems, files };
+}

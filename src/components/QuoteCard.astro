@@ -2,14 +2,18 @@
 import ClientLogo from './ClientLogo.astro';
 import { ph } from '../lib/placeholder';
 import { site } from '../lib/site';
+import { at, type Src } from '../lib/cms-attr';
 
 interface Props {
   quote: string;
   name: string;
   role: string;
   company?: string;
+  quoteSrc?: Src;
+  nameSrc?: Src;
+  roleSrc?: Src;
 }
-const { quote, name, role, company } = Astro.props;
+const { quote, name, role, company, quoteSrc, nameSrc, roleSrc } = Astro.props;
 const initials = name.startsWith('[')
   ? '?'
   : name
@@ -18,17 +22,16 @@ const initials = name.startsWith('[')
       .slice(0, 2)
       .join('')
       .toUpperCase();
-const roleLine = [role, company].filter(Boolean).join(', ');
 ---
 
 <figure class="card quote-card">
   <div class="mark" aria-hidden="true">“</div>
-  <blockquote set:html={ph(quote)} />
+  <blockquote {...at(quoteSrc)} set:html={ph(quote)} />
   <figcaption>
     <div class="photo av" aria-hidden="true"><span class="initials">{initials}</span></div>
     <div>
-      <b set:html={ph(name)} />
-      <span set:html={ph(roleLine)} />
+      <b {...at(nameSrc)} set:html={ph(name)} />
+      <span><span {...at(roleSrc)} set:html={ph(role)} />{company && <>, <span set:html={ph(company)} /></>}</span>
     </div>
     {company && site.clientLogos[company] && <ClientLogo name={company} height={24} class="quote-logo" />}
   </figcaption>

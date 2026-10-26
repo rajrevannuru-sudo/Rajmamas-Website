@@ -3,6 +3,7 @@ import Icon from './Icon.astro';
 import Glyph from './Glyph.astro';
 import { pages } from '../lib/site';
 import { getServices } from '../lib/content';
+import { at, src } from '../lib/cms-attr';
 
 const t = pages.contact.form;
 const services = await getServices();
@@ -14,8 +15,8 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
     <div class="form-head">
       <span class="badge"><Glyph name="send" /></span>
       <div>
-        <h2 id="form-h">{t.title}</h2>
-        <p>{t.intro}</p>
+        <h2 id="form-h" {...at(src('pages', 'contact.form.title'))}>{t.title}</h2>
+        <p {...at(src('pages', 'contact.form.intro'))}>{t.intro}</p>
       </div>
     </div>
 
@@ -36,7 +37,7 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
       <div class="field">
-        <label for="f-name">{t.name}<span class="req" aria-hidden="true">*</span></label>
+        <label for="f-name"><span {...at(src('pages', 'contact.form.name'))}>{t.name}</span><span class="req" aria-hidden="true">*</span></label>
         <div class="control">
           <Glyph name="user-round" class="control-ico" />
           <input id="f-name" name="name" autocomplete="name" placeholder={t.namePlaceholder} required aria-describedby="f-name-err" />
@@ -45,7 +46,7 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
       </div>
 
       <div class="field">
-        <label for="f-email">{t.email}<span class="req" aria-hidden="true">*</span></label>
+        <label for="f-email"><span {...at(src('pages', 'contact.form.email'))}>{t.email}</span><span class="req" aria-hidden="true">*</span></label>
         <div class="control">
           <Glyph name="mail" class="control-ico" />
           <input id="f-email" type="email" name="email" autocomplete="email" inputmode="email" placeholder={t.emailPlaceholder} required aria-describedby="f-email-err" />
@@ -54,7 +55,7 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
       </div>
 
       <div class="field full">
-        <label for="f-co">{t.company}<span class="opt">{t.optional}</span></label>
+        <label for="f-co"><span {...at(src('pages', 'contact.form.company'))}>{t.company}</span><span class="opt">{t.optional}</span></label>
         <div class="control">
           <Glyph name="building-2" class="control-ico" />
           <input id="f-co" name="company" autocomplete="organization" placeholder={t.companyPlaceholder} />
@@ -62,7 +63,7 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
       </div>
 
       <fieldset class="field full chips-field" aria-describedby="f-svc-hint f-svc-err">
-        <legend>{t.service}<span class="req" aria-hidden="true">*</span><span class="opt" id="f-svc-hint">{t.serviceHint}</span></legend>
+        <legend><span {...at(src('pages', 'contact.form.service'))}>{t.service}</span><span class="req" aria-hidden="true">*</span><span class="opt" id="f-svc-hint">{t.serviceHint}</span></legend>
         <div class="chips">
           {
             services.map((s) => (
@@ -85,7 +86,7 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
       </fieldset>
 
       <div class="field full">
-        <label for="f-msg">{t.details}<span class="req" aria-hidden="true">*</span></label>
+        <label for="f-msg"><span {...at(src('pages', 'contact.form.details'))}>{t.details}</span><span class="req" aria-hidden="true">*</span></label>
         <textarea
           id="f-msg"
           name="message"
@@ -94,7 +95,7 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
           aria-describedby="f-msg-hint f-msg-err"
           placeholder={t.detailsPlaceholder}></textarea>
         <div class="field-meta">
-          <span class="hint" id="f-msg-hint">{t.detailsHint}</span>
+          <span class="hint" id="f-msg-hint" {...at(src('pages', 'contact.form.detailsHint'))}>{t.detailsHint}</span>
           <span class="count" aria-hidden="true"><span data-count>0</span> / {t.maxLength}</span>
         </div>
         <p class="field-error" id="f-msg-err" data-msg={t.errDetails} hidden></p>
@@ -104,7 +105,7 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 
       <div class="actions">
         <p><Glyph name="shield-check" class="privacy-ico" /><span>{t.privacyNote} <a href="/privacy-policy">{t.privacyLink}</a>.</span></p>
-        <button class="btn btn-primary btn-send" type="submit"><span class="label">{t.submit}</span><Icon name="arrow" /></button>
+        <button class="btn btn-primary btn-send" type="submit"><span class="label" {...at(src('pages', 'contact.form.submit'))}>{t.submit}</span><Icon name="arrow" /></button>
       </div>
     </form>
   </div>

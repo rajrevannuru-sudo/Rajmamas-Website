@@ -26,7 +26,7 @@ const host = 'vaksconsulting.com';
   <div class="cms-head">
     <div>
       <h1>Site content</h1>
-      <p>Edit the text on existing pages. Pages can’t be added or removed here; only blog posts can be created.</p>
+      <p>Click <b>Edit on page</b> to change text directly on the page. Pages can’t be added or removed; only blog posts can be created.</p>
     </div>
   </div>
   {error && <p class="cms-error">{error}</p>}
@@ -50,11 +50,11 @@ const host = 'vaksconsulting.com';
               {items.map((d) => (
                 <li class="doc">
                   <div class="doc-main">
-                    <a class="doc-title" href={`/cms/content/${d.id}`}>{d.label}</a>
+                    <a class="doc-title" href={`/cms/visual?page=${encodeURIComponent(d.pages[0].url)}`}>{d.label}</a>
                     {d.summary && <p class="doc-summary">{d.summary}</p>}
                     <div class="doc-urls">
                       {d.pages.map((p) => (
-                        <a class="url-chip" href={p.url} target="_blank" rel="noopener" title={`Open ${p.label} in a new tab`}>
+                        <a class="url-chip" href={`/cms/visual?page=${encodeURIComponent(p.url)}`} title={`Edit ${p.label} on the page`}>
                           <Glyph name="link-2" />
                           <span class="url-host">{host}</span>
                           <span class="url-path">{p.url === '/' ? '/' : p.url}</span>
@@ -63,8 +63,8 @@ const host = 'vaksconsulting.com';
                     </div>
                   </div>
                   <div class="doc-actions">
-                    <a class="cms-btn ghost sm" href={d.pages[0].url} target="_blank" rel="noopener"><Glyph name="external-link" />View page</a>
-                    <a class="cms-btn sm" href={`/cms/content/${d.id}`}><Glyph name="pencil" />Edit</a>
+                    <a class="cms-btn ghost sm" href={`/cms/content/${d.id}`} title="Edit every field as a form"><Glyph name="list" />All fields</a>
+                    <a class="cms-btn sm" href={`/cms/visual?page=${encodeURIComponent(d.pages[0].url)}`}><Glyph name="pencil" />Edit on page</a>
                   </div>
                 </li>
               ))}

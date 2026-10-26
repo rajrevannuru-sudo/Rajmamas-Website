@@ -2,6 +2,7 @@
 // Built flow diagram (docs/flow-diagrams.md): an <ol> of cards joined by gold connectors.
 import Glyph from './Glyph.astro';
 import { ph } from '../lib/placeholder';
+import { at, sub, type Src } from '../lib/cms-attr';
 
 interface Step {
   title: string;
@@ -14,8 +15,14 @@ interface Props {
   /** "summary": challenge → approach → outcome cards; the last card carries the headline metric. */
   variant?: 'default' | 'summary';
   metric?: { value: string; label: string };
+  /** Content source of the items array (item i → src.i.title / src.i.text). */
+  src?: Src;
+  /** Per-item sources, overriding src (used by the summary variant). */
+  srcs?: { title?: Src; text?: Src }[];
+  metricSrc?: Src;
 }
-const { items, label, variant = 'default', metric } = Astro.props;
+const { items, label, variant = 'default', metric, src, srcs, metricSrc } = Astro.props;
+const s_ = (i: number, k: 'title' | 'text') => srcs?.[i]?.[k] ?? sub(sub(src, i), k);
 ---
 
 <ol class:list={['flow', { 'flow--summary': variant === 'summary' }]} aria-label={label}>
@@ -23,17 +30,17 @@ const { items, label, variant = 'default', metric } = Astro.props;
     items.map((s, i) =>
       variant === 'summary' ? (
         <li class="flow-step">
-          <h3 class="flow-label" set:html={ph(s.title)} />
+          <h3 class="flow-label" {...at(s_(i, 'title'))} set:html={ph(s.title)} />
           {i === items.length - 1 && metric && (
             <>
               <p class="flow-metric">
-                <span class="numeral" set:html={ph(metric.value)} />
-                <span class="flow-metric-label" set:html={ph(metric.label)} />
+                <span class="numeral" {...at(sub(metricSrc, 'value'))} set:html={ph(metric.value)} />
+                <span class="flow-metric-label" {...at(sub(metricSrc, 'label'))} set:html={ph(metric.label)} />
               </p>
               <span class="metric-rule" aria-hidden="true" />
             </>
           )}
-          <p set:html={ph(s.text)} />
+          <p {...at(s_(i, 'text'))} set:html={ph(s.text)} />
         </li>
       ) : (
         <li class="flow-step">
@@ -41,8 +48,8 @@ const { items, label, variant = 'default', metric } = Astro.props;
             <span class="flow-n">{String(i + 1).padStart(2, '0')}</span>
             {s.icon && <span class="flow-ico"><Glyph name={s.icon} /></span>}
           </div>
-          <h3 set:html={ph(s.title)} />
-          <p set:html={ph(s.text)} />
+          <h3 {...at(s_(i, 'title'))} set:html={ph(s.title)} />
+          <p {...at(s_(i, 'text'))} set:html={ph(s.text)} />
         </li>
       ),
     )

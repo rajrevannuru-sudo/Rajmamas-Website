@@ -1,5 +1,6 @@
 ---
 import { ph } from '../lib/placeholder';
+import { at, sub, type Src } from '../lib/cms-attr';
 
 interface Props {
   id: string;
@@ -7,13 +8,21 @@ interface Props {
   title: string;
   lead?: string;
   class?: string;
+  /** Content source of an object with eyebrow/title/lead keys. */
+  src?: Src;
+  eyebrowSrc?: Src;
+  titleSrc?: Src;
+  leadSrc?: Src;
 }
-const { id, eyebrow, title, lead, class: className } = Astro.props;
+const { id, eyebrow, title, lead, class: className, src } = Astro.props;
+const eyebrowSrc = Astro.props.eyebrowSrc ?? sub(src, 'eyebrow');
+const titleSrc = Astro.props.titleSrc ?? sub(src, 'title');
+const leadSrc = Astro.props.leadSrc ?? sub(src, 'lead');
 ---
 
 <div class:list={['section-head', className]}>
-  <p class="eyebrow">{eyebrow}</p>
-  <h2 id={id} set:html={ph(title)} />
-  {lead && <p class="lead" set:html={ph(lead)} />}
+  <p class="eyebrow" {...at(eyebrowSrc)}>{eyebrow}</p>
+  <h2 id={id} {...at(titleSrc)} set:html={ph(title)} />
+  {lead && <p class="lead" {...at(leadSrc)} set:html={ph(lead)} />}
   <slot />
 </div>

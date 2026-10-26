@@ -3,6 +3,9 @@
 // Built in HTML/SVG (not an image) so it stays crisp, on-brand and light. Decorative; the figcaption carries the meaning.
 import Glyph from './Glyph.astro';
 import { pages } from '../lib/site';
+import { at, src } from '../lib/cms-attr';
+
+const D = (k: string) => at(src('pages', `home.hero.diagram.${k}`));
 
 const d = pages.home.hero.diagram;
 const caption = pages.home.hero.diagramCaption;
@@ -13,14 +16,14 @@ const nodeIcons = ['tags', 'user-round', 'mouse-pointer-click', 'library'];
 <figure class="flowart">
   <div class="fa-stage" aria-hidden="true">
     <div class="fa-before">
-      <p class="fa-label"><Glyph name="layers" />{d.before}</p>
+      <p class="fa-label"><Glyph name="layers" /><span {...D('before')}>{d.before}</span></p>
       <ul class="fa-scatter">
         {
           d.fragments.map((f, i) => (
             <li class={`frag frag-${i + 1}`}>
               <span class="frag-ico"><Glyph name={fragIcons[i % fragIcons.length]} /></span>
               <span class="frag-body">
-                <span class="frag-title">{f}</span>
+                <span class="frag-title" {...D(`fragments.${i}`)}>{f}</span>
                 <span class="frag-line" />
                 <span class="frag-line short" />
               </span>
@@ -37,28 +40,28 @@ const nodeIcons = ['tags', 'user-round', 'mouse-pointer-click', 'library'];
       <span class="fa-node">
         <Glyph name="wand-sparkles" />
       </span>
-      <span class="fa-node-label">{d.engine}<small>{d.engineSub}</small></span>
+      <span class="fa-node-label"><span {...D('engine')}>{d.engine}</span><small {...D('engineSub')}>{d.engineSub}</small></span>
     </div>
 
     <div class="fa-after">
       <div class="fa-card">
-        <p class="fa-card-head"><span class="fa-tick"><Glyph name="check" strokeWidth={2.5} /></span>{d.after}</p>
-        <p class="fa-search"><Glyph name="search" />{d.search}<kbd>/</kbd></p>
+        <p class="fa-card-head"><span class="fa-tick"><Glyph name="check" strokeWidth={2.5} /></span><span {...D('after')}>{d.after}</span></p>
+        <p class="fa-search"><Glyph name="search" /><span {...D('search')}>{d.search}</span><kbd>/</kbd></p>
         <div class="fa-hub">
           <svg class="fa-links" viewBox="0 0 300 170" preserveAspectRatio="none">
             <path d="M150 85 L52 30" /><path d="M150 85 L248 30" /><path d="M150 85 L52 140" /><path d="M150 85 L248 140" />
           </svg>
-          <span class="fa-core"><Glyph name="workflow" />{d.core}</span>
+          <span class="fa-core"><Glyph name="workflow" /><span {...D('core')}>{d.core}</span></span>
           {
             d.nodes.map((n, i) => (
               <span class={`fa-sat fa-sat-${i + 1}`}>
                 <Glyph name={nodeIcons[i % nodeIcons.length]} />
-                {n}
+                <span {...D(`nodes.${i}`)}>{n}</span>
               </span>
             ))
           }
         </div>
-        <p class="fa-foot">{d.footer}</p>
+        <p class="fa-foot" {...D('footer')}>{d.footer}</p>
       </div>
     </div>
   </div>

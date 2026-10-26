@@ -9,6 +9,7 @@ import Flow from '../components/Flow.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { site, pages } from '../lib/site';
 import { ph } from '../lib/placeholder';
+import { at, src } from '../lib/cms-attr';
 import { breadcrumbNode, type Crumb } from '../lib/schema';
 import { getServices } from '../lib/content';
 
@@ -27,9 +28,9 @@ const crumbs: Crumb[] = [
       <Breadcrumbs crumbs={crumbs} />
       <div class="grid hero-split has-diagram">
         <div>
-          <p class="eyebrow">{p.hero.eyebrow}</p>
-          <h1 id="h1">{p.seo.h1}</h1>
-          <p class="lead" set:html={ph(p.hero.lead)} />
+          <p class="eyebrow" {...at(src('pages', 'services.hero.eyebrow'))}>{p.hero.eyebrow}</p>
+          <h1 id="h1" {...at(src('pages', 'services.seo.h1'))}>{p.seo.h1}</h1>
+          <p class="lead" {...at(src('pages', 'services.hero.lead'))} set:html={ph(p.hero.lead)} />
           <div class="btn-row">
             <Button href={site.bookingUrl} icon="calendar">{ui.bookCall}</Button>
             <Button href="/case-studies" variant="secondary">{ui.seeOurWork}</Button>
@@ -42,7 +43,7 @@ const crumbs: Crumb[] = [
 
   <section class="section parchment" aria-labelledby="svc-h">
     <div class="wrap">
-      <SectionHead id="svc-h" {...p.grid} />
+      <SectionHead id="svc-h" {...p.grid} src={src('pages', 'services.grid')} />
       <ul class="grid-3">
         {services.map((s) => <ServiceCard service={s} />)}
       </ul>
@@ -51,9 +52,9 @@ const crumbs: Crumb[] = [
 
   <section class="section" aria-labelledby="how-h">
     <div class="wrap">
-      <SectionHead id="how-h" eyebrow={p.process.eyebrow} title={p.process.title} />
-      <Flow items={site.process} label={p.process.eyebrow} />
-      <p class="flow-note">{p.process.note}</p>
+      <SectionHead id="how-h" eyebrow={p.process.eyebrow} title={p.process.title} src={src('pages', 'services.process')} />
+      <Flow items={site.process} label={p.process.eyebrow} src={src('site', 'process')} />
+      <p class="flow-note" {...at(src('pages', 'services.process.note'))}>{p.process.note}</p>
     </div>
   </section>
 

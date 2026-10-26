@@ -3,6 +3,7 @@ import Icon from './Icon.astro';
 import ClientLogo from './ClientLogo.astro';
 import { ph } from '../lib/placeholder';
 import { pages } from '../lib/site';
+import { at, src } from '../lib/cms-attr';
 import { caseHref, getService, type CaseStudy } from '../lib/content';
 
 interface Props {
@@ -13,18 +14,19 @@ interface Props {
 const { study, as: Tag = 'h3' } = Astro.props;
 const { client, title, serviceLabel, headlineMetric } = study.data;
 const service = await getService(study.data.service);
+const doc = `case-studies/${study.id}`;
 ---
 
 <a class="card case-card" href={caseHref(study)}>
   <div class="top">
     {service && <span class="case-ico badge sm" aria-hidden="true"><Icon name={service.data.icon} /></span>}
-    <div class="numeral" set:html={ph(headlineMetric.value)} />
-    <p set:html={ph(headlineMetric.label)} />
+    <div class="numeral" {...at(src(doc, 'headlineMetric.value'))} set:html={ph(headlineMetric.value)} />
+    <p {...at(src(doc, 'headlineMetric.label'))} set:html={ph(headlineMetric.label)} />
     <div class="metric-rule" aria-hidden="true"></div>
   </div>
   <div class="bottom">
     <ClientLogo name={client} height={26} class="client" />
-    <Tag class="h3">{title}</Tag>
+    <Tag class="h3" {...at(src(doc, 'title'))}>{title}</Tag>
     <div class="meta">
       <span class="tag">{serviceLabel}</span>
       <span class="link-arrow"><span>{pages.ui.readCaseStudy}</span><Icon name="arrow" /></span>

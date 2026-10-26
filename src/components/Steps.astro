@@ -1,12 +1,14 @@
 ---
 import Glyph from './Glyph.astro';
 import { ph } from '../lib/placeholder';
+import { at, sub, type Src } from '../lib/cms-attr';
 
 interface Props {
   items: { title: string; text: string; icon?: string }[];
   label: string;
+  src?: Src;
 }
-const { items, label } = Astro.props;
+const { items, label, src } = Astro.props;
 ---
 
 <ol class="steps" aria-label={label}>
@@ -17,8 +19,8 @@ const { items, label } = Astro.props;
           {String(i + 1).padStart(2, '0')}
           {s.icon && <span class="badge step-badge"><Glyph name={s.icon} /></span>}
         </div>
-        <h3 set:html={ph(s.title)} />
-        <p set:html={ph(s.text)} />
+        <h3 {...at(sub(sub(src, i), 'title'))} set:html={ph(s.title)} />
+        <p {...at(sub(sub(src, i), 'text'))} set:html={ph(s.text)} />
       </li>
     ))
   }

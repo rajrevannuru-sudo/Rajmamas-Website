@@ -7,6 +7,7 @@ import Glyph from '../components/Glyph.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { site, pages } from '../lib/site';
 import { ph } from '../lib/placeholder';
+import { at, src } from '../lib/cms-attr';
 
 const p = pages.about;
 ---
@@ -14,8 +15,8 @@ const p = pages.about;
 <BaseLayout title={p.seo.title} description={p.seo.description} path="/about" og="about" person>
   <section class="page-hero dark about-hero" aria-labelledby="h1">
     <div class="wrap">
-      <p class="eyebrow">{p.hero.eyebrow}</p>
-      <h1 id="h1">{p.seo.h1}</h1>
+      <p class="eyebrow" {...at(src('pages', 'about.hero.eyebrow'))}>{p.hero.eyebrow}</p>
+      <h1 id="h1" {...at(src('pages', 'about.seo.h1'))}>{p.seo.h1}</h1>
     </div>
   </section>
 
@@ -26,25 +27,25 @@ const p = pages.about;
   <section class="section parchment" aria-labelledby="story-h">
     <div class="wrap story">
       <div>
-        <p class="eyebrow">{p.story.eyebrow}</p>
-        <h2 id="story-h">{p.story.title}</h2>
+        <p class="eyebrow" {...at(src('pages', 'about.story.eyebrow'))}>{p.story.eyebrow}</p>
+        <h2 id="story-h" {...at(src('pages', 'about.story.title'))}>{p.story.title}</h2>
       </div>
       <div class="prose lead story-text">
-        {site.story.map((para) => <p set:html={ph(para)} />)}
+        {site.story.map((para, i) => <p {...at(src('site', `story.${i}`))} set:html={ph(para)} />)}
       </div>
     </div>
   </section>
 
   <section class="section" aria-labelledby="flow-h">
     <div class="wrap">
-      <SectionHead id="flow-h" eyebrow={p.flow.eyebrow} title={p.flow.title} />
-      <Flow items={site.projectFlow} label={p.flow.eyebrow} />
+      <SectionHead id="flow-h" eyebrow={p.flow.eyebrow} title={p.flow.title} src={src('pages', 'about.flow')} />
+      <Flow items={site.projectFlow} label={p.flow.eyebrow} src={src('site', 'projectFlow')} />
     </div>
   </section>
 
   <section class="section parchment" aria-labelledby="val-h">
     <div class="wrap">
-      <SectionHead id="val-h" eyebrow={p.values.eyebrow} title={p.values.title} />
+      <SectionHead id="val-h" eyebrow={p.values.eyebrow} title={p.values.title} src={src('pages', 'about.values')} />
       <ul class="values">
         {
           site.values.map((v, i) => (
@@ -53,8 +54,8 @@ const p = pages.about;
                 {v.icon && <span class="badge"><Glyph name={v.icon} /></span>}
                 <span class="vnum">{String(i + 1).padStart(2, '0')}</span>
               </div>
-              <h3>{v.title}</h3>
-              <p set:html={ph(v.text)} />
+              <h3 {...at(src('site', `values.${i}.title`))}>{v.title}</h3>
+              <p {...at(src('site', `values.${i}.text`))} set:html={ph(v.text)} />
             </li>
           ))
         }
@@ -65,11 +66,11 @@ const p = pages.about;
   <section class="section dark stats-band" aria-label={p.statsLabel}>
     <ul class="wrap stats">
       {
-        site.stats.map((s) => (
+        site.stats.map((s, i) => (
           <li>
             {s.icon && <span class="stat-ico" aria-hidden="true"><Glyph name={s.icon} /></span>}
-            <div class="numeral"><span set:html={ph(s.value)} /><em>{s.suffix}</em></div>
-            <p>{s.label}</p>
+            <div class="numeral"><span {...at(src('site', `stats.${i}.value`))} set:html={ph(s.value)} /><em>{s.suffix}</em></div>
+            <p {...at(src('site', `stats.${i}.label`))}>{s.label}</p>
           </li>
         ))
       }

@@ -3,6 +3,7 @@ import Wordmark from './Wordmark.astro';
 import Icon from './Icon.astro';
 import { site, pages } from '../lib/site';
 import { getServices, serviceHref } from '../lib/content';
+import { at, src } from '../lib/cms-attr';
 
 const services = await getServices();
 const ui = pages.ui;
@@ -15,7 +16,7 @@ const year = new Date().getFullYear();
     <div class="cols">
       <div class="about">
         <Wordmark />
-        <p>{site.description}</p>
+        <p {...at(src('site', 'description'))}>{site.description}</p>
       </div>
       <nav aria-labelledby="ft-svc">
         <h2 id="ft-svc">{ui.footerServices}</h2>
@@ -34,7 +35,7 @@ const year = new Date().getFullYear();
         <a href={`mailto:${site.email}`}><Icon name="mail" />{site.email}</a>
         <br />
         <a href={site.whatsappHref}><Icon name="whatsapp" />{site.phone}</a>
-        <p class="loc"><Icon name="pin" /><span>{site.address.display}</span></p>
+        <p class="loc"><Icon name="pin" /><span {...at(src('site', 'address.display'))}>{site.address.display}</span></p>
       </div>
     </div>
     <div class="bottom">

@@ -16,6 +16,7 @@ import Faq from '../components/Faq.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { site, pages, testimonials } from '../lib/site';
 import { ph } from '../lib/placeholder';
+import { at, src } from '../lib/cms-attr';
 import { getServices, getCaseStudies } from '../lib/content';
 
 const p = pages.home;
@@ -29,15 +30,15 @@ const reassureIcons = ['shield', 'globe'] as const;
   <section class="hero dark has-diagram" aria-labelledby="h1">
     <div class="wrap grid">
       <div>
-        <p class="eyebrow">{site.tagline}</p>
-        <h1 id="h1">{p.seo.h1}</h1>
-        <p class="lead" set:html={ph(p.hero.lead)} />
+        <p class="eyebrow" {...at(src('site', 'tagline'))}>{site.tagline}</p>
+        <h1 id="h1" {...at(src('pages', 'home.seo.h1'))}>{p.seo.h1}</h1>
+        <p class="lead" {...at(src('pages', 'home.hero.lead'))} set:html={ph(p.hero.lead)} />
         <div class="btn-row">
           <Button href={site.bookingUrl} icon="calendar">{ui.bookCall}</Button>
           <Button href="/case-studies" variant="secondary">{ui.seeOurWork}</Button>
         </div>
         <p class="reassure">
-          {p.hero.reassure.map((r, i) => <span><Icon name={reassureIcons[i % 2]} />{r}</span>)}
+          {p.hero.reassure.map((r, i) => <span><Icon name={reassureIcons[i % 2]} /><span {...at(src('pages', `home.hero.reassure.${i}`))}>{r}</span></span>)}
         </p>
       </div>
       <div class="hero-visual">
@@ -49,7 +50,7 @@ const reassureIcons = ['shield', 'globe'] as const;
 
   <section class="trust" aria-labelledby="trust-h">
     <div class="wrap inner">
-      <h2 class="label" id="trust-h">{p.trustLabel}</h2>
+      <h2 class="label" id="trust-h" {...at(src('pages', 'home.trustLabel'))}>{p.trustLabel}</h2>
       <ul>
         {site.clients.map((c) => <li><ClientLogo name={c} height={34} /></li>)}
       </ul>
@@ -58,16 +59,16 @@ const reassureIcons = ['shield', 'globe'] as const;
 
   <section class="section" aria-labelledby="prob-h">
     <div class="wrap">
-      <SectionHead id="prob-h" {...p.problems} />
+      <SectionHead id="prob-h" {...p.problems} src={src('pages', 'home.problems')} />
       <ul class="grid-3">
-        {site.problems.map((pr, i) => <ProblemCard n={i + 1} {...pr} />)}
+        {site.problems.map((pr, i) => <ProblemCard n={i + 1} {...pr} src={src('site', `problems.${i}`)} />)}
       </ul>
     </div>
   </section>
 
   <section class="section parchment" aria-labelledby="svc-h">
     <div class="wrap">
-      <SectionHead id="svc-h" {...p.services} />
+      <SectionHead id="svc-h" {...p.services} src={src('pages', 'home.services')} />
       <ul class="grid-3">
         {services.map((s) => <ServiceCard service={s} />)}
       </ul>
@@ -76,12 +77,12 @@ const reassureIcons = ['shield', 'globe'] as const;
 
   <section class="section" aria-labelledby="res-h">
     <div class="wrap">
-      <SectionHead id="res-h" {...p.results} />
+      <SectionHead id="res-h" {...p.results} src={src('pages', 'home.results')} />
       <ul class="grid-3">
         {studies.map((c) => <li><CaseCard study={c} /></li>)}
       </ul>
       <p class="more-link">
-        <a class="link-arrow" href="/case-studies"><span>{ui.allCaseStudies}</span><Icon name="arrow" /></a>
+        <a class="link-arrow" href="/case-studies"><span {...at(src('pages', 'ui.allCaseStudies'))}>{ui.allCaseStudies}</span><Icon name="arrow" /></a>
       </p>
     </div>
   </section>
@@ -92,8 +93,8 @@ const reassureIcons = ['shield', 'globe'] as const;
 
   <section class="section" aria-labelledby="how-h">
     <div class="wrap">
-      <SectionHead id="how-h" {...p.process} />
-      <Steps items={site.process} label={p.process.eyebrow} />
+      <SectionHead id="how-h" {...p.process} src={src('pages', 'home.process')} />
+      <Steps items={site.process} label={p.process.eyebrow} src={src('site', 'process')} />
     </div>
   </section>
 
@@ -101,11 +102,19 @@ const reassureIcons = ['shield', 'globe'] as const;
     testimonials.length > 0 && (
       <section class="section parchment" aria-labelledby="test-h">
         <div class="wrap">
-          <SectionHead id="test-h" {...p.testimonials} />
+          <SectionHead id="test-h" {...p.testimonials} src={src('pages', 'home.testimonials')} />
           <ul class:list={testimonials.length === 1 ? 'quotes-single' : 'grid-3'}>
             {testimonials.map((t) => (
               <li>
-                <QuoteCard quote={t.quote} name={t.name} role={t.role} company={t.company} />
+                <QuoteCard
+                  quote={t.quote}
+                  name={t.name}
+                  role={t.role}
+                  company={t.company}
+                  quoteSrc={src('site', `testimonials.${site.testimonials.indexOf(t)}.quote`)}
+                  nameSrc={src('site', `testimonials.${site.testimonials.indexOf(t)}.name`)}
+                  roleSrc={src('site', `testimonials.${site.testimonials.indexOf(t)}.role`)}
+                />
               </li>
             ))}
           </ul>
@@ -115,7 +124,7 @@ const reassureIcons = ['shield', 'globe'] as const;
   }
 
   <section class="section" aria-labelledby="faq-h">
-    <Faq {...p.faq} items={site.homeFaq} />
+    <Faq {...p.faq} items={site.homeFaq} src={src('site', 'homeFaq')} headSrc={src('pages', 'home.faq')} />
   </section>
 
   <CtaBand />

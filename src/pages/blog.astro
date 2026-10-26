@@ -5,6 +5,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Icon from '../components/Icon.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { pages } from '../lib/site';
+import { at, src } from '../lib/cms-attr';
 import { breadcrumbNode, type Crumb } from '../lib/schema';
 import { getPosts, postHref, formatDate, readingMinutes } from '../lib/content';
 
@@ -20,9 +21,9 @@ const crumbs: Crumb[] = [
   <section class="page-hero dark" aria-labelledby="h1">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
-      <p class="eyebrow">{p.eyebrow}</p>
-      <h1 id="h1">{p.seo.h1}</h1>
-      <p class="lead lead-last">{p.lead}</p>
+      <p class="eyebrow" {...at(src('pages', 'blog.eyebrow'))}>{p.eyebrow}</p>
+      <h1 id="h1" {...at(src('pages', 'blog.seo.h1'))}>{p.seo.h1}</h1>
+      <p class="lead lead-last" {...at(src('pages', 'blog.lead'))}>{p.lead}</p>
     </div>
   </section>
 

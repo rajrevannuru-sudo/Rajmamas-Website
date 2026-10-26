@@ -2,32 +2,39 @@
 import Icon from './Icon.astro';
 import SectionHead from './SectionHead.astro';
 import { ph } from '../lib/placeholder';
+import { at, sub, type Src } from '../lib/cms-attr';
 
 interface Props {
   eyebrow: string;
   title: string;
   lead?: string;
   items: { q: string; a: string }[];
+  /** Source of the items array (item i → src.i.q / src.i.a). */
+  src?: Src;
+  headSrc?: Src;
+  eyebrowSrc?: Src;
+  titleSrc?: Src;
+  leadSrc?: Src;
 }
-const { eyebrow, title, lead, items } = Astro.props;
+const { eyebrow, title, lead, items, src, headSrc, eyebrowSrc, titleSrc, leadSrc } = Astro.props;
 ---
 
 <div class="wrap faq-layout">
   <div>
-    <SectionHead id="faq-h" eyebrow={eyebrow} title={title} lead={lead} />
+    <SectionHead id="faq-h" eyebrow={eyebrow} title={title} lead={lead} src={headSrc} eyebrowSrc={eyebrowSrc} titleSrc={titleSrc} leadSrc={leadSrc} />
   </div>
   <div class="faq">
     {
       items.map((item, i) => (
         <details open={i === 0}>
           <summary>
-            <span set:html={ph(item.q)} />
+            <span {...at(sub(sub(src, i), 'q'))} set:html={ph(item.q)} />
             <span class="pm" aria-hidden="true">
               <Icon name="plus" />
             </span>
           </summary>
           <div>
-            <p set:html={ph(item.a)} />
+            <p {...at(sub(sub(src, i), 'a'))} set:html={ph(item.a)} />
           </div>
         </details>
       ))

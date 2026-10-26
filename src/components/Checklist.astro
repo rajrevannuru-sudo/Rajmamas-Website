@@ -1,12 +1,14 @@
 ---
 import Icon from './Icon.astro';
 import { ph } from '../lib/placeholder';
+import { at, sub, type Src } from '../lib/cms-attr';
 
 interface Props {
   items: string[];
+  src?: Src;
 }
 ---
 
 <ul class="checklist">
-  {Astro.props.items.map((t) => <li><Icon name="check" /><span set:html={ph(t)} /></li>)}
+  {Astro.props.items.map((t, i) => <li><Icon name="check" /><span {...at(sub(Astro.props.src, i))} set:html={ph(t)} /></li>)}
 </ul>

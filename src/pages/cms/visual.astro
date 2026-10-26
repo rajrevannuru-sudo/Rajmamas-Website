@@ -1,0 +1,376 @@
+---
+// Visual editor: shows the real page; text marked with data-cms (see lib/cms-attr.ts) is clickable and editable.
+// Edits collect locally and are published together as one commit.
+import CmsLayout from '../../layouts/CmsLayout.astro';
+import Glyph from '../../components/Glyph.astro';
+import { isLoggedIn } from '../../lib/cms/auth';
+import { listDocs } from '../../lib/cms/content';
+
+export const prerender = false;
+if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+
+type PageOpt = { url: string; label: string; group: string; seo: string };
+const main: PageOpt[] = [
+  { url: '/', label: 'Home', group: 'Main pages', seo: 'pages|home.seo' },
+  { url: '/services', label: 'Services', group: 'Main pages', seo: 'pages|services.seo' },
+  { url: '/case-studies', label: 'Case studies', group: 'Main pages', seo: 'pages|caseStudies.seo' },
+  { url: '/about', label: 'About', group: 'Main pages', seo: 'pages|about.seo' },
+  { url: '/contact', label: 'Contact', group: 'Main pages', seo: 'pages|contact.seo' },
+  { url: '/blog', label: 'Blog (listing page)', group: 'Main pages', seo: 'pages|blog.seo' },
+  { url: '/privacy-policy', label: 'Privacy policy', group: 'Main pages', seo: 'pages|privacy.seo' },
+];
+let options: PageOpt[] = main;
+try {
+  const docs = await listDocs();
+  options = [
+    ...main,
+    ...docs
+      .filter((d) => d.group !== 'Site')
+      .map((d) => ({ url: d.pages[0].url, label: d.label, group: d.group, seo: `${d.id}|seo` })),
+  ];
+} catch {
+  /* fall back to the main pages */
+}
+const requested = Astro.url.searchParams.get('page') ?? '/';
+const current = options.find((o) => o.url === requested) ?? options[0];
+const groups = [...new Set(options.map((o) => o.group))];
+---
+
+<CmsLayout title={`Edit page: ${current.label}`} active="content" wide>
+  <div class="ve" data-page={current.url} data-seo={current.seo}>
+    <header class="ve-bar">
+      <label class="ve-select">
+        <span class="sr-only">Page</span>
+        <Glyph name="file-text" />
+        <select id="ve-page" aria-label="Choose a page to edit">
+          {
+            groups.map((g) => (
+              <optgroup label={g}>
+                {options
+                  .filter((o) => o.group === g)
+                  .map((o) => (
+                    <option value={o.url} selected={o.url === current.url}>
+                      {o.label}
+                    </option>
+                  ))}
+              </optgroup>
+            ))
+          }
+        </select>
+      </label>
+      <a class="ve-url" href={current.url} target="_blank" rel="noopener"><Glyph name="link-2" />vaksconsulting.com{current.url}</a>
+      <span class="ve-spacer"></span>
+      <button class="cms-btn ghost sm" type="button" id="ve-seo"><Glyph name="search" />SEO settings</button>
+      <span class="ve-count" id="ve-count" hidden>0 changes</span>
+      <button class="cms-btn ghost sm" type="button" id="ve-discard" hidden>Discard</button>
+      <button class="cms-btn gold" type="button" id="ve-publish" disabled><Glyph name="send" />Publish changes</button>
+    </header>
+
+    <p class="ve-help"><Glyph name="mouse-pointer-click" />Click any outlined text to edit it. Links are paused while editing, so use the page menu to switch pages.</p>
+    <p class="ve-toast" id="ve-toast" role="status" hidden></p>
+
+    <div class="ve-stage">
+      <iframe id="ve-frame" src={`${current.url}?cms=edit`} title={`Preview of ${current.label}`}></iframe>
+
+      <aside class="ve-drawer" id="ve-drawer" aria-labelledby="ve-d-title" hidden>
+        <div class="ve-d-head">
+          <div>
+            <p class="ve-d-crumb" id="ve-d-crumb"></p>
+            <h2 id="ve-d-title">Edit text</h2>
+          </div>
+          <button class="ve-close" type="button" id="ve-close" aria-label="Close"><Glyph name="x" /></button>
+        </div>
+        <div class="ve-d-body" id="ve-d-body"></div>
+        <div class="ve-d-foot">
+          <button class="cms-btn ghost sm" type="button" id="ve-revert" hidden>Undo change</button>
+          <span class="ve-spacer"></span>
+          <button class="cms-btn ghost sm" type="button" id="ve-cancel">Cancel</button>
+          <button class="cms-btn sm" type="button" id="ve-apply"><Glyph name="check" />Apply</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</CmsLayout>
+
+<script>
+  type DocData = { label: string; kind: 'json' | 'md'; data: Record<string, unknown>; body: string | null };
+
+  const root = document.querySelector<HTMLElement>('.ve')!;
+  const page = root.dataset.page!;
+  const seoBase = root.dataset.seo!;
+  const frame = document.querySelector<HTMLIFrameElement>('#ve-frame')!;
+  const drawer = document.querySelector<HTMLElement>('#ve-drawer')!;
+  const dBody = document.querySelector<HTMLElement>('#ve-d-body')!;
+  const dTitle = document.querySelector<HTMLElement>('#ve-d-title')!;
+  const dCrumb = document.querySelector<HTMLElement>('#ve-d-crumb')!;
+  const btnApply = document.querySelector<HTMLButtonElement>('#ve-apply')!;
+  const btnRevert = document.querySelector<HTMLButtonElement>('#ve-revert')!;
+  const btnPublish = document.querySelector<HTMLButtonElement>('#ve-publish')!;
+  const btnDiscard = document.querySelector<HTMLButtonElement>('#ve-discard')!;
+  const count = document.querySelector<HTMLElement>('#ve-count')!;
+  const toast = document.querySelector<HTMLElement>('#ve-toast')!;
+
+  const docs = new Map<string, Promise<DocData>>();
+  const pending = new Map<string, string>(); // src → new value
+  const originals = new Map<Element, string>(); // element → original innerHTML
+  let editing: { srcs: string[]; inputs: HTMLTextAreaElement[] } | null = null;
+
+  // ---------- helpers ----------
+  const getAt = (data: unknown, path: string) =>
+    path.split('.').reduce<unknown>((o, k) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[k] : undefined), data);
+  const human = (k: string) =>
+    /^\d+$/.test(k) ? `Item ${Number(k) + 1}` : k.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^\w/, (c) => c.toUpperCase());
+  const crumbOf = (src: string) => src.split('|')[1].replace('__body', 'Page text').split('.').map(human).join(' › ');
+
+  function loadDoc(id: string): Promise<DocData> {
+    if (!docs.has(id)) {
+      docs.set(
+        id,
+        fetch(`/cms/api/doc?id=${encodeURIComponent(id)}`).then(async (r) => {
+          const j = await r.json();
+          if (!r.ok) throw new Error(j.error ?? 'Could not load content');
+          return j as DocData;
+        }),
+      );
+    }
+    return docs.get(id)!;
+  }
+  async function rawValue(src: string): Promise<string> {
+    if (pending.has(src)) return pending.get(src)!;
+    const [id, path] = src.split('|');
+    const d = await loadDoc(id);
+    return path === '__body' ? (d.body ?? '') : String(getAt(d.data, path) ?? '');
+  }
+  function say(msg: string, kind: 'ok' | 'error' = 'ok') {
+    toast.textContent = msg;
+    toast.className = `ve-toast ${kind}`;
+    toast.hidden = false;
+    clearTimeout((say as unknown as { t: number }).t);
+    (say as unknown as { t: number }).t = window.setTimeout(() => (toast.hidden = true), kind === 'ok' ? 5000 : 9000);
+  }
+  function refreshBar() {
+    const n = pending.size;
+    count.textContent = `${n} change${n === 1 ? '' : 's'}`;
+    count.hidden = btnDiscard.hidden = n === 0;
+    btnPublish.disabled = n === 0;
+  }
+  const frameDoc = () => frame.contentDocument;
+  const nodesFor = (src: string) => [...(frameDoc()?.querySelectorAll<HTMLElement>('[data-cms]') ?? [])].filter((el) => el.dataset.cms === src);
+
+  function paint(src: string) {
+    const value = pending.get(src);
+    for (const el of nodesFor(src)) {
+      if (!originals.has(el)) originals.set(el, el.innerHTML);
+      if (value === undefined) {
+        el.innerHTML = originals.get(el)!;
+        el.classList.remove('cms-pending');
+      } else {
+        if (!src.endsWith('|__body')) el.textContent = value;
+        el.classList.add('cms-pending');
+      }
+    }
+  }
+
+  // ---------- drawer ----------
+  function field(src: string, label: string, value: string, opts: { long?: boolean; max?: number; hint?: string } = {}) {
+    const wrap = document.createElement('div');
+    wrap.className = 'cms-field';
+    const id = `ve-f-${Math.random().toString(36).slice(2, 8)}`;
+    const lab = document.createElement('label');
+    lab.htmlFor = id;
+    lab.textContent = label;
+    const ta = document.createElement('textarea');
+    ta.id = id;
+    ta.value = value;
+    ta.dataset.src = src;
+    ta.rows = opts.long ? 18 : Math.min(8, Math.max(2, Math.ceil(value.length / 48)));
+    if (opts.long) ta.classList.add('ve-md');
+    wrap.append(lab, ta);
+    if (opts.max) {
+      const c = document.createElement('small');
+      c.className = 'cms-hint ve-counter';
+      const upd = () => {
+        c.textContent = `${ta.value.length} / ${opts.max} characters`;
+        c.classList.toggle('over', ta.value.length > opts.max!);
+      };
+      ta.addEventListener('input', upd);
+      upd();
+      wrap.append(c);
+    }
+    if (opts.hint) {
+      const h = document.createElement('small');
+      h.className = 'cms-hint';
+      h.innerHTML = opts.hint;
+      wrap.append(h);
+    }
+    return { wrap, ta };
+  }
+
+  async function openFor(srcs: string[], title: string, crumb: string, build: (srcs: string[], values: string[]) => { wrap: HTMLElement; ta: HTMLTextAreaElement }[]) {
+    drawer.hidden = false;
+    dTitle.textContent = title;
+    dCrumb.textContent = crumb;
+    dBody.innerHTML = '<p class="cms-hint">Loading…</p>';
+    try {
+      const values = await Promise.all(srcs.map(rawValue));
+      const fields = build(srcs, values);
+      dBody.innerHTML = '';
+      fields.forEach((f) => dBody.append(f.wrap));
+      editing = { srcs, inputs: fields.map((f) => f.ta) };
+      btnRevert.hidden = !srcs.some((s) => pending.has(s));
+      fields[0]?.ta.focus();
+    } catch (e) {
+      dBody.innerHTML = `<p class="cms-error">${String((e as Error).message ?? e)}</p>`;
+      editing = null;
+    }
+  }
+
+  function openText(src: string) {
+    const [id] = src.split('|');
+    const isBody = src.endsWith('|__body');
+    frameDoc()?.querySelectorAll('.cms-active').forEach((n) => n.classList.remove('cms-active'));
+    nodesFor(src).forEach((n) => n.classList.add('cms-active'));
+    loadDoc(id).then((d) => (dCrumb.textContent = `${d.label} › ${crumbOf(src)}`)).catch(() => {});
+    openFor([src], isBody ? 'Edit page text' : 'Edit text', crumbOf(src), (srcs, values) => [
+      field(srcs[0], isBody ? 'Page text (Markdown)' : 'Text', values[0], {
+        long: isBody,
+        hint: isBody
+          ? 'Use <code>## Heading</code> for headings and a blank line between paragraphs. The preview updates after publishing.'
+          : 'Text in [square brackets] shows highlighted as unconfirmed; remove the brackets once confirmed.',
+      }),
+    ]);
+  }
+
+  function openSeo() {
+    const srcs = [`${seoBase}.title`, `${seoBase}.description`];
+    openFor(srcs, 'SEO settings', 'Shown in Google results and link previews, not on the page', (s, v) => [
+      field(s[0], 'Page title', v[0], { max: 60, hint: 'Keep under 60 characters. Include the main keyword and “VAKS Consulting”.' }),
+      field(s[1], 'Meta description', v[1], { max: 155, hint: 'One or two sentences, under 155 characters.' }),
+    ]);
+  }
+
+  function closeDrawer() {
+    drawer.hidden = true;
+    editing = null;
+    frameDoc()?.querySelectorAll('.cms-active').forEach((n) => n.classList.remove('cms-active'));
+  }
+
+  btnApply.addEventListener('click', async () => {
+    if (!editing) return closeDrawer();
+    for (const ta of editing.inputs) {
+      const src = ta.dataset.src!;
+      const value = ta.value.replace(/\r\n/g, '\n');
+      if (!value.trim()) {
+        say('Text can’t be empty.', 'error');
+        ta.focus();
+        return;
+      }
+      pending.delete(src);
+      const base = await rawValue(src).catch(() => '');
+      if (value !== base) pending.set(src, value);
+      paint(src);
+    }
+    refreshBar();
+    closeDrawer();
+  });
+  btnRevert.addEventListener('click', () => {
+    editing?.srcs.forEach((s) => {
+      pending.delete(s);
+      paint(s);
+    });
+    refreshBar();
+    closeDrawer();
+  });
+  document.querySelector('#ve-cancel')!.addEventListener('click', closeDrawer);
+  document.querySelector('#ve-close')!.addEventListener('click', closeDrawer);
+  document.querySelector('#ve-seo')!.addEventListener('click', openSeo);
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && !drawer.hidden && closeDrawer());
+
+  // ---------- page switching, discard, publish ----------
+  document.querySelector<HTMLSelectElement>('#ve-page')!.addEventListener('change', (e) => {
+    const url = (e.target as HTMLSelectElement).value;
+    if (pending.size && !confirm('You have unpublished changes on this page. Leave without publishing?')) {
+      (e.target as HTMLSelectElement).value = page;
+      return;
+    }
+    pending.clear();
+    location.href = `/cms/visual?page=${encodeURIComponent(url)}`;
+  });
+  btnDiscard.addEventListener('click', () => {
+    if (!confirm('Discard all unpublished changes?')) return;
+    const srcs = [...pending.keys()];
+    pending.clear();
+    srcs.forEach(paint);
+    refreshBar();
+  });
+  btnPublish.addEventListener('click', async () => {
+    btnPublish.disabled = true;
+    const label = btnPublish.innerHTML;
+    btnPublish.textContent = 'Publishing…';
+    try {
+      const r = await fetch('/cms/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page, edits: [...pending].map(([src, value]) => ({ src, value })) }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error([j.error, ...(j.problems ?? [])].filter(Boolean).join(' '));
+      const n = pending.size;
+      pending.clear();
+      docs.clear();
+      frameDoc()?.querySelectorAll('.cms-pending').forEach((el) => el.classList.remove('cms-pending'));
+      originals.clear();
+      say(
+        j.mode === 'local'
+          ? `Published ${n} change${n === 1 ? '' : 's'} to the local files.`
+          : `Published ${n} change${n === 1 ? '' : 's'}. The live website updates in about 1–2 minutes.`,
+      );
+    } catch (e) {
+      say(`Couldn’t publish: ${(e as Error).message}`, 'error');
+    } finally {
+      btnPublish.innerHTML = label;
+      refreshBar();
+    }
+  });
+  window.addEventListener('beforeunload', (e) => {
+    if (pending.size) e.preventDefault();
+  });
+
+  // ---------- wire up the page inside the frame ----------
+  frame.addEventListener('load', () => {
+    const doc = frameDoc();
+    if (!doc) return;
+    const style = doc.createElement('style');
+    style.textContent = `
+      [data-cms] { cursor: text; border-radius: 3px; outline: 1px dashed rgba(198,165,107,.55); outline-offset: 2px; transition: outline-color .12s, background-color .12s; }
+      [data-cms]:hover { outline: 2px dashed #c6a56b; background-color: rgba(198,165,107,.12); }
+      [data-cms].cms-active { outline: 2px solid #1b4266; background-color: rgba(27,66,102,.08); }
+      [data-cms].cms-pending { outline: 2px solid #1f7a45; background-color: rgba(31,122,69,.10); }
+      .skip-link { display: none !important; }
+    `;
+    doc.head.append(style);
+    doc.querySelectorAll<HTMLElement>('[data-cms]').forEach((el) => (el.title = 'Click to edit'));
+    // Re-apply unpublished edits if the frame reloads
+    [...pending.keys()].forEach(paint);
+
+    doc.addEventListener(
+      'click',
+      (e) => {
+        const target = e.target as Element;
+        const el = target.closest<HTMLElement>('[data-cms]');
+        if (el) {
+          e.preventDefault();
+          e.stopPropagation();
+          openText(el.dataset.cms!);
+          return;
+        }
+        if (target.closest('a[href], button[type="submit"]')) {
+          e.preventDefault();
+          say('Links are paused while editing. Use the page menu at the top to switch pages.');
+        }
+      },
+      true,
+    );
+    doc.addEventListener('submit', (e) => e.preventDefault(), true);
+  });
+</script>
