@@ -1,13 +1,16 @@
-# Deploys every push to main through a Vercel Deploy Hook.
+# Deploys every push to main with the Vercel CLI, as the project owner.
 #
 # Why: on Vercel's free (Hobby) plan, pushes to a private repo by anyone other than the
-# project owner show as "Blocked". A Deploy Hook deploys as the project owner instead.
+# project owner show as "Blocked" (Deploy Hooks are blocked too). A deploy made with the
+# owner's Vercel token is allowed.
 #
-# Setup (once, by the repo owner):
-#   1. Vercel → project → Settings → Git → Deploy Hooks → name "main", branch "main" → Create Hook → copy the URL.
-#   2. GitHub → this repo → Settings → Secrets and variables → Actions → New repository secret
-#      Name: VERCEL_DEPLOY_HOOK   Value: the URL from step 1.
-# Until the secret exists, this workflow does nothing.
+# Setup (once, by the owner, Raj):
+#   Vercel → Account Settings → Tokens → Create (scope: his account) → copy it.
+#   Vercel → project → Settings → General → copy "Project ID".
+#   Vercel → Account Settings → General (or team Settings) → copy the "Vercel ID"/"Team ID".
+#   GitHub → this repo → Settings → Secrets and variables → Actions → add:
+#     VERCEL_TOKEN, VERCEL_PROJECT_ID, VERCEL_ORG_ID
+# Until VERCEL_TOKEN exists, this workflow does nothing.
 
 name: Deploy to Vercel
 
@@ -16,19 +19,42 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: vercel-production
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # CMS saves are committed with Raj's token and already deploy on their own.
-    if: ${{ !contains(github.event.head_commit.message, 'Edited in the VAKS CMS') }}
+    # CMS saves are committed as Raj and already deploy through Vercel's Git integration.
+    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, 'Edited in the VAKS CMS') }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
-      - name: Trigger Vercel Deploy Hook
-        env:
-          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+      - name: Check secrets
+        id: check
         run: |
-          if [ -z "$HOOK" ]; then
-            echo "VERCEL_DEPLOY_HOOK secret is not set yet; skipping."
-            exit 0
+          if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "Vercel secrets are not set yet; skipping deploy."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
           fi
-          curl -fsS -X POST "$HOOK" > /dev/null
-          echo "Vercel deploy started."
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ready == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - name: Pull Vercel settings and environment variables
+        if: steps.check.outputs.ready == 'true'
+        run: npx --yes vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+      - name: Build
+        if: steps.check.outputs.ready == 'true'
+        run: npx --yes vercel@latest build --prod --token="$VERCEL_TOKEN"
+      - name: Deploy to production
+        if: steps.check.outputs.ready == 'true'
+        run: npx --yes vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"

@@ -49,7 +49,7 @@ Set `PUBLIC_WEB3FORMS_KEY` under Project → Settings → Environment Variables,
 
 ### If deployments show "Blocked" in Vercel
 
-On Vercel's free plan, pushes to a private repo by anyone other than the project owner are blocked. `.github/workflows/vercel-deploy.yml` deploys every push through a Deploy Hook instead: create one in Vercel (Settings → Git → Deploy Hooks, branch `main`) and save its URL as the GitHub repository secret `VERCEL_DEPLOY_HOOK` (Settings → Secrets and variables → Actions).
+On Vercel's free plan, pushes to a private repo by anyone other than the project owner are blocked (Deploy Hooks too). `.github/workflows/vercel-deploy.yml` deploys every push with the Vercel CLI using the owner's token instead. Add three GitHub repository secrets (Settings → Secrets and variables → Actions): `VERCEL_TOKEN` (Vercel → Account Settings → Tokens), `VERCEL_PROJECT_ID` (project → Settings → General) and `VERCEL_ORG_ID` (account/team ID). Quick unblock without setup: save anything in the CMS — its commits are authored by the owner and deploy everything before them.
 
 ## CMS (/cms)
 
