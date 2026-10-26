@@ -7,15 +7,13 @@ imageAlt: Illustration of a structured documentation page with a code sample and
 tags:
   - API documentation
   - Developer experience
-draft: true
+draft: false
 cta:
   title: Is your API reference holding developers back?
   text: Book a free 30-minute call. We'll look at your docs together and tell you what to fix first.
   buttonLabel: Book a call
   buttonUrl: /contact
 ---
-
-[Sample post: Raj to review, edit or replace in the CMS before publishing.]
 
 Most API documentation doesn't fail all at once. It drifts. A new endpoint goes in without an example, an authentication change only reaches the changelog, and a quick answer in Slack becomes the real documentation. Here are five signs it's time to stop patching and plan a rewrite.
 

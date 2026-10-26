@@ -112,3 +112,47 @@ body.cms { font: 15px/1.55 "Inter", system-ui, sans-serif; color: var(--midnight
   .cms-main { padding: 20px 16px 48px; }
   .cms-editor, .cms-grid2 { grid-template-columns: 1fr; }
 }
+
+/* links styled as buttons keep their button colours (the generic .cms a rule was overriding them) */
+.cms a.cms-btn { color: var(--warm-parchment); }
+.cms a.cms-btn.gold { color: var(--midnight); }
+.cms a.cms-btn.ghost { color: var(--midnight); }
+.cms a.cms-btn.danger { color: #a0412d; }
+.cms .cms-btn svg.glyph { width: 16px; height: 16px; }
+
+/* site content list */
+.cms-section { background: var(--paper); border: 1px solid var(--hairline); border-radius: 14px; margin-bottom: 20px; overflow: hidden; }
+.cms-section-head { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--hairline); background: #fbf9f4; }
+.cms-section-head .ico { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 10px; background: linear-gradient(140deg, #e6eef6, #f6efe2); color: var(--harbor-blue); flex: none; }
+.cms-section-head p { margin: 2px 0 0; font-size: 13px; color: var(--text-muted); }
+.cms-section-head .cms-count { font-size: 12.5px; padding: 3px 10px; border-radius: 999px; background: var(--warm-parchment); }
+.doc-list { list-style: none; margin: 0; padding: 0; }
+.doc { display: flex; align-items: center; gap: 20px; padding: 16px 20px; border-top: 1px solid var(--hairline); transition: background-color .15s; }
+.doc:first-child { border-top: 0; }
+.doc:hover { background: #fdfbf6; }
+.doc-main { flex: 1; min-width: 0; }
+.cms a.doc-title { font: 700 16px/22px "Manrope", sans-serif; color: var(--midnight); text-decoration: none; }
+.cms a.doc-title:hover { color: var(--harbor-blue); text-decoration: underline; text-underline-offset: 3px; }
+.doc-summary { margin: 3px 0 8px; font-size: 13.5px; line-height: 20px; color: var(--text-muted); max-width: 70ch; }
+.doc-urls { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.cms a.url-chip { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 3px 9px 3px 7px; border-radius: 6px; border: 1px solid #d9e2ec;
+  background: #f1f5f9; font: 12.5px/18px ui-monospace, SFMono-Regular, Menlo, monospace; text-decoration: none; color: var(--harbor-blue); }
+.cms a.url-chip:hover { border-color: var(--harbor-blue); background: #e8eff7; }
+.url-chip svg.glyph { width: 13px; height: 13px; }
+.url-host { color: #7a8796; }
+.url-path { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.doc-actions { display: flex; gap: 8px; flex: none; }
+.cms-head .doc-urls { margin: 8px 0 6px; }
+
+@media (max-width: 860px) {
+  .doc { flex-direction: column; align-items: stretch; gap: 10px; }
+  .doc-actions .cms-btn { flex: 1; }
+}
+.cms-main { min-width: 0; }
+@media (max-width: 860px) {
+  .cms { grid-template-columns: minmax(0, 1fr); }
+  .cms-side a, .cms-side button { width: auto; white-space: nowrap; }
+  .cms-section-head { padding: 14px 16px; }
+  .doc { padding: 14px 16px; }
+}
+.cms-section-head .cms-count { white-space: nowrap; flex: none; }

@@ -14,8 +14,12 @@ try {
 } catch (e) {
   error = String(e);
 }
-const groups = [...new Set(docs.map((d) => d.group))];
-const icons: Record<string, string> = { Site: 'globe', Services: 'briefcase', 'Case studies': 'trophy' };
+const groups = [
+  { name: 'Site', icon: 'globe', intro: 'Text shared across the website.' },
+  { name: 'Services', icon: 'briefcase', intro: 'One entry per service page.' },
+  { name: 'Case studies', icon: 'trophy', intro: 'One entry per case study page.' },
+];
+const host = 'vaksconsulting.com';
 ---
 
 <CmsLayout title="Site content" active="content">
@@ -27,27 +31,47 @@ const icons: Record<string, string> = { Site: 'globe', Services: 'briefcase', 'C
   </div>
   {error && <p class="cms-error">{error}</p>}
   <p class="cms-note">Text in <b>[square brackets]</b> shows highlighted on the site as unconfirmed. Remove the brackets once the fact is confirmed.</p>
+
   {
-    groups.map((g) => (
-      <section class="cms-panel">
-        <h2>
-          <Glyph name={icons[g] ?? 'file-text'} />
-          {g}
-        </h2>
-        <ul class="cms-rows">
-          {docs
-            .filter((d) => d.group === g)
-            .map((d) => (
-              <li>
-                <div class="grow">
-                  <a href={`/cms/content/${d.id}`}>{d.label}</a>
-                  <small>{d.path}</small>
-                </div>
-                <a class="cms-btn sm" href={`/cms/content/${d.id}`}>Edit</a>
-              </li>
-            ))}
-        </ul>
-      </section>
-    ))
+    groups.map((g) => {
+      const items = docs.filter((d) => d.group === g.name);
+      return (
+        items.length > 0 && (
+          <section class="cms-section">
+            <header class="cms-section-head">
+              <span class="ico"><Glyph name={g.icon} /></span>
+              <div>
+                <h2>{g.name}</h2>
+                <p>{g.intro}</p>
+              </div>
+              <span class="cms-count">{items.length} {items.length === 1 ? 'item' : 'items'}</span>
+            </header>
+            <ul class="doc-list">
+              {items.map((d) => (
+                <li class="doc">
+                  <div class="doc-main">
+                    <a class="doc-title" href={`/cms/content/${d.id}`}>{d.label}</a>
+                    {d.summary && <p class="doc-summary">{d.summary}</p>}
+                    <div class="doc-urls">
+                      {d.pages.map((p) => (
+                        <a class="url-chip" href={p.url} target="_blank" rel="noopener" title={`Open ${p.label} in a new tab`}>
+                          <Glyph name="link-2" />
+                          <span class="url-host">{host}</span>
+                          <span class="url-path">{p.url === '/' ? '/' : p.url}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                  <div class="doc-actions">
+                    <a class="cms-btn ghost sm" href={d.pages[0].url} target="_blank" rel="noopener"><Glyph name="external-link" />View page</a>
+                    <a class="cms-btn sm" href={`/cms/content/${d.id}`}><Glyph name="pencil" />Edit</a>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      );
+    })
   }
 </CmsLayout>

@@ -5,7 +5,18 @@ import * as lucide from 'lucide-static';
 import { iconNames } from '../icons';
 import { listDir, readText } from './store';
 
-export type Doc = { id: string; label: string; group: string; path: string; kind: 'json' | 'md' };
+export type Doc = {
+  id: string;
+  /** Human name, e.g. the service or case study title. */
+  label: string;
+  /** What this file controls, in plain words. */
+  summary: string;
+  group: string;
+  path: string;
+  kind: 'json' | 'md';
+  /** Live pages that show this content (first one is linked as "View page"). */
+  pages: { label: string; url: string }[];
+};
 
 /** Keys that hold structure (URLs, ordering, links between pages) rather than copy. */
 export const LOCKED = new Set(['slug', 'order', 'secondary', 'next', 'service', 'relatedCaseStudy', 'url', 'href', 'dropdown', 'photo', 'maxLength']);
@@ -14,14 +25,53 @@ const human = (s: string) => s.replace(/\.(md|json)$/, '').replace(/-/g, ' ').re
 
 export async function listDocs(): Promise<Doc[]> {
   const docs: Doc[] = [
-    { id: 'site', label: 'Business details, founder & home content', group: 'Site', path: 'content/site.json', kind: 'json' },
-    { id: 'pages', label: 'Page headings & interface text', group: 'Site', path: 'content/pages.json', kind: 'json' },
-    { id: 'privacy', label: 'Privacy policy', group: 'Site', path: 'content/pages/privacy-policy.md', kind: 'md' },
+    {
+      id: 'site',
+      label: 'Business details, founder & home content',
+      summary: 'Contact details, founder bio and career results, home page problems, process, FAQ, testimonials, values and stats.',
+      group: 'Site',
+      path: 'content/site.json',
+      kind: 'json',
+      pages: [{ label: 'Home', url: '/' }, { label: 'About', url: '/about' }, { label: 'Contact', url: '/contact' }],
+    },
+    {
+      id: 'pages',
+      label: 'Page headings & interface text',
+      summary: 'Section headings, leads, buttons and form labels used across every page, plus the blog page text.',
+      group: 'Site',
+      path: 'content/pages.json',
+      kind: 'json',
+      pages: [{ label: 'Home', url: '/' }, { label: 'Services', url: '/services' }, { label: 'Case studies', url: '/case-studies' }, { label: 'Blog', url: '/blog' }],
+    },
+    {
+      id: 'privacy',
+      label: 'Privacy policy',
+      summary: 'The privacy policy page text.',
+      group: 'Site',
+      path: 'content/pages/privacy-policy.md',
+      kind: 'md',
+      pages: [{ label: 'Privacy policy', url: '/privacy-policy' }],
+    },
   ];
   for (const [folder, group] of [['services', 'Services'], ['case-studies', 'Case studies']] as const) {
-    for (const file of (await listDir(`content/${folder}`)).filter((f) => f.endsWith('.md')).sort()) {
-      docs.push({ id: `${folder}/${file.replace(/\.md$/, '')}`, label: human(file), group, path: `content/${folder}/${file}`, kind: 'md' });
-    }
+    const files = (await listDir(`content/${folder}`)).filter((f) => f.endsWith('.md')).sort();
+    const entries = await Promise.all(
+      files.map(async (file) => {
+        const slug = file.replace(/\.md$/, '');
+        const path = `content/${folder}/${file}`;
+        let d: Record<string, unknown> = {};
+        try {
+          d = parse('md', await readText(path)).data;
+        } catch {
+          /* fall back to the file name */
+        }
+        const isService = folder === 'services';
+        const label = String((isService ? d.name : d.client) ?? human(file));
+        const summary = isService ? String(d.cardDescription ?? '') : String(d.title ?? '');
+        return { id: `${folder}/${slug}`, label, summary, group, path, kind: 'md' as const, pages: [{ label, url: `/${folder}/${slug}` }], order: Number(d.order ?? 99) };
+      }),
+    );
+    entries.sort((a, b) => a.order - b.order).forEach(({ order: _order, ...doc }) => docs.push(doc));
   }
   return docs;
 }
