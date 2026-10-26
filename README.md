@@ -53,6 +53,7 @@ A small built-in CMS at `https://vaksconsulting.com/cms` for blog posts, site te
 
 - **Blog posts:** create, edit, publish (untick Draft) or delete. Each post has one cover image; the author is always the founder. Posts live in `content/blog/` (images in `content/blog/images/`).
 - **Site content:** edit existing text in `site.json`, `pages.json`, services, case studies and the privacy policy. Structure fields (slugs, order, links) are locked; pages can't be added or removed.
+- **Leads:** every website form (Contact page, blog sidebar) saves the enquiry here as well as emailing it via Web3Forms. Change status (New → Contacted → Qualified → Closed), add private notes, search, filter, export CSV, delete. Stored in Upstash Redis (Vercel → Storage → Upstash for Redis, free); locally in `.data/leads.json`.
 - **Integrations:** Google Search Console and Bing verification, GA4, Google Tag Manager and Microsoft Clarity IDs (`content/settings.json`), injected into every page.
 
 Every save is a Git commit to `main`, which redeploys the site on Vercel (live in about 1–2 minutes). Pull before pushing local changes (`git pull --rebase`).

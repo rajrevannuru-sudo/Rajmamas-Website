@@ -1,11 +1,11 @@
-// Same-origin check for CMS form posts. Replaces Astro's built-in checkOrigin, which compares against the
+// Same-origin check for CMS form posts and the public /api/ endpoints (website forms). Replaces Astro's built-in checkOrigin, which compares against the
 // function's internal URL on Vercel and so rejected genuine logins. Here we compare the browser's Origin
 // header with the host the visitor actually used (x-forwarded-host on Vercel, Host locally).
 import { defineMiddleware } from 'astro:middleware';
 
 export const onRequest = defineMiddleware((context, next) => {
   const { request, url } = context;
-  if (request.method !== 'GET' && request.method !== 'HEAD' && url.pathname.startsWith('/cms')) {
+  if (request.method !== 'GET' && request.method !== 'HEAD' && (url.pathname.startsWith('/cms') || url.pathname.startsWith('/api/'))) {
     const origin = request.headers.get('origin');
     const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
     let sameOrigin = false;

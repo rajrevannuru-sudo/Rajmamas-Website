@@ -1,0 +1,209 @@
+---
+// Leads dashboard: every enquiry from the website forms, newest first.
+import CmsLayout from '../../layouts/CmsLayout.astro';
+import Glyph from '../../components/Glyph.astro';
+import { isLoggedIn } from '../../lib/cms/auth';
+import { LEAD_STATUSES, deleteLead, leadStore, listLeads, updateLead, type Lead, type LeadStatus } from '../../lib/leads';
+
+export const prerender = false;
+if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+
+const url = Astro.url;
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const id = String(form.get('id') ?? '');
+  const action = String(form.get('action') ?? '');
+  try {
+    if (action === 'delete') await deleteLead(id);
+    else if (action === 'save') {
+      const status = String(form.get('status') ?? 'new') as LeadStatus;
+      await updateLead(id, {
+        status: (LEAD_STATUSES as readonly string[]).includes(status) ? status : 'new',
+        notes: String(form.get('notes') ?? '').slice(0, 5000),
+      });
+    }
+    return Astro.redirect(`/cms/leads${url.search}`, 303);
+  } catch (e) {
+    error = String((e as Error).message ?? e);
+  }
+}
+
+let all: Lead[] = [];
+const store = leadStore();
+if (store !== 'none') {
+  try {
+    all = await listLeads();
+  } catch (e) {
+    error = String((e as Error).message ?? e);
+  }
+}
+
+const statusFilter = url.searchParams.get('status') ?? 'all';
+const formFilter = url.searchParams.get('form') ?? 'all';
+const q = (url.searchParams.get('q') ?? '').trim().toLowerCase();
+const leads = all.filter(
+  (l) =>
+    (statusFilter === 'all' || l.status === statusFilter) &&
+    (formFilter === 'all' || l.form === formFilter) &&
+    (!q || [l.name, l.email, l.company, l.services, l.message, l.notes].join(' ').toLowerCase().includes(q)),
+);
+
+const DAY = 864e5;
+const now = Date.now();
+const stats = [
+  { label: 'All leads', value: all.length, icon: 'inbox' },
+  { label: 'New', value: all.filter((l) => l.status === 'new').length, icon: 'sparkles' },
+  { label: 'Last 7 days', value: all.filter((l) => now - Date.parse(l.createdAt) < 7 * DAY).length, icon: 'calendar-days' },
+  { label: 'Last 30 days', value: all.filter((l) => now - Date.parse(l.createdAt) < 30 * DAY).length, icon: 'calendar-range' },
+];
+const statusLabel: Record<LeadStatus, string> = { new: 'New', contacted: 'Contacted', qualified: 'Qualified', closed: 'Closed' };
+const formLabel = (f: string) => (f === 'contact' ? 'Contact page' : f === 'blog' ? 'Blog' : f);
+const forms = [...new Set(all.map((l) => l.form))];
+const fmt = (iso: string) =>
+  new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' });
+const ago = (iso: string) => {
+  const mins = Math.round((now - Date.parse(iso)) / 6e4);
+  if (mins < 60) return `${Math.max(1, mins)} min ago`;
+  if (mins < 1440) return `${Math.round(mins / 60)} h ago`;
+  const days = Math.round(mins / 1440);
+  return days < 30 ? `${days} day${days === 1 ? '' : 's'} ago` : fmt(iso).split(',')[0];
+};
+const qs = (patch: Record<string, string>) => {
+  const p = new URLSearchParams(url.search);
+  Object.entries(patch).forEach(([k, v]) => (v === 'all' || !v ? p.delete(k) : p.set(k, v)));
+  const s = p.toString();
+  return `/cms/leads${s ? `?${s}` : ''}`;
+};
+const mailto = (l: Lead) =>
+  `mailto:${l.email}?subject=${encodeURIComponent('Re: your enquiry to VAKS Consulting')}&body=${encodeURIComponent(`Hi ${l.name.split(' ')[0]},\n\nThank you for getting in touch.\n\n`)}`;
+---
+
+<CmsLayout title="Leads" active="leads">
+  <div class="cms-head">
+    <div>
+      <h1>Leads</h1>
+      <p>Every enquiry from the website’s forms, newest first.</p>
+    </div>
+    {all.length > 0 && <a class="cms-btn ghost" href={`/cms/leads.csv${url.search}`}><Glyph name="download" />Export CSV</a>}
+  </div>
+
+  {
+    store === 'none' && (
+      <div class="cms-error">
+        <b>The leads database isn’t connected yet.</b> In Vercel, open the project → <b>Storage</b> → <b>Create Database</b> → choose <b>Upstash for Redis</b> (free),
+        connect it to this project, then redeploy. Enquiries are still emailed through Web3Forms in the meantime.
+      </div>
+    )
+  }
+  {store === 'local' && <p class="cms-note">Local mode: leads are saved in .data/leads.json on this computer.</p>}
+  {error && <p class="cms-error">{error}</p>}
+
+  <div class="lead-stats">
+    {
+      stats.map((s) => (
+        <div class="lead-stat">
+          <span class="ico"><Glyph name={s.icon} /></span>
+          <div>
+            <b>{s.value}</b>
+            <span>{s.label}</span>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="lead-filters">
+    <nav class="lead-tabs" aria-label="Filter by status">
+      {
+        ['all', ...LEAD_STATUSES].map((s) => (
+          <a href={qs({ status: s })} aria-current={statusFilter === s ? 'page' : undefined}>
+            {s === 'all' ? 'All' : statusLabel[s as LeadStatus]}
+            <span>{s === 'all' ? all.length : all.filter((l) => l.status === s).length}</span>
+          </a>
+        ))
+      }
+    </nav>
+    <form class="lead-search" method="GET">
+      {statusFilter !== 'all' && <input type="hidden" name="status" value={statusFilter} />}
+      <select name="form" aria-label="Filter by form" onchange="this.form.submit()">
+        <option value="all">All forms</option>
+        {forms.map((f) => <option value={f} selected={formFilter === f}>{formLabel(f)}</option>)}
+      </select>
+      <input type="search" name="q" value={q} placeholder="Search name, email, message…" aria-label="Search leads" />
+      <button class="cms-btn sm" type="submit"><Glyph name="search" />Search</button>
+    </form>
+  </div>
+
+  <section class="cms-panel lead-panel">
+    {
+      leads.length === 0 ? (
+        <div class="lead-empty">
+          <span class="ico"><Glyph name="inbox" /></span>
+          <p>{all.length === 0 ? 'No leads yet. Enquiries from the Contact page and blog forms will appear here.' : 'No leads match these filters.'}</p>
+        </div>
+      ) : (
+        <ul class="lead-list">
+          {leads.map((l) => (
+            <li>
+              <details class:list={['lead', `is-${l.status}`]}>
+                <summary>
+                  <span class:list={['lead-dot', l.status]} title={statusLabel[l.status]} />
+                  <span class="lead-who">
+                    <b>{l.name}</b>
+                    <small>{l.email}{l.company && ` · ${l.company}`}</small>
+                  </span>
+                  <span class="lead-snippet">{l.services || l.message.slice(0, 90)}</span>
+                  <span class="lead-form">{formLabel(l.form)}</span>
+                  <span class="lead-when" title={fmt(l.createdAt)}>{ago(l.createdAt)}</span>
+                  <span class:list={['pill', `st-${l.status}`]}>{statusLabel[l.status]}</span>
+                </summary>
+                <div class="lead-body">
+                  <div class="lead-main">
+                    <dl class="lead-facts">
+                      <div><dt>Received</dt><dd>{fmt(l.createdAt)}</dd></div>
+                      <div><dt>Email</dt><dd><a href={mailto(l)}>{l.email}</a></dd></div>
+                      {l.company && <div><dt>Company</dt><dd>{l.company}</dd></div>}
+                      {l.services && <div><dt>Interested in</dt><dd>{l.services}</dd></div>}
+                      <div><dt>Form</dt><dd>{formLabel(l.form)}{l.page && <> · <a href={l.page} target="_blank" rel="noopener">{l.page}</a></>}</dd></div>
+                    </dl>
+                    <p class="cms-label">Message</p>
+                    <blockquote class="lead-msg">{l.message}</blockquote>
+                    <a class="cms-btn gold sm" href={mailto(l)}><Glyph name="reply" />Reply by email</a>
+                  </div>
+                  <form class="lead-side" method="POST">
+                    <input type="hidden" name="id" value={l.id} />
+                    <div class="cms-field">
+                      <label for={`st-${l.id}`}>Status</label>
+                      <select id={`st-${l.id}`} name="status">
+                        {LEAD_STATUSES.map((s) => <option value={s} selected={l.status === s}>{statusLabel[s]}</option>)}
+                      </select>
+                    </div>
+                    <div class="cms-field">
+                      <label for={`nt-${l.id}`}>Private notes</label>
+                      <textarea id={`nt-${l.id}`} name="notes" rows="4" placeholder="e.g. Call booked for Monday">{l.notes}</textarea>
+                    </div>
+                    <div class="lead-actions">
+                      <button class="cms-btn danger sm" type="submit" name="action" value="delete" formnovalidate data-confirm={`Delete the lead from ${l.name}? This can’t be undone.`}>Delete</button>
+                      <button class="cms-btn sm" type="submit" name="action" value="save"><Glyph name="check" />Save</button>
+                    </div>
+                  </form>
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</CmsLayout>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('.lead-side').forEach((form) =>
+    form.addEventListener('submit', (e) => {
+      const btn = (e as SubmitEvent).submitter as HTMLButtonElement | null;
+      if (btn?.dataset.confirm && !confirm(btn.dataset.confirm)) e.preventDefault();
+    }),
+  );
+</script>

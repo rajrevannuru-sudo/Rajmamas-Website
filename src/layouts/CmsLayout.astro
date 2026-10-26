@@ -7,7 +7,7 @@ import goldLogo from '../assets/images/brand/vaks-consulting-logo-gold.png';
 
 interface Props {
   title: string;
-  active?: 'dashboard' | 'blog' | 'content' | 'integrations';
+  active?: 'dashboard' | 'leads' | 'blog' | 'content' | 'integrations';
   /** Hide the sidebar (login screen). */
   bare?: boolean;
   /** Full-width main area (visual editor). */
@@ -17,6 +17,7 @@ const { title, active, bare = false, wide = false } = Astro.props;
 const flash = Astro.url.searchParams.get('saved');
 const nav = [
   { id: 'dashboard', label: 'Dashboard', href: '/cms', icon: 'layout-dashboard' },
+  { id: 'leads', label: 'Leads', href: '/cms/leads', icon: 'inbox' },
   { id: 'blog', label: 'Blog posts', href: '/cms/blog', icon: 'newspaper' },
   { id: 'content', label: 'Site content', href: '/cms/content', icon: 'file-pen-line' },
   { id: 'integrations', label: 'Integrations', href: '/cms/integrations', icon: 'plug' },

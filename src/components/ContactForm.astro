@@ -119,8 +119,9 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 </div>
 
 <script>
-  // Inline validation, then a fetch submit to Web3Forms so success/error show in place.
-  // Without JS the form still posts normally (Web3Forms shows its own confirmation page).
+  // Inline validation, then the enquiry is saved to CMS → Leads and emailed via Web3Forms (scripts/enquiry.ts).
+  // Without JS the form still posts to Web3Forms, which shows its own confirmation page.
+  import { sendEnquiry } from '../scripts/enquiry';
   const card = document.querySelector<HTMLElement>('#contact-form');
   const form = card?.querySelector<HTMLFormElement>('form');
   if (card && form) {
@@ -183,11 +184,16 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
       button.disabled = true;
       label.textContent = form.dataset.sending ?? idle;
       try {
-        const data = new FormData(form);
-        data.delete('services');
-        const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: data });
-        const json = await res.json().catch(() => ({}));
-        if (!res.ok || !json.success) throw new Error(json.message ?? res.statusText);
+        const value = (sel: string) => form.querySelector<HTMLInputElement | HTMLTextAreaElement>(sel)?.value.trim() ?? '';
+        const sent = await sendEnquiry(form, {
+          form: 'contact',
+          name: value('#f-name'),
+          email: value('#f-email'),
+          company: value('#f-co'),
+          services: serviceHidden.value,
+          message: value('#f-msg'),
+        });
+        if (!sent) throw new Error('not sent');
         form.reset();
         counter.textContent = '0';
         panel.hidden = true;

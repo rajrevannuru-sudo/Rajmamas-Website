@@ -7,6 +7,7 @@ import navyLogo from '../../assets/images/brand/vaks-consulting-logo-navy.png';
 import { checkCredentials, delay, isConfigured, isLoggedIn, startSession } from '../../lib/cms/auth';
 import { storeMode } from '../../lib/cms/store';
 import { listPosts } from '../../lib/cms/blog';
+import { leadStore, listLeads } from '../../lib/leads';
 
 export const prerender = false;
 
@@ -25,6 +26,14 @@ const loggedIn = isLoggedIn(Astro.cookies);
 const mode = storeMode();
 let posts: Awaited<ReturnType<typeof listPosts>> = [];
 let loadError = '';
+let newLeads: number | null = null;
+if (loggedIn && leadStore() !== 'none') {
+  try {
+    newLeads = (await listLeads()).filter((l) => l.status === 'new').length;
+  } catch {
+    newLeads = null;
+  }
+}
 if (loggedIn) {
   try {
     posts = (await listPosts()).slice(0, 5);
@@ -73,6 +82,11 @@ if (loggedIn) {
       {loadError && <p class="cms-error">{loadError}</p>}
 
       <div class="cms-cards">
+        <a class="cms-card" href="/cms/leads">
+          <span class="ico"><Glyph name="inbox" /></span>
+          <b>Leads{newLeads ? <span class="pill live" style="margin-left:6px">{newLeads} new</span> : null}</b>
+          <span>Enquiries from the Contact page and blog forms.</span>
+        </a>
         <a class="cms-card" href="/cms/blog">
           <span class="ico"><Glyph name="newspaper" /></span>
           <b>Blog posts</b>

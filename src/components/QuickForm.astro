@@ -48,6 +48,9 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 </aside>
 
 <script>
+  // Saves the enquiry to CMS → Leads and emails it via Web3Forms (scripts/enquiry.ts).
+  import { sendEnquiry } from '../scripts/enquiry';
+
   const card = document.querySelector<HTMLElement>('.quick-card');
   const form = card?.querySelector<HTMLFormElement>('form');
   if (card && form) {
@@ -72,9 +75,9 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
       label.textContent = form.dataset.sending ?? idle;
       status.hidden = true;
       try {
-        const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) });
-        const json = await res.json().catch(() => ({}));
-        if (!res.ok || !json.success) throw new Error();
+        const value = (sel: string) => form.querySelector<HTMLInputElement | HTMLTextAreaElement>(sel)?.value.trim() ?? '';
+        const sent = await sendEnquiry(form, { form: 'blog', name: value('#q-name'), email: value('#q-email'), message: value('#q-msg') });
+        if (!sent) throw new Error('not sent');
         card.querySelector<HTMLElement>('.quick-panel')!.hidden = true;
         const ok = card.querySelector<HTMLElement>('.quick-success')!;
         ok.hidden = false;

@@ -18,7 +18,7 @@ We use your details only to reply to your enquiry and, if we work together, to r
 
 ## Who processes it
 
-Contact form messages are delivered to us by [Web3Forms](https://web3forms.com), a form service that forwards each message to our inbox. Web3Forms processes your message only to deliver it. Our email is hosted by [our email provider].
+Contact form messages are delivered to us by [Web3Forms](https://web3forms.com), a form service that forwards each message to our inbox. Web3Forms processes your message only to deliver it. A copy of each enquiry is also kept in our website’s private enquiry log (hosted by Upstash on Vercel) so we can follow up; only we can see it. Our email is hosted by [our email provider].
 
 ## How long we keep it
 
