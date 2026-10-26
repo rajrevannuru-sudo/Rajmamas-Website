@@ -1,6 +1,6 @@
 // GET /cms/leads.csv — all leads (or the current status/form filter) as a spreadsheet (login required).
 import type { APIRoute } from 'astro';
-import { isLoggedIn } from '../../lib/cms/auth';
+import { guardApi } from '../../lib/cms/auth';
 import { listLeads } from '../../lib/leads';
 
 export const prerender = false;
@@ -12,7 +12,8 @@ const cell = (v: string) => {
 };
 
 export const GET: APIRoute = async ({ cookies, url }) => {
-  if (!isLoggedIn(cookies)) return new Response('Unauthorised', { status: 401 });
+  const denied = await guardApi(cookies);
+  if (denied) return denied;
   const status = url.searchParams.get('status');
   const form = url.searchParams.get('form');
   const leads = (await listLeads()).filter((l) => (!status || l.status === status) && (!form || l.form === form));

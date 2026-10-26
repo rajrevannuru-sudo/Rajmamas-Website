@@ -1,12 +1,13 @@
 // GET /cms/api/doc?id=<doc> → { label, kind, data, body } for the visual editor (login required).
 import type { APIRoute } from 'astro';
-import { isLoggedIn } from '../../../lib/cms/auth';
+import { guardApi } from '../../../lib/cms/auth';
 import { loadDoc, resolveDoc, type Doc } from '../../../lib/cms/content';
 
 export const prerender = false;
 
 export const GET: APIRoute = async ({ url, cookies }) => {
-  if (!isLoggedIn(cookies)) return Response.json({ error: 'Please log in again.' }, { status: 401 });
+  const denied = await guardApi(cookies);
+  if (denied) return denied;
   const doc = resolveDoc(url.searchParams.get('id') ?? '');
   if (!doc) return Response.json({ error: 'Unknown content file.' }, { status: 404 });
   try {

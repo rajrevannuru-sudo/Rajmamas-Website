@@ -1,13 +1,14 @@
 // POST /cms/api/save { edits: [{ src: "doc|path", value }], page } → one commit with every changed file.
 import type { APIRoute } from 'astro';
-import { isLoggedIn } from '../../../lib/cms/auth';
+import { guardApi } from '../../../lib/cms/auth';
 import { applyEdits, type Edit } from '../../../lib/cms/content';
 import { commit, storeMode } from '../../../lib/cms/store';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request, cookies }) => {
-  if (!isLoggedIn(cookies)) return Response.json({ error: 'Please log in again.' }, { status: 401 });
+  const denied = await guardApi(cookies);
+  if (denied) return denied;
   let payload: { edits?: Edit[]; page?: string };
   try {
     payload = await request.json();

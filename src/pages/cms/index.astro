@@ -4,7 +4,7 @@ import CmsLayout from '../../layouts/CmsLayout.astro';
 import { Image } from 'astro:assets';
 import Glyph from '../../components/Glyph.astro';
 import navyLogo from '../../assets/images/brand/vaks-consulting-logo-navy.png';
-import { checkCredentials, delay, isConfigured, isLoggedIn, startSession } from '../../lib/cms/auth';
+import { checkCredentials, delay, isConfigured, sessionState, singleSessionEnforced, startSession } from '../../lib/cms/auth';
 import { storeMode } from '../../lib/cms/store';
 import { listPosts } from '../../lib/cms/blog';
 import { leadStore, listLeads } from '../../lib/leads';
@@ -15,14 +15,17 @@ let error = '';
 if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
   if (checkCredentials(String(form.get('username') ?? ''), String(form.get('password') ?? ''))) {
-    startSession(Astro.cookies, Astro.url.protocol === 'https:');
+    await startSession(Astro.cookies, Astro.url.protocol === 'https:');
     return Astro.redirect('/cms', 303);
   }
   await delay(800);
   error = 'That username and password don’t match.';
 }
 
-const loggedIn = isLoggedIn(Astro.cookies);
+const state = await sessionState(Astro.cookies);
+const loggedIn = state === 'ok';
+const signedOutElsewhere = !loggedIn && (state === 'replaced' || Astro.url.searchParams.get('signedout') === 'elsewhere');
+if (state === 'replaced') Astro.cookies.delete('vaks_cms', { path: '/cms' });
 const mode = storeMode();
 let posts: Awaited<ReturnType<typeof listPosts>> = [];
 let loadError = '';
@@ -56,6 +59,9 @@ if (loggedIn) {
           <p class="cms-error">The CMS isn’t configured yet. Set CMS_USERNAME, CMS_PASSWORD and CMS_SECRET in the environment.</p>
         )}
         {error && <p class="cms-error" role="alert">{error}</p>}
+        {signedOutElsewhere && !error && (
+          <p class="cms-note" role="status">You were signed out because someone signed in to the CMS from another browser or device. Only one sign-in is allowed at a time.</p>
+        )}
         <div class="cms-field">
           <label for="u">Username</label>
           <input id="u" name="username" autocomplete="username" required autofocus />
@@ -77,6 +83,9 @@ if (loggedIn) {
         <a class="cms-btn gold" href="/cms/blog/new"><Glyph name="plus" />New blog post</a>
       </div>
 
+      {!singleSessionEnforced() && (
+        <p class="cms-note">Single sign-in isn’t active yet: connect the Upstash Redis database in Vercel (Storage) to sign out other browsers automatically.</p>
+      )}
       {mode === 'none' && <p class="cms-error">Saving is switched off: set GITHUB_TOKEN in the Vercel environment variables.</p>}
       {mode === 'local' && <p class="cms-note">Local mode: changes are written to the files on this computer, not GitHub.</p>}
       {loadError && <p class="cms-error">{loadError}</p>}

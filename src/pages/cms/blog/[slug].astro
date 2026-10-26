@@ -3,13 +3,14 @@
 // The author is always the founder, so there is no author field.
 import CmsLayout from '../../../layouts/CmsLayout.astro';
 import Glyph from '../../../components/Glyph.astro';
-import { isLoggedIn } from '../../../lib/cms/auth';
+import { guard } from '../../../lib/cms/auth';
 import { commit, listDir, readText, storeMode, type FileChange } from '../../../lib/cms/store';
 import { emptyPost, imageRepoPath, parsePost, serializePost, slugify, SLUG_RE, type PostFields } from '../../../lib/cms/blog';
 import { site, pages } from '../../../lib/site';
 
 export const prerender = false;
-if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+const denied = await guard(Astro);
+if (denied) return denied;
 
 const param = Astro.params.slug ?? '';
 const isNew = param === 'new';

@@ -2,12 +2,13 @@
 // Analytics and search-console IDs, stored in content/settings.json and injected by components/Integrations.astro.
 import CmsLayout from '../../layouts/CmsLayout.astro';
 import Glyph from '../../components/Glyph.astro';
-import { isLoggedIn } from '../../lib/cms/auth';
+import { guard } from '../../lib/cms/auth';
 import { commit, readText, storeMode } from '../../lib/cms/store';
 import { integrationFields } from '../../lib/settings';
 
 export const prerender = false;
-if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+const denied = await guard(Astro);
+if (denied) return denied;
 
 const PATH = 'content/settings.json';
 let settings = JSON.parse(await readText(PATH)) as Record<string, string>;

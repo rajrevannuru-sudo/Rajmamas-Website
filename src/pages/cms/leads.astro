@@ -2,11 +2,12 @@
 // Leads dashboard: every enquiry from the website forms, newest first.
 import CmsLayout from '../../layouts/CmsLayout.astro';
 import Glyph from '../../components/Glyph.astro';
-import { isLoggedIn } from '../../lib/cms/auth';
+import { guard } from '../../lib/cms/auth';
 import { LEAD_STATUSES, deleteLead, leadStore, listLeads, updateLead, type Lead, type LeadStatus } from '../../lib/leads';
 
 export const prerender = false;
-if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+const denied = await guard(Astro);
+if (denied) return denied;
 
 const url = Astro.url;
 let error = '';

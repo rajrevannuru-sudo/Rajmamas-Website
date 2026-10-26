@@ -1,11 +1,12 @@
 ---
 import CmsLayout from '../../../layouts/CmsLayout.astro';
 import Glyph from '../../../components/Glyph.astro';
-import { isLoggedIn } from '../../../lib/cms/auth';
+import { guard } from '../../../lib/cms/auth';
 import { listPosts } from '../../../lib/cms/blog';
 
 export const prerender = false;
-if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+const denied = await guard(Astro);
+if (denied) return denied;
 
 let posts: Awaited<ReturnType<typeof listPosts>> = [];
 let error = '';

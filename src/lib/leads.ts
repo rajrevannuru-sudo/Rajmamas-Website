@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createHmac, randomBytes } from 'node:crypto';
 import { cmsEnv } from './cms/env';
+import { hasRedis, redis } from './kv';
 
 export const LEAD_STATUSES = ['new', 'contacted', 'qualified', 'closed'] as const;
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
@@ -25,21 +26,7 @@ export type Lead = {
 };
 
 const LOCAL_FILE = path.resolve('.data/leads.json');
-const hasRedis = () => Boolean(cmsEnv.redisUrl() && cmsEnv.redisToken());
 export const leadStore = () => (hasRedis() ? 'redis' : import.meta.env.DEV ? 'local' : 'none');
-
-async function redis<T = unknown>(commands: (string | number)[][]): Promise<T[]> {
-  const res = await fetch(`${cmsEnv.redisUrl().replace(/\/$/, '')}/pipeline`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${cmsEnv.redisToken()}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(commands),
-  });
-  if (!res.ok) throw new Error(`Leads database error ${res.status}`);
-  const out = (await res.json()) as { result?: T; error?: string }[];
-  const failed = out.find((r) => r.error);
-  if (failed) throw new Error(`Leads database error: ${failed.error}`);
-  return out.map((r) => r.result as T);
-}
 
 async function readLocal(): Promise<Lead[]> {
   try {

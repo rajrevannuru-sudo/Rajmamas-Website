@@ -80,5 +80,24 @@ const nav = [
       }
       <slot />
     </main>
+    {
+      !bare && (
+        <script>
+          // Single sign-in: if this account signs in somewhere else, sign this tab out automatically.
+          const check = async () => {
+            try {
+              const r = await fetch('/cms/api/session', { cache: 'no-store' });
+              const j = await r.json();
+              if (!j.ok) location.href = j.reason === 'replaced' ? '/cms?signedout=elsewhere' : '/cms';
+            } catch {
+              /* offline: try again next time */
+            }
+          };
+          setInterval(check, 20000);
+          document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && check());
+          window.addEventListener('focus', check);
+        </script>
+      )
+    }
   </body>
 </html>

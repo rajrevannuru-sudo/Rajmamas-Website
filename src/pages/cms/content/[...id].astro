@@ -3,12 +3,13 @@
 import CmsLayout from '../../../layouts/CmsLayout.astro';
 import FieldTree from '../../../components/cms/FieldTree.astro';
 import Glyph from '../../../components/Glyph.astro';
-import { isLoggedIn } from '../../../lib/cms/auth';
+import { guard } from '../../../lib/cms/auth';
 import { applyForm, getDoc, loadDoc, serialize } from '../../../lib/cms/content';
 import { commit, storeMode } from '../../../lib/cms/store';
 
 export const prerender = false;
-if (!isLoggedIn(Astro.cookies)) return Astro.redirect('/cms');
+const denied = await guard(Astro);
+if (denied) return denied;
 
 const doc = await getDoc(Astro.params.id ?? '');
 if (!doc) return new Response('Not found', { status: 404 });
