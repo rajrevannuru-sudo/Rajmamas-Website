@@ -1,9 +1,7 @@
 ---
 // /cms — login screen, or the dashboard once signed in.
 import CmsLayout from '../../layouts/CmsLayout.astro';
-import { Image } from 'astro:assets';
 import Glyph from '../../components/Glyph.astro';
-import navyLogo from '../../assets/images/brand/vaks-consulting-logo-navy.png';
 import { checkCredentials, delay, isConfigured, sessionState, singleSessionEnforced, startSession } from '../../lib/cms/auth';
 import { storeMode } from '../../lib/cms/store';
 import { listPosts } from '../../lib/cms/blog';
@@ -51,7 +49,7 @@ if (loggedIn) {
     <CmsLayout title="Log in" bare>
       <form class="cms-login" method="POST">
         <div class="cms-brand">
-          <Image src={navyLogo} alt="VAKS Consulting" height={44} width={Math.round((navyLogo.width / navyLogo.height) * 44)} densities={[1, 2]} />
+          <img src="/brand/vaks-consulting-logo-navy.png" alt="VAKS Consulting" width="149" height="44" />
           <small>CMS</small>
         </div>
         <p>Sign in to edit the website and write blog posts.</p>

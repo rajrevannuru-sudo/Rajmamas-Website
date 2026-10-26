@@ -1,9 +1,7 @@
 ---
 import '../styles/tokens.css';
 import '../styles/cms.css';
-import { Image } from 'astro:assets';
 import Glyph from '../components/Glyph.astro';
-import goldLogo from '../assets/images/brand/vaks-consulting-logo-gold.png';
 
 interface Props {
   title: string;
@@ -41,7 +39,8 @@ const nav = [
       !bare && (
         <aside class="cms-side">
           <a class="cms-brand" href="/cms" aria-label="VAKS Consulting CMS, dashboard">
-            <Image src={goldLogo} alt="VAKS Consulting" height={34} width={Math.round((goldLogo.width / goldLogo.height) * 34)} densities={[1, 2]} />
+            {/* Plain static file: CMS pages render on demand, so they avoid the image-resizing endpoint. */}
+            <img src="/brand/vaks-consulting-logo-gold.png" alt="VAKS Consulting" width="115" height="34" />
             <small>CMS</small>
           </a>
           <nav aria-label="CMS">
