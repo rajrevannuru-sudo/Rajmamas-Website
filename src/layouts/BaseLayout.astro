@@ -35,6 +35,8 @@ const ld = graph(schema, person ? await founderSchemaImage() : undefined);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Google Tag Manager / GA4 / verification tags (CMS → Integrations), as high in <head> as possible -->
+    <Integrations />
     <Seo title={title} description={description} path={path} og={og} noindex={noindex} type={type} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
@@ -48,7 +50,6 @@ const ld = graph(schema, person ? await founderSchemaImage() : undefined);
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
     />
     <JsonLd data={ld} />
-    <Integrations />
   </head>
   <body class="vk">
     {
