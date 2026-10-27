@@ -10,23 +10,28 @@ seo:
   description: Standard operating procedures, process maps and a documentation hub your team can follow and keep current as you grow.
   h1: SOP writing and process documentation services
   primaryKeyword: SOP writing services
-  keywords: [process documentation services, standard operating procedure consultant, SOP writing Hyderabad, process mapping, operations documentation]
+  keywords:
+    - process documentation services
+    - standard operating procedure consultant
+    - SOP writing Hyderabad
+    - process mapping
+    - operations documentation
 eyebrow: SOPs & process documentation
 headings:
-  problems: "When processes live in people's heads"
-  intro: "SOP writing services your team will actually follow"
-  included: "Everything your team needs to work the same way"
-  faq: "SOP and process documentation questions"
-  cta: "Ready for processes your team can follow?"
+  problems: When processes live in people's heads
+  intro: SOP writing services your team will actually follow
+  included: Everything your team needs to work the same way
+  faq: SOP and process documentation questions
+  cta: Ready for processes your team can follow?
 lead: Internal documentation that keeps your team aligned and your operations scalable, written so people actually follow it.
 heroInputs:
-  - label: "Team know-how"
+  - label: Team know-how
     icon: users
-  - label: "Process workshops"
+  - label: Process workshops
     icon: presentation
-  - label: "Existing checklists"
+  - label: Existing checklists
     icon: list-checks
-  - label: "Tools and systems"
+  - label: Tools and systems
     icon: settings
 whoFor:
   - Founders and COOs whose processes live in a few people's heads
@@ -49,19 +54,26 @@ included:
   - Delivered in Notion, Confluence, Google Docs or PDF
 timelineNote: A typical SOP project runs [4–8] weeks, depending on the number of processes.
 process:
-  - label: Week [1]
+  - label: Week 1
     title: Map
     text: Process-mapping workshops with team leads to agree what to document first.
-  - label: Weeks [2–4]
+  - label: Weeks 2–4
     title: Document
     text: SOPs written from interviews with the people who do the work.
-  - label: Weeks [5–6]
+  - label: Weeks 5–6
     title: Review
     text: Each SOP tested and reviewed by its owner.
-  - label: Week [7]
+  - label: Week 7
     title: Hand over
     text: A documentation hub with clear owners and review dates.
-tools: [Notion, Confluence, Google Docs, Microsoft Word, Lucidchart, Miro, PDF]
+tools:
+  - Notion
+  - Confluence
+  - Google Docs
+  - Microsoft Word
+  - Lucidchart
+  - Miro
+  - PDF
 relatedCaseStudy: athena-overseas-sop-documentation
 faq:
   - q: Who do you need to talk to?
