@@ -5,8 +5,8 @@ order: 1
 industry: Cloud Computing and AI Infrastructure
 service: api-documentation
 serviceLabel: User & API documentation
-timeline: "[X] weeks"
-title: Rebuilding API docs that customers & developers actually use
+timeline: 6 months
+title: Rebuilding end-user & API docs that customers & developers actually use
 seo:
   title: Drut Networks API Documentation Case Study | VAKS
   description: How VAKS rebuilt Drut Networks' API reference, quickstart and code samples so developers could integrate without waiting on engineers.
@@ -19,7 +19,10 @@ headlineMetric:
   value: 40%
   label: faster developer onboarding
 summary:
-  challenge: Three years of organically grown API docs, with inconsistent structure, outdated examples and no clear starting point.
+  challenge: |-
+    The organically developed product lacks comprehensive end-user documentation and has only minimal API documentation.
+
+    Existing content is inconsistently structured, contains outdated examples, and provides no clear starting point for users to understand the product or get started.
   approach: An audit, engineering interviews and a topic-based rebuild of the reference, quickstart and code samples.
   outcome: Developers onboard faster and integration questions to engineering dropped.
 approach:
