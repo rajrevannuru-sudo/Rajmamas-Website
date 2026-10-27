@@ -10,23 +10,28 @@ seo:
   description: An audit of your existing documentation with a gap analysis, information architecture and a prioritised roadmap.
   h1: Documentation audit and strategy consulting
   primaryKeyword: documentation audit
-  keywords: [documentation strategy consulting, documentation gap analysis, information architecture, documentation roadmap, content audit]
+  keywords:
+    - documentation strategy consulting
+    - documentation gap analysis
+    - information architecture
+    - documentation roadmap
+    - content audit
 eyebrow: Documentation strategy & audit
 headings:
-  problems: "When nobody knows what the docs contain"
-  intro: "A documentation audit that ends in a plan"
-  included: "Everything you need to decide what to fix first"
-  faq: "Documentation audit questions"
-  cta: "Ready to know where your docs stand?"
-lead: Before writing a single word, we assess what you have, what's missing and what it's costing you, then hand you a roadmap prioritised by impact.
+  problems: When nobody knows what the docs contain
+  intro: A documentation audit that ends in a plan
+  included: Everything you need to decide what to fix first
+  faq: Documentation audit questions
+  cta: Ready to know where your docs stand?
+lead: Before writing a single word, we assess what you have, what's missing, and what it's costing you, then hand you a roadmap prioritized by impact.
 heroInputs:
-  - label: "Scattered docs"
+  - label: Scattered docs
     icon: folders
-  - label: "Search and usage data"
+  - label: Search and usage data
     icon: search
-  - label: "Support tickets"
+  - label: Support tickets
     icon: ticket
-  - label: "Team interviews"
+  - label: Team interviews
     icon: mic
 whoFor:
   - Teams with years of documentation that grew without a plan
@@ -46,21 +51,28 @@ included:
   - Tooling and workflow recommendations
   - Phased documentation roadmap
   - Written report with an optional walkthrough call
-timelineNote: A typical audit takes [2–4] weeks, depending on the size of your documentation.
+timelineNote: A typical audit takes 2–4 weeks, depending on the size of your documentation.
 process:
-  - label: Week [1]
+  - label: Week 1-2
     title: Inventory
     text: Every document catalogued, with owners, age and usage.
-  - label: Week [2]
+  - label: Week 2-4
     title: Assess
     text: Quality, gaps and duplication reviewed against your readers' needs.
-  - label: Week [3]
+  - label: Week 4-5
     title: Architect
     text: A recommended structure and the tooling and workflow to support it.
-  - label: Week [4]
+  - label: Week 6
     title: Roadmap
     text: A phased plan, presented in a walkthrough call.
-tools: [Confluence, Notion, Google Drive, SharePoint, Git, Docusaurus, Analytics and search data]
+tools:
+  - Confluence
+  - Notion
+  - Google Drive
+  - SharePoint
+  - Git
+  - Docusaurus
+  - Analytics and search data
 relatedCaseStudy: drut-networks-api-documentation
 faq:
   - q: What do we get at the end?
