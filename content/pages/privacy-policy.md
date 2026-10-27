@@ -10,7 +10,7 @@ This policy explains what happens to the details you send us through vaksconsult
 
 When you use the contact form, we receive your name, email address, company name (if you give one), the service you are interested in and your message. If you email, call or message us on WhatsApp, we receive the details you choose to share.
 
-We don't use analytics, advertising or tracking cookies on this website.
+We use Google Analytics to understand how people use this website, for example which pages are read most and how visitors find us. It sets cookies and collects usage data such as pages visited, device type and approximate location; it doesn't tell us your name or email address. You can block it with your browser's cookie settings or [Google's opt-out add-on](https://tools.google.com/dlpage/gaoptout). We don't use advertising cookies.
 
 ## How we use it
 
