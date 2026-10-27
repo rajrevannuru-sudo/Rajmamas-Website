@@ -2,7 +2,7 @@
 // Analytics and search-console IDs, stored in content/settings.json and injected by components/Integrations.astro.
 import CmsLayout from '../../layouts/CmsLayout.astro';
 import Glyph from '../../components/Glyph.astro';
-import { guard } from '../../lib/cms/auth';
+import { guard, cookieUser } from '../../lib/cms/auth';
 import { commit, readText, storeMode } from '../../lib/cms/store';
 import { integrationFields } from '../../lib/settings';
 
@@ -27,7 +27,7 @@ if (Astro.request.method === 'POST') {
   }
   if (!errors.length) {
     try {
-      await commit([{ path: PATH, content: `${JSON.stringify(settings, null, 2)}\n` }], 'Integrations: update tracking and verification IDs');
+      await commit([{ path: PATH, content: `${JSON.stringify(settings, null, 2)}\n` }], 'Integrations: update tracking and verification IDs', cookieUser(Astro.cookies));
       return Astro.redirect(`/cms/integrations?saved=${storeMode()}`, 303);
     } catch (e) {
       errors.push(String(e));

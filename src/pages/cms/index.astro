@@ -2,7 +2,7 @@
 // /cms — login screen, or the dashboard once signed in.
 import CmsLayout from '../../layouts/CmsLayout.astro';
 import Glyph from '../../components/Glyph.astro';
-import { checkCredentials, delay, isConfigured, sessionState, singleSessionEnforced, startSession } from '../../lib/cms/auth';
+import { checkCredentials, cookieUser, delay, isConfigured, sessionState, singleSessionEnforced, startSession } from '../../lib/cms/auth';
 import { storeMode } from '../../lib/cms/store';
 import { listPosts } from '../../lib/cms/blog';
 import { leadStore, listLeads } from '../../lib/leads';
@@ -12,8 +12,9 @@ export const prerender = false;
 let error = '';
 if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
-  if (checkCredentials(String(form.get('username') ?? ''), String(form.get('password') ?? ''))) {
-    await startSession(Astro.cookies, Astro.url.protocol === 'https:');
+  const user = checkCredentials(String(form.get('username') ?? ''), String(form.get('password') ?? ''));
+  if (user) {
+    await startSession(Astro.cookies, Astro.url.protocol === 'https:', user);
     return Astro.redirect('/cms', 303);
   }
   await delay(800);
@@ -54,11 +55,11 @@ if (loggedIn) {
         </div>
         <p>Sign in to edit the website and write blog posts.</p>
         {!isConfigured() && (
-          <p class="cms-error">The CMS isn’t configured yet. Set CMS_USERNAME, CMS_PASSWORD and CMS_SECRET in the environment.</p>
+          <p class="cms-error">The CMS isn’t configured yet. Set CMS_USERNAME, CMS_PASSWORD and CMS_SECRET (and CMS_USERNAME_2 / CMS_PASSWORD_2 for a second login) in the environment.</p>
         )}
         {error && <p class="cms-error" role="alert">{error}</p>}
         {signedOutElsewhere && !error && (
-          <p class="cms-note" role="status">You were signed out because someone signed in to the CMS from another browser or device. Only one sign-in is allowed at a time.</p>
+          <p class="cms-note" role="status">You were signed out because this account signed in to the CMS from another browser or device. Each account can be signed in in one place at a time.</p>
         )}
         <div class="cms-field">
           <label for="u">Username</label>
@@ -75,7 +76,7 @@ if (loggedIn) {
     <CmsLayout title="Dashboard" active="dashboard">
       <div class="cms-head">
         <div>
-          <h1>Welcome back</h1>
+          <h1>Welcome back{cookieUser(Astro.cookies) && `, ${cookieUser(Astro.cookies)}`}</h1>
           <p>Write a blog post, update the site’s text, or connect analytics.</p>
         </div>
         <a class="cms-btn gold" href="/cms/blog/new"><Glyph name="plus" />New blog post</a>

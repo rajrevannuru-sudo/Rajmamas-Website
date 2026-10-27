@@ -71,7 +71,7 @@ export async function listDir(p: string): Promise<string[]> {
 }
 
 /** Writes several files as one change (one Git commit on GitHub). */
-export async function commit(changes: FileChange[], message: string): Promise<void> {
+export async function commit(changes: FileChange[], message: string, editor = ''): Promise<void> {
   changes.forEach((c) => assertSafe(c.path));
   if (useGitHub()) {
     const branch = cmsEnv.githubBranch();
@@ -88,7 +88,7 @@ export async function commit(changes: FileChange[], message: string): Promise<vo
     const newTree = await gh<{ sha: string }>('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: head.tree.sha, tree }) });
     const newCommit = await gh<{ sha: string }>('/git/commits', {
       method: 'POST',
-      body: JSON.stringify({ message: `${message}\n\nEdited in the VAKS CMS.`, tree: newTree.sha, parents: [ref.object.sha] }),
+      body: JSON.stringify({ message: `${message}\n\nEdited in the VAKS CMS${editor ? ` by ${editor}` : ''}.`, tree: newTree.sha, parents: [ref.object.sha] }),
     });
     await gh(`/git/refs/heads/${branch}`, { method: 'PATCH', body: JSON.stringify({ sha: newCommit.sha }) });
     return;

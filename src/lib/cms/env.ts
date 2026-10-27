@@ -8,6 +8,11 @@ export const read = (name: string): string =>
 export const cmsEnv = {
   username: () => read('CMS_USERNAME'),
   password: () => read('CMS_PASSWORD'),
+  /** All CMS logins: CMS_USERNAME/CMS_PASSWORD, then CMS_USERNAME_2/CMS_PASSWORD_2 … up to _5. */
+  users: () =>
+    ['', '_2', '_3', '_4', '_5']
+      .map((n) => ({ username: read(`CMS_USERNAME${n}`), password: read(`CMS_PASSWORD${n}`) }))
+      .filter((u) => u.username && u.password),
   secret: () => read('CMS_SECRET'),
   githubToken: () => read('GITHUB_TOKEN'),
   githubRepo: () => read('GITHUB_REPO') || 'rajrevannuru-sudo/Rajmamas-Website',

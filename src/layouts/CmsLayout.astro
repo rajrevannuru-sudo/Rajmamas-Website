@@ -2,6 +2,7 @@
 import '../styles/tokens.css';
 import '../styles/cms.css';
 import Glyph from '../components/Glyph.astro';
+import { cookieUser } from '../lib/cms/auth';
 
 interface Props {
   title: string;
@@ -13,6 +14,7 @@ interface Props {
 }
 const { title, active, bare = false, wide = false } = Astro.props;
 const flash = Astro.url.searchParams.get('saved');
+const user = bare ? '' : cookieUser(Astro.cookies);
 const nav = [
   { id: 'dashboard', label: 'Dashboard', href: '/cms', icon: 'layout-dashboard' },
   { id: 'leads', label: 'Leads', href: '/cms/leads', icon: 'inbox' },
@@ -52,6 +54,12 @@ const nav = [
             ))}
           </nav>
           <div class="cms-side-foot">
+            {user && (
+              <p class="cms-user">
+                <Glyph name="circle-user-round" />
+                Signed in as <b>{user}</b>
+              </p>
+            )}
             <a href="/" target="_blank" rel="noopener">
               <Glyph name="external-link" />
               View website

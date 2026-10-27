@@ -62,6 +62,6 @@ A small built-in CMS at `https://vaksconsulting.com/cms` for blog posts, site te
 
 Every save is a Git commit to `main`, which redeploys the site on Vercel (live in about 1–2 minutes). Pull before pushing local changes (`git pull --rebase`).
 
-Required environment variables (Vercel → Settings → Environment Variables; see `.env.example`): `CMS_USERNAME`, `CMS_PASSWORD`, `CMS_SECRET` (long random string), `GITHUB_TOKEN` (fine-grained token with Contents read & write on this repo). Locally, without `GITHUB_TOKEN`, `npm run dev` saves to the files on disk.
+Required environment variables (Vercel → Settings → Environment Variables; see `.env.example`): `CMS_USERNAME`, `CMS_PASSWORD` (extra logins: `CMS_USERNAME_2`/`CMS_PASSWORD_2` … up to `_5`; each account can be signed in in one place at a time), `CMS_SECRET` (long random string), `GITHUB_TOKEN` (fine-grained token with Contents read & write on this repo). Locally, without `GITHUB_TOKEN`, `npm run dev` saves to the files on disk.
 
 Note: the Vercel adapter doesn't support `npm run preview`; use `npm run dev` locally.

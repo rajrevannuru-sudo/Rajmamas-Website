@@ -1,6 +1,6 @@
-// Username/password login with a signed, HttpOnly session cookie (8 hours).
-// Only one session is active at a time: each login stores a new session id server-side (lib/kv.ts),
-// so any other browser that was signed in is signed out on its next request or heartbeat.
+// Username/password login with a signed, HttpOnly session cookie (8 hours). Several users can be configured
+// (see cmsEnv.users). Each user has one active session at a time: a login stores a new session id for that user
+// server-side (lib/kv.ts), so that user's other browser is signed out on its next request or heartbeat.
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import type { AstroCookies } from 'astro';
 import { cmsEnv } from './env';
@@ -8,7 +8,7 @@ import { kvDel, kvGet, kvMode, kvSet } from '../kv';
 
 const COOKIE = 'vaks_cms';
 const MAX_AGE = 60 * 60 * 8;
-const SESSION_KEY = 'cms:session';
+const sessionKey = (user: string) => `cms:session:${user.toLowerCase()}`;
 
 const sign = (payload: string) => createHmac('sha256', cmsEnv.secret()).update(payload).digest('base64url');
 
@@ -19,16 +19,23 @@ const safeEqual = (a: string, b: string) => {
 };
 
 export function isConfigured() {
-  return Boolean(cmsEnv.username() && cmsEnv.password() && cmsEnv.secret().length >= 16);
+  return Boolean(cmsEnv.users().length && cmsEnv.secret().length >= 16);
 }
 
-export function checkCredentials(username: string, password: string) {
-  if (!isConfigured()) return false;
-  // Compare both so the response time doesn't reveal which one was wrong.
-  const u = safeEqual(username.trim().toLowerCase(), cmsEnv.username().toLowerCase());
-  const p = safeEqual(password, cmsEnv.password());
-  return u && p;
+/** Returns the matching user's name (as configured), or null. Every user is checked so timing reveals nothing. */
+export function checkCredentials(username: string, password: string): string | null {
+  if (!isConfigured()) return null;
+  const given = username.trim().toLowerCase();
+  let match: string | null = null;
+  for (const user of cmsEnv.users()) {
+    const u = safeEqual(given, user.username.toLowerCase());
+    const p = safeEqual(password, user.password);
+    if (u && p) match = user.username;
+  }
+  return match;
 }
+
+const userExists = (name: string) => cmsEnv.users().some((u) => u.username.toLowerCase() === name.toLowerCase());
 
 type Payload = { u: string; exp: number; sid?: string };
 
@@ -45,31 +52,36 @@ function readCookie(cookies: AstroCookies): Payload | null {
   }
 }
 
-/** Starts a session and makes it the only valid one. */
-export async function startSession(cookies: AstroCookies, secure: boolean) {
+/** Starts a session for `user` and makes it that user's only valid session. */
+export async function startSession(cookies: AstroCookies, secure: boolean, user: string) {
   const sid = randomBytes(18).toString('base64url');
-  if (kvMode() !== 'none') await kvSet(SESSION_KEY, sid, MAX_AGE);
-  const payload = Buffer.from(JSON.stringify({ u: cmsEnv.username(), exp: Date.now() + MAX_AGE * 1000, sid })).toString('base64url');
+  if (kvMode() !== 'none') await kvSet(sessionKey(user), sid, MAX_AGE);
+  const payload = Buffer.from(JSON.stringify({ u: user, exp: Date.now() + MAX_AGE * 1000, sid })).toString('base64url');
   cookies.set(COOKIE, `${payload}.${sign(payload)}`, { httpOnly: true, secure, sameSite: 'strict', path: '/cms', maxAge: MAX_AGE });
 }
 
 export async function endSession(cookies: AstroCookies) {
   const data = readCookie(cookies);
-  if (data?.sid && kvMode() !== 'none' && (await kvGet(SESSION_KEY)) === data.sid) await kvDel(SESSION_KEY);
+  if (data?.sid && kvMode() !== 'none' && (await kvGet(sessionKey(data.u))) === data.sid) await kvDel(sessionKey(data.u));
   cookies.delete(COOKIE, { path: '/cms' });
 }
 
 /**
- * "ok": signed in. "replaced": a newer login elsewhere took over this session. "none": not signed in.
+ * "ok": signed in. "replaced": a newer login by the same user elsewhere took over this session. "none": not signed in.
  * Without a database (kvMode "none") the single-session rule can't be enforced, so a valid cookie is enough.
  */
 export async function sessionState(cookies: AstroCookies): Promise<'ok' | 'replaced' | 'none'> {
   const data = readCookie(cookies);
-  if (!data) return 'none';
+  if (!data || !data.u || !userExists(data.u)) return 'none';
   if (kvMode() === 'none') return 'ok';
-  const current = await kvGet(SESSION_KEY).catch(() => null);
+  const current = await kvGet(sessionKey(data.u)).catch(() => null);
   if (current && data.sid && safeEqual(current, data.sid)) return 'ok';
   return current ? 'replaced' : 'none';
+}
+
+/** Name of the signed-in user from the (signed) cookie, for display and commit messages. */
+export function cookieUser(cookies: AstroCookies): string {
+  return readCookie(cookies)?.u ?? '';
 }
 
 export async function isLoggedIn(cookies: AstroCookies) {

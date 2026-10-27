@@ -276,3 +276,7 @@ body.cms.cms-bare { display: flex; align-items: center; justify-content: center;
 .cms input[type="search"] { min-height: 36px; padding: 7px 12px; border: 1px solid #cbbfa9; border-radius: 8px; background: #fff; font: 14px/1.5 "Inter", sans-serif; color: var(--midnight); }
 .cms input[type="search"]:focus { outline: none; border-color: var(--harbor-blue); box-shadow: 0 0 0 3px rgba(27,66,102,.14); }
 .lead > summary .pill { justify-self: start; }
+.cms-user { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; padding: 6px 10px; font-size: 13px; color: var(--text-muted-on-dark); }
+.cms-user b { color: var(--warm-parchment); }
+.cms-user svg.glyph { width: 16px; height: 16px; }
+@media (max-width: 860px) { .cms-user { margin: 0; } }

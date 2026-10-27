@@ -1,6 +1,6 @@
 // POST /cms/api/save { edits: [{ src: "doc|path", value }], page } → one commit with every changed file.
 import type { APIRoute } from 'astro';
-import { guardApi } from '../../../lib/cms/auth';
+import { guardApi, cookieUser } from '../../../lib/cms/auth';
 import { applyEdits, type Edit } from '../../../lib/cms/content';
 import { commit, storeMode } from '../../../lib/cms/store';
 
@@ -21,7 +21,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   if (problems.length) return Response.json({ error: 'Nothing was published.', problems }, { status: 422 });
   try {
     const page = String(payload.page ?? '').slice(0, 80);
-    await commit(files, `Visual edit: ${edits.length} change${edits.length === 1 ? '' : 's'}${page ? ` on ${page}` : ''}`);
+    await commit(files, `Visual edit: ${edits.length} change${edits.length === 1 ? '' : 's'}${page ? ` on ${page}` : ''}`, cookieUser(cookies));
     return Response.json({ ok: true, mode: storeMode() });
   } catch (e) {
     return Response.json({ error: String(e) }, { status: 500 });

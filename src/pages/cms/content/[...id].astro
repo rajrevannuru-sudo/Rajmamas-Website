@@ -3,7 +3,7 @@
 import CmsLayout from '../../../layouts/CmsLayout.astro';
 import FieldTree from '../../../components/cms/FieldTree.astro';
 import Glyph from '../../../components/Glyph.astro';
-import { guard } from '../../../lib/cms/auth';
+import { guard, cookieUser } from '../../../lib/cms/auth';
 import { applyForm, getDoc, loadDoc, serialize } from '../../../lib/cms/content';
 import { commit, storeMode } from '../../../lib/cms/store';
 
@@ -26,7 +26,7 @@ if (Astro.request.method === 'POST') {
   if (doc.kind === 'md' && form.has('body')) body = String(form.get('body')).replace(/\r\n/g, '\n');
   if (!errors.length) {
     try {
-      await commit([{ path: doc.path, content: serialize(doc.kind, data, body) }], `Content: update ${doc.label}`);
+      await commit([{ path: doc.path, content: serialize(doc.kind, data, body) }], `Content: update ${doc.label}`, cookieUser(Astro.cookies));
       return Astro.redirect(`/cms/content/${doc.id}?saved=${storeMode()}`, 303);
     } catch (e) {
       errors = [String(e)];

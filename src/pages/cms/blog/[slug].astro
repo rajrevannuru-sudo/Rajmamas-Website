@@ -3,7 +3,7 @@
 // The author is always the founder, so there is no author field.
 import CmsLayout from '../../../layouts/CmsLayout.astro';
 import Glyph from '../../../components/Glyph.astro';
-import { guard } from '../../../lib/cms/auth';
+import { guard, cookieUser } from '../../../lib/cms/auth';
 import { commit, listDir, readText, storeMode, type FileChange } from '../../../lib/cms/store';
 import { emptyPost, imageRepoPath, parsePost, serializePost, slugify, SLUG_RE, type PostFields } from '../../../lib/cms/blog';
 import { site, pages } from '../../../lib/site';
@@ -42,7 +42,7 @@ if (Astro.request.method === 'POST') {
     const img = imageRepoPath(post.image);
     if (img) changes.push({ path: img, delete: true });
     try {
-      await commit(changes, `Blog: delete "${post.title}"`);
+      await commit(changes, `Blog: delete "${post.title}"`, cookieUser(Astro.cookies));
       return Astro.redirect(done, 303);
     } catch (e) {
       errors.push(String(e));
@@ -102,7 +102,7 @@ if (Astro.request.method === 'POST') {
       }
       changes.push({ path: `content/blog/${post.slug}.md`, content: serializePost(post) });
       try {
-        await commit(changes, `Blog: ${isNew ? 'add' : 'update'} "${post.title}"`);
+        await commit(changes, `Blog: ${isNew ? 'add' : 'update'} "${post.title}"`, cookieUser(Astro.cookies));
         return Astro.redirect(done, 303);
       } catch (e) {
         errors.push(String(e));
