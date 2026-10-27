@@ -16,7 +16,7 @@ seo:
     - information architecture
     - documentation roadmap
     - content audit
-eyebrow: Documentation strategy & audit
+eyebrow: Documentation audit & strategy
 headings:
   problems: When nobody knows what the docs contain
   intro: A documentation audit that ends in a plan
