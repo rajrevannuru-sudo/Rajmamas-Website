@@ -4,7 +4,7 @@
   "_googleSiteVerificationNote": "Google Search Console → Add property → HTML tag method: paste only the content value, e.g. abc123XYZ.",
   "ga4MeasurementId": "G-61YFZZRGYR",
   "_ga4MeasurementIdNote": "Google Analytics 4 → Admin → Data streams → Measurement ID, e.g. G-XXXXXXXXXX.",
-  "gtmContainerId": "",
+  "gtmContainerId": "GTM-P9WQ6ZCG",
   "_gtmContainerIdNote": "Google Tag Manager container ID, e.g. GTM-XXXXXXX. Use GTM or GA4, not both for the same tag.",
   "bingSiteVerification": "",
   "_bingSiteVerificationNote": "Bing Webmaster Tools → HTML meta tag method: paste only the content value.",
