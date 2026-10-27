@@ -1,6 +1,7 @@
-# vaksconsulting.com
-# The CMS (/cms) and the form/API endpoints (/api) are private: never crawl or index them.
-# They also send "X-Robots-Tag: noindex, nofollow" and the CMS pages carry <meta name="robots" content="noindex, nofollow">.
+# robots.txt for vaksconsulting.com
+#
+# The whole public site may be crawled. The CMS (/cms) and the form/API endpoints (/api)
+# are private: they are never crawled or indexed (they also send "X-Robots-Tag: noindex, nofollow").
 
 User-agent: *
 Allow: /
@@ -8,4 +9,6 @@ Disallow: /cms
 Disallow: /cms/
 Disallow: /api/
 
+# Sitemaps (both list every public page and update automatically on each build)
+Sitemap: https://vaksconsulting.com/sitemap.xml
 Sitemap: https://vaksconsulting.com/sitemap-index.xml
