@@ -2,10 +2,10 @@
 client: Aapmor Technologies
 slug: aapmor-help-centre
 order: 2
-industry: "[SaaS / Project management]"
+industry: IT Services and Consulting
 service: user-manuals-help-centres
-serviceLabel: Help centre
-timeline: "[X] weeks"
+serviceLabel: Documentation sytem design
+timeline: 12 weeks
 title: A help system that reduced support load
 seo:
   title: Aapmor Help Centre Case Study | VAKS Consulting
