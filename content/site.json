@@ -197,7 +197,7 @@
     {
       "title": "More support tickets",
       "icon": "ticket",
-      "text": "Your support team answers the same questions every week because the help centre doesn't."
+      "text": "Your support team answers the same questions frequently because the help system doesn't."
     },
     {
       "title": "Slow onboarding",
@@ -244,7 +244,7 @@
     },
     {
       "q": "How long does a typical project take?",
-      "a": "Most projects run between [4 and 12] weeks, depending on scope. An audit can take as little as [2] weeks; a full help centre or API reference takes longer. We agree the timeline before we start."
+      "a": "Most projects run between 4 and 12 weeks, depending on scope. An audit can take as little as 2 weeks; a full help centre or API reference takes longer. We agree the timeline before we start."
     },
     {
       "q": "Do you sign NDAs?",

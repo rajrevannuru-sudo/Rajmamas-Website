@@ -12,11 +12,11 @@ seo:
   description: How VAKS rebuilt Drut Networks' API reference, quickstart and code samples so developers could integrate without waiting on engineers.
   primaryKeyword: API documentation case study
 headings:
-  challenge: "Docs that lagged behind the product"
-  approach: "Start from the developer's first hour"
-  outcome: "What changed"
+  challenge: Docs that lagged behind the product
+  approach: Start from the developer's first hour
+  outcome: What changed
 headlineMetric:
-  value: "[40]%"
+  value: 40%
   label: faster developer onboarding
 summary:
   challenge: Three years of organically grown API docs, with inconsistent structure, outdated examples and no clear starting point.

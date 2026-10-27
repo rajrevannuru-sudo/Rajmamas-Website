@@ -12,11 +12,11 @@ seo:
   description: How VAKS documented 24 core SOPs and built a documentation hub for Athena Overseas during rapid team growth.
   primaryKeyword: SOP documentation case study
 headings:
-  challenge: "Knowledge that lived in people's heads"
-  approach: "Map the work, then write it down"
-  outcome: "What changed"
+  challenge: Knowledge that lived in people's heads
+  approach: Map the work, then write it down
+  outcome: What changed
 headlineMetric:
-  value: "[50]%"
+  value: 50%
   label: faster new-hire time to productivity
 summary:
   challenge: The team tripled in [18 months], and knowledge lived in people's heads, so onboarding was inconsistent and errors grew.
@@ -44,7 +44,7 @@ deliverables:
   - Process maps and workflow diagrams
   - Ownership and review framework
 quote:
-  text: "Our internal SOPs were disorganized and difficult to maintain. VAKS brought structure and clarity, creating a practical system our team can confidently manage and sustain."
+  text: Our internal SOPs were disorganized and difficult to maintain. VAKS brought structure and clarity, creating a practical system our team can confidently manage and sustain.
   name: Rajesh Kolli
   role: Managing Director
   confirmed: true

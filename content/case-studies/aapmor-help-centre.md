@@ -6,17 +6,17 @@ industry: "[SaaS / Project management]"
 service: user-manuals-help-centres
 serviceLabel: Help centre
 timeline: "[X] weeks"
-title: A help centre that reduced support load
+title: A help system that reduced support load
 seo:
   title: Aapmor Help Centre Case Study | VAKS Consulting
   description: How VAKS rewrote and restructured Aapmor Technologies' help centre to cut repeat support questions.
   primaryKeyword: help centre case study
 headings:
-  challenge: "A help centre that fell behind the product"
-  approach: "Start from the support queue"
-  outcome: "What changed"
+  challenge: A help centre that fell behind the product
+  approach: Start from the support queue
+  outcome: What changed
 headlineMetric:
-  value: "[35]%"
+  value: 35%
   label: fewer support tickets in two months
 summary:
   challenge: A fast-growing product with a help centre that hadn't kept pace, so support answered the same questions every day.
