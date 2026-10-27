@@ -23,7 +23,7 @@ headings:
   included: Everything developers need to integrate
   faq: API documentation questions
   cta: Ready for API docs developers can follow?
-lead: Reference docs, guides and code samples that help developers integrate faster and ask your team fewer questions.
+lead: Reference docs, guides, and code samples that help developers integrate faster and ask your team fewer questions.
 heroInputs:
   - label: OpenAPI spec
     icon: file-json
@@ -51,7 +51,7 @@ included:
   - Documentation style guide
   - Up to 3 review cycles
   - Delivered in Markdown, HTML or your preferred format
-timelineNote: A typical API documentation project runs [4–6] weeks, depending on the number of endpoints.
+timelineNote: A typical API documentation project runs 4–6 weeks, depending on the number of endpoints.
 process:
   - label: Week 1-2
     title: Discover
