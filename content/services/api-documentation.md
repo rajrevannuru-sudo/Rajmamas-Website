@@ -4,29 +4,34 @@ slug: api-documentation
 order: 1
 secondary: false
 icon: code
-cardDescription: API reference, SDK guides and tutorials developers can follow on the first try.
+cardDescription: API reference, SDK guides and tutorials customers & developers can follow on the first try.
 seo:
   title: API Documentation Services for Startups | VAKS Consulting
   description: API reference, SDK guides and code samples that help developers integrate faster and ask your engineers fewer questions.
   h1: API documentation services for developer-first products
   primaryKeyword: API documentation services
-  keywords: [developer documentation, REST API documentation, SDK documentation, OpenAPI documentation, API reference writing]
+  keywords:
+    - developer documentation
+    - REST API documentation
+    - SDK documentation
+    - OpenAPI documentation
+    - API reference writing
 eyebrow: API documentation services
 headings:
-  problems: "When your API is better than its docs"
-  intro: "API documentation services built with your engineers"
-  included: "Everything developers need to integrate"
-  faq: "API documentation questions"
-  cta: "Ready for API docs developers can follow?"
+  problems: When your API is better than its docs
+  intro: API documentation services built with your engineers
+  included: Everything developers need to integrate
+  faq: API documentation questions
+  cta: Ready for API docs developers can follow?
 lead: Reference docs, guides and code samples that help developers integrate faster and ask your team fewer questions.
 heroInputs:
-  - label: "OpenAPI spec"
+  - label: OpenAPI spec
     icon: file-json
-  - label: "Engineer interviews"
+  - label: Engineer interviews
     icon: mic
-  - label: "Live API & sandbox"
+  - label: Live API & sandbox
     icon: server
-  - label: "Repeated Slack questions"
+  - label: Repeated Slack questions
     icon: message-square
 whoFor:
   - CTOs and VPs of Engineering shipping a public or partner API
@@ -60,7 +65,16 @@ process:
   - label: Week [6]
     title: Deliver
     text: Final files in your format, plus a style guide to keep them current.
-tools: [OpenAPI / Swagger, Postman, Markdown, MDX, Docusaurus, ReadMe, GitBook, Git & GitHub, HTML]
+tools:
+  - OpenAPI / Swagger
+  - Postman
+  - Markdown
+  - MDX
+  - Docusaurus
+  - ReadMe
+  - GitBook
+  - Git & GitHub
+  - HTML
 relatedCaseStudy: drut-networks-api-documentation
 faq:
   - q: Do you need access to our codebase?
