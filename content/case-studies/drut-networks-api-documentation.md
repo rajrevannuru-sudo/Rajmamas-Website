@@ -2,9 +2,9 @@
 client: Drut Networks
 slug: drut-networks-api-documentation
 order: 1
-industry: "[Developer tooling]"
+industry: Cloud Computing and AI Infrastructure
 service: api-documentation
-serviceLabel: API documentation
+serviceLabel: User & API documentation
 timeline: "[X] weeks"
 title: Rebuilding API docs that customers & developers actually use
 seo:
