@@ -19,10 +19,7 @@ headlineMetric:
   value: 40%
   label: faster developer onboarding
 summary:
-  challenge: |-
-    The organically developed product lacks comprehensive end-user documentation and has only minimal API documentation.
-
-    Existing content is inconsistently structured, contains outdated examples, and provides no clear starting point for users to understand the product or get started.
+  challenge: The organically developed product lacks end-user documentation, with minimal API coverage, inconsistent structure, outdated examples, and no clear getting-started guide.
   approach: An audit, engineering interviews and a topic-based rebuild of the reference, quickstart and code samples.
   outcome: Developers onboard faster and integration questions to engineering dropped.
 approach:
@@ -33,18 +30,18 @@ approach:
   - title: Restructure
     text: Rebuilt the reference around a topic-based structure with a clear entry point.
   - title: Rewrite & test
-    text: New quickstart, reference and code samples in [5] languages, tested against the API.
+    text: New quickstart, user manual, reference guide, and code samples tested against the API.
 outcomes:
-  - value: "[40]%"
+  - value: 40%
     label: faster developer onboarding
-  - value: "[33]%+"
+  - value: 33%+
     label: fewer integration support tickets in the first quarter
-  - value: "[5]"
+  - value: "2"
     label: languages with standardised code samples
 deliverables:
   - Full API reference rebuild
   - Getting started guide
-  - Code samples in [5] languages
+  - Code samples in 2 languages
   - Documentation style guide for the internal team
 quote:
   text: "[Client quote from Drut Networks about the result, in their own words.]"
@@ -56,14 +53,14 @@ next: aapmor-help-centre
 
 ## The challenge
 
-Drut Networks' API documentation had grown organically over [three years]. Structure varied from page to page, examples had fallen behind the product, and there was no clear entry point for new integrators.
+Drut Networks' end-user documentation & API documentation had grown organically over seven years. Structure varied from page to page, examples had fallen behind the product, and there was no clear entry point for new integrators.
 
-Developers relied on the engineering team for answers the reference should have covered, and onboarding a new integration partner was taking weeks.
+Customers & developers relied on the engineering team for answers the reference should have covered, and onboarding a new integration partner was taking weeks.
 
 ## Our approach
 
-We started from the developer's first hour. After auditing the existing docs and interviewing the engineering team, we rebuilt the reference from scratch using a topic-based structure, introduced a getting-started guide, and standardised code samples across [five] languages. A documentation style guide now keeps new pages consistent.
+We started from the developer's first hour. After auditing the existing docs and interviewing the engineering team, we rebuilt the reference from scratch using a topic-based structure, introduced a getting-started guide, and standardized code samples in 2 languages. A documentation style guide now keeps new pages consistent.
 
 ## The outcome
 
-Developer onboarding time dropped by [40%]. Support tickets related to integration questions fell by [over a third] in the first quarter after launch.
+Developer onboarding time dropped by 40%. Support tickets related to integration questions fell by over a third in the first quarter after launch.
