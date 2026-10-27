@@ -4,7 +4,7 @@ slug: api-documentation
 order: 1
 secondary: false
 icon: code
-cardDescription: API reference, SDK guides and tutorials customers & developers can follow on the first try.
+cardDescription: API reference, SDK guides, and tutorials customers & developers can follow on the first try.
 seo:
   title: API Documentation Services for Startups | VAKS Consulting
   description: API reference, SDK guides and code samples that help developers integrate faster and ask your engineers fewer questions.
