@@ -6,7 +6,7 @@ industry: "[Developer tooling]"
 service: api-documentation
 serviceLabel: API documentation
 timeline: "[X] weeks"
-title: Capturing user flows & rebuilding API docs that customers & developers actually use
+title: Rebuilding API docs that customers & developers actually use
 seo:
   title: Drut Networks API Documentation Case Study | VAKS
   description: How VAKS rebuilt Drut Networks' API reference, quickstart and code samples so developers could integrate without waiting on engineers.
