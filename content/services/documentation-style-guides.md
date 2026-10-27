@@ -10,28 +10,33 @@ seo:
   description: A documentation style guide, terminology, templates and review workflow so every writer on your team sounds the same.
   h1: Documentation style guides and content systems
   primaryKeyword: documentation style guide
-  keywords: [content style guide, documentation templates, documentation governance, tone of voice guide, terminology glossary]
+  keywords:
+    - content style guide
+    - documentation templates
+    - documentation governance
+    - tone of voice guide
+    - terminology glossary
 eyebrow: Content systems & style guides
 headings:
-  problems: "When every writer has their own rules"
-  intro: "A documentation style guide your team will use"
-  included: "Everything your writers need to sound like one team"
-  faq: "Style guide questions"
-  cta: "Ready for docs that sound like one team?"
-lead: Consistent documentation starts with a shared system. We build the voice, structure, templates and governance your team needs to write with confidence.
+  problems: When every writer has their own rules
+  intro: A documentation style guide your team will use
+  included: Everything your writers need to sound like one team
+  faq: Style guide questions
+  cta: Ready for docs that sound like one team?
+lead: Consistent documentation starts with a shared system. We build the voice, structure, templates, and governance your team needs to write with confidence.
 heroInputs:
-  - label: "Brand voice"
+  - label: Brand voice
     icon: megaphone
-  - label: "Existing docs"
+  - label: Existing docs
     icon: files
-  - label: "Each writer's habits"
+  - label: Each writer's habits
     icon: pen-line
-  - label: "Review comments"
+  - label: Review comments
     icon: message-square-text
 whoFor:
-  - Teams where engineers, product and support all write docs
+  - Teams where engineers, product, and support all write docs
   - Companies scaling their documentation across products or regions
-  - Docs teams that need governance, not more rewriting
+  - Doc teams that need governance, not more rewriting
 problems:
   - title: Every page sounds different
     text: Different writers use different terms, tone and structure.
@@ -46,21 +51,27 @@ included:
   - Contribution guidelines for internal authors
   - Review and approval workflow design
   - Delivered in your preferred format or wiki
-timelineNote: A typical style guide project runs [3–5] weeks.
+timelineNote: A typical style guide project runs 3–6 weeks.
 process:
-  - label: Week [1]
+  - label: Week 1-2
     title: Review
     text: Your existing docs, brand voice and the people who write them.
-  - label: Week [2]
+  - label: Week 3
     title: Define
     text: Voice, terminology, structure and formatting rules.
-  - label: Week [3]
+  - label: Week 4-5
     title: Template
     text: Reusable templates for your most common page types.
-  - label: Week [4]
+  - label: Week 6
     title: Govern
     text: Contribution guidelines and a review workflow your team will follow.
-tools: [Confluence, Notion, Google Docs, Markdown, Vale, Git]
+tools:
+  - Confluence
+  - Notion
+  - Google Docs
+  - Markdown
+  - Vale
+  - Git
 relatedCaseStudy: drut-networks-api-documentation
 faq:
   - q: Do you replace our brand guidelines?
