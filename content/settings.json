@@ -6,7 +6,7 @@
   "_ga4MeasurementIdNote": "Google Analytics 4 → Admin → Data streams → Measurement ID, e.g. G-XXXXXXXXXX.",
   "gtmContainerId": "GTM-P9WQ6ZCG",
   "_gtmContainerIdNote": "Google Tag Manager container ID, e.g. GTM-XXXXXXX. Use GTM or GA4, not both for the same tag.",
-  "bingSiteVerification": "",
+  "bingSiteVerification": "6D9BA4ABCAF43F1FD3829E82513C8872",
   "_bingSiteVerificationNote": "Bing Webmaster Tools → HTML meta tag method: paste only the content value.",
   "clarityProjectId": "",
   "_clarityProjectIdNote": "Microsoft Clarity → Settings → Overview → Project ID."
