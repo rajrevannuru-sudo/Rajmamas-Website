@@ -16,7 +16,7 @@ seo:
     - documentation governance
     - tone of voice guide
     - terminology glossary
-eyebrow: Content systems & style guides
+eyebrow: Style guides & Content systems
 headings:
   problems: When every writer has their own rules
   intro: A documentation style guide your team will use
