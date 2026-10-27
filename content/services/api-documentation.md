@@ -53,16 +53,16 @@ included:
   - Delivered in Markdown, HTML or your preferred format
 timelineNote: A typical API documentation project runs [4–6] weeks, depending on the number of endpoints.
 process:
-  - label: Week [1]
+  - label: Week 1-2
     title: Discover
     text: Product walkthrough, API access, reader interviews and a docs plan.
-  - label: Weeks [2–3]
+  - label: Weeks 3–5
     title: Draft
     text: Reference, quickstart and guides written and tested against the live API.
-  - label: Weeks [4–5]
+  - label: Weeks 6–7
     title: Review
     text: Up to three review cycles with your engineers.
-  - label: Week [6]
+  - label: Week 8
     title: Deliver
     text: Final files in your format, plus a style guide to keep them current.
 tools:
