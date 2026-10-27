@@ -8,7 +8,7 @@ cardDescription: Help articles and guides that answer questions before they beco
 seo:
   title: User Manual & Help Centre Writing | VAKS Consulting
   description: User manuals, help centre articles and onboarding guides that answer questions before they become support tickets.
-  h1: User manual and help centre writing services
+  h1: User manual and help system writing services
   primaryKeyword: user manual writing services
   keywords:
     - help centre content writing
@@ -16,7 +16,7 @@ seo:
     - product documentation services
     - onboarding documentation
     - user guide writing
-eyebrow: Help centres & user manuals
+eyebrow: User manuals & Help systems
 headings:
   problems: When the help centre can't keep up
   intro: User manual writing services that start from real questions
