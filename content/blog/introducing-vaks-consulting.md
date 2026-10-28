@@ -1,6 +1,6 @@
 ---
 title: Introducing VAKS Consulting
-description: A brief introduction to what VAKS Consulting does and how does it impact your business.
+description: An overview of VAKS Consulting’s services and how they can support your business
 date: 2026-10-28
 image: ./images/introducing-vaks-consulting.jpg
 imageAlt: An introduction to VAKS Consulting
