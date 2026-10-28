@@ -5,7 +5,7 @@ date: 2026-10-28
 image: ./images/introducing-vaks-consulting.jpg
 imageAlt: An introduction to VAKS Consulting
 tags: []
-draft: true
+draft: false
 ---
 
 I’m an independent technical documentation consultant based in Hyderabad, helping teams make complex information clearer and easier to use.
