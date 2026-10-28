@@ -12,4 +12,4 @@ I’m an independent technical documentation consultant based in Hyderabad, help
 
 My services include API and developer documentation, user manuals and help systems, SOPs and process documentation, documentation audits, style guides and content systems, writing training for teams, and business and marketing content.
 
-If your team needs help creating, reviewing, or improving its content, get in touch at <contact@vaksconsulting.com> or visit <vaksconsulting.com>.
+If your team needs help creating, reviewing, or improving its content, get in touch at <contact@vaksconsulting.com> or visit [vaksconsulting.com](vaksconsulting.com).
