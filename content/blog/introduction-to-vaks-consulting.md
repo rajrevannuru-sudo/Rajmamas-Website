@@ -2,7 +2,7 @@
 title: Introduction to VAKS Consulting
 description: An overview of VAKS Consulting’s services and how they can support your business.
 date: 2026-10-28
-image: ./images/introduction-to-vaks-consulting.jpg
+image: ./images/introduction-to-vaks-consulting.png
 imageAlt: An instrocution to VAKS Consulting
 tags: []
 draft: false
