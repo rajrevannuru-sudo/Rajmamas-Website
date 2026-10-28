@@ -2,7 +2,7 @@
 title: Five signs your API documentation needs a rewrite
 description: Integration questions in Slack, a reference that lags each release, no clear first step. How to tell when your API docs need more than a patch.
 date: 2026-10-26
-image: ./images/signs-your-api-docs-need-a-rewrite.jpg
+image: ./images/signs-your-api-docs-need-a-rewrite.png
 imageAlt: Illustration of a structured documentation page with a code sample and a highlighted call to action
 tags:
   - API documentation
