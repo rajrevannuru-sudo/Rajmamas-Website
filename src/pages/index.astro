@@ -3,12 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
 import HeroFlowArt from '../components/HeroFlowArt.astro';
-import ClientLogo from '../components/ClientLogo.astro';
 import FounderMini from '../components/FounderMini.astro';
 import SectionHead from '../components/SectionHead.astro';
 import ProblemCard from '../components/ProblemCard.astro';
 import ServiceCard from '../components/ServiceCard.astro';
-import CaseCard from '../components/CaseCard.astro';
 import FounderSection from '../components/FounderSection.astro';
 import Steps from '../components/Steps.astro';
 import QuoteCard from '../components/QuoteCard.astro';
@@ -17,12 +15,11 @@ import CtaBand from '../components/CtaBand.astro';
 import { site, pages, testimonials } from '../lib/site';
 import { ph } from '../lib/placeholder';
 import { at, src } from '../lib/cms-attr';
-import { getServices, getCaseStudies } from '../lib/content';
+import { getServices } from '../lib/content';
 
 const p = pages.home;
 const ui = pages.ui;
 const services = await getServices();
-const studies = await getCaseStudies();
 const reassureIcons = ['shield', 'globe'] as const;
 ---
 
@@ -35,7 +32,7 @@ const reassureIcons = ['shield', 'globe'] as const;
         <p class="lead" {...at(src('pages', 'home.hero.lead'))} set:html={ph(p.hero.lead)} />
         <div class="btn-row">
           <Button href={site.bookingUrl} icon="calendar">{ui.bookCall}</Button>
-          <Button href="/case-studies" variant="secondary">{ui.seeOurWork}</Button>
+          <Button href="/services" variant="secondary">{ui.allServices}</Button>
         </div>
         <p class="reassure">
           {p.hero.reassure.map((r, i) => <span><Icon name={reassureIcons[i % 2]} /><span {...at(src('pages', `home.hero.reassure.${i}`))}>{r}</span></span>)}
@@ -45,15 +42,6 @@ const reassureIcons = ['shield', 'globe'] as const;
         <HeroFlowArt />
         <FounderMini />
       </div>
-    </div>
-  </section>
-
-  <section class="trust" aria-labelledby="trust-h">
-    <div class="wrap inner">
-      <h2 class="label" id="trust-h" {...at(src('pages', 'home.trustLabel'))}>{p.trustLabel}</h2>
-      <ul>
-        {site.clients.map((c) => <li><ClientLogo name={c} height={34} /></li>)}
-      </ul>
     </div>
   </section>
 
@@ -72,18 +60,6 @@ const reassureIcons = ['shield', 'globe'] as const;
       <ul class="grid-3">
         {services.map((s) => <ServiceCard service={s} />)}
       </ul>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="res-h">
-    <div class="wrap">
-      <SectionHead id="res-h" {...p.results} src={src('pages', 'home.results')} />
-      <ul class="grid-3">
-        {studies.map((c) => <li><CaseCard study={c} /></li>)}
-      </ul>
-      <p class="more-link">
-        <a class="link-arrow" href="/case-studies"><span {...at(src('pages', 'ui.allCaseStudies'))}>{ui.allCaseStudies}</span><Icon name="arrow" /></a>
-      </p>
     </div>
   </section>
 

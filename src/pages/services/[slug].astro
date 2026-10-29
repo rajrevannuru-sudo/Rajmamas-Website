@@ -10,15 +10,13 @@ import ProblemCard from '../../components/ProblemCard.astro';
 import Checklist from '../../components/Checklist.astro';
 import Timeline from '../../components/Timeline.astro';
 import ToolsStrip from '../../components/ToolsStrip.astro';
-import CaseCard from '../../components/CaseCard.astro';
-import QuoteCard from '../../components/QuoteCard.astro';
 import Faq from '../../components/Faq.astro';
 import CtaBand from '../../components/CtaBand.astro';
-import { site, pages, showUnconfirmed } from '../../lib/site';
-import { ph, fill } from '../../lib/placeholder';
+import { site, pages } from '../../lib/site';
+import { ph } from '../../lib/placeholder';
 import { at, src } from '../../lib/cms-attr';
 import { breadcrumbNode, serviceNode, faqNode, type Crumb } from '../../lib/schema';
-import { getServices, getCaseStudy, caseHref, serviceHref, type Service } from '../../lib/content';
+import { getServices, serviceHref, type Service } from '../../lib/content';
 
 export async function getStaticPaths() {
   const services = await getServices();
@@ -32,8 +30,6 @@ const ui = pages.ui;
 const path = serviceHref(service);
 const { Content } = await render(service);
 
-const related = await getCaseStudy(d.relatedCaseStudy);
-const relatedQuote = related?.data.quote && (related.data.quote.confirmed || showUnconfirmed) ? related.data.quote : undefined;
 
 const crumbs: Crumb[] = [
   { name: ui.home, path: '/' },
@@ -47,7 +43,7 @@ const schema = [
 ];
 
 // Section backgrounds alternate studio-light / parchment whatever blocks are present.
-const order = ['problems', 'intro', 'included', 'process', 'who', ...(related ? ['related'] : []), 'faq'];
+const order = ['problems', 'intro', 'included', 'process', 'who', 'faq'];
 const whoIcons = ['user-round-check', 'users', 'building-2'];
 const doc = `services/${service.id}`;
 const S = (path: string) => src(doc, path);
@@ -66,15 +62,7 @@ const bg = (key: string) => (order.indexOf(key) % 2 === 1 ? 'section parchment' 
           <p class="lead" {...at(S('lead'))} set:html={ph(d.lead)} />
           <div class="btn-row">
             <Button href={site.bookingUrl} icon="calendar">{ui.bookCall}</Button>
-            {
-              related ? (
-                <Button href={caseHref(related)} variant="secondary">
-                  {fill(t.caseButton, { client: related.data.client })}
-                </Button>
-              ) : (
-                <Button href="/case-studies" variant="secondary">{ui.seeOurWork}</Button>
-              )
-            }
+            <Button href="/about" variant="secondary">{ui.moreAboutUs}</Button>
           </div>
         </div>
         <ServiceHeroArt service={service} />
@@ -132,31 +120,6 @@ const bg = (key: string) => (order.indexOf(key) % 2 === 1 ? 'section parchment' 
     </div>
   </section>
 
-  {
-    related && (
-      <section class={bg('related')} aria-labelledby="rel-h">
-        <div class="wrap">
-          <SectionHead id="rel-h" eyebrow={t.relatedEyebrow} title={t.relatedTitle} eyebrowSrc={P('service.relatedEyebrow')} titleSrc={P('service.relatedTitle')} />
-          <ul class="related-row">
-            <li><CaseCard study={related} /></li>
-            {relatedQuote && (
-              <li>
-                <QuoteCard
-                  quote={relatedQuote.text}
-                  name={relatedQuote.name}
-                  role={relatedQuote.role}
-                  company={related.data.client}
-                  quoteSrc={src(`case-studies/${related.id}`, 'quote.text')}
-                  nameSrc={src(`case-studies/${related.id}`, 'quote.name')}
-                  roleSrc={src(`case-studies/${related.id}`, 'quote.role')}
-                />
-              </li>
-            )}
-          </ul>
-        </div>
-      </section>
-    )
-  }
 
   <section class={bg('faq')} aria-labelledby="faq-h">
     <Faq eyebrow={t.faqEyebrow} title={d.headings.faq} items={d.faq} src={S('faq')} eyebrowSrc={P('service.faqEyebrow')} titleSrc={S('headings.faq')} />

@@ -8,10 +8,11 @@ interface Props {
   /** OG image name in public/og, without extension. */
   og: string;
   noindex?: boolean;
+  nofollow?: boolean;
   type?: 'website' | 'article';
 }
 
-const { title, description, path, og, noindex = false, type = 'website' } = Astro.props;
+const { title, description, path, og, noindex = false, nofollow = false, type = 'website' } = Astro.props;
 const canonical = absoluteUrl(path);
 const image = `${site.url}/og/${og}.png`;
 ---
@@ -19,7 +20,7 @@ const image = `${site.url}/og/${og}.png`;
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
-<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
+<meta name="robots" content={`${noindex ? 'noindex' : 'index'}, ${nofollow ? 'nofollow' : 'follow'}`} />
 
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={site.name} />

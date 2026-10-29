@@ -20,7 +20,7 @@ const crumbs: Crumb[] = [
 ];
 ---
 
-<BaseLayout title={p.seo.title} description={p.seo.description} path="/case-studies" og="case-studies" schema={[breadcrumbNode(crumbs)]}>
+<BaseLayout title={p.seo.title} description={p.seo.description} path="/case-studies" og="case-studies" noindex nofollow schema={[breadcrumbNode(crumbs)]}>
   <section class="page-hero dark" aria-labelledby="h1">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />

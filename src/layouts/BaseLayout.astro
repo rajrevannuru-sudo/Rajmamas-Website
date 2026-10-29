@@ -18,6 +18,7 @@ interface Props {
   path: string;
   og: string;
   noindex?: boolean;
+  nofollow?: boolean;
   type?: 'website' | 'article';
   headerOnDark?: boolean;
   /** Extra JSON-LD nodes for this page. */
@@ -26,7 +27,7 @@ interface Props {
   person?: boolean;
 }
 
-const { title, description, path, og, noindex, type, headerOnDark = false, schema = [], person = false } = Astro.props;
+const { title, description, path, og, noindex, nofollow, type, headerOnDark = false, schema = [], person = false } = Astro.props;
 const ld = graph(schema, person ? await founderSchemaImage() : undefined);
 ---
 
@@ -37,7 +38,7 @@ const ld = graph(schema, person ? await founderSchemaImage() : undefined);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Google Tag Manager / GA4 / verification tags (CMS → Integrations), as high in <head> as possible -->
     <Integrations />
-    <Seo title={title} description={description} path={path} og={og} noindex={noindex} type={type} />
+    <Seo title={title} description={description} path={path} og={og} noindex={noindex} nofollow={nofollow} type={type} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

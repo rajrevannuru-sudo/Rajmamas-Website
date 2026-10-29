@@ -28,7 +28,7 @@ RewriteRule ^ https://vaksconsulting.com%{REQUEST_URI} [L,R=301]
 </FilesMatch>
 
 # 301 redirects from docs/seo-plan.md §6
-RewriteRule ^portfolio(/.*)?$ /case-studies [L,R=301]
+RewriteRule ^portfolio(/.*)?$ /services [L,R=301]
 RewriteRule ^theme-study/?$ / [L,R=301]
 RewriteRule ^design-system/?$ / [L,R=301]
 RewriteRule ^home/?$ / [L,R=301]

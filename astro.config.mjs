@@ -29,14 +29,15 @@ export default defineConfig({
   markdown: { remarkPlugins: [remarkPlaceholders] },
   // 301s from docs/seo-plan.md §6 (also in public/_redirects and public/.htaccess for other hosts)
   redirects: {
-    '/portfolio': { status: 301, destination: '/case-studies' },
+    '/portfolio': { status: 301, destination: '/services' },
     '/theme-study': { status: 301, destination: '/' },
     '/design-system': { status: 301, destination: '/' },
     '/home': { status: 301, destination: '/' },
   },
   integrations: [
     sitemap({
-      filter: (page) => !/\/(404|cms)(\.html|\/|$)/.test(page),
+      // Case studies are hidden (client NDAs): noindex, nofollow and left out of the sitemap.
+      filter: (page) => !/\/(404|cms|case-studies)(\.html|\/|$)/.test(page),
       serialize(item) {
         const slug = item.url.match(/\/blog\/([^/]+)$/)?.[1];
         if (slug && postDates[slug]) item.lastmod = postDates[slug].toISOString();

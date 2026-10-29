@@ -1,13 +1,13 @@
-// /sitemap.xml — every public page, generated at build time. New top-level pages, services,
-// case studies and published blog posts are included automatically. (@astrojs/sitemap also
+// /sitemap.xml — every public page, generated at build time. New top-level pages, services
+// and published blog posts are included automatically. (@astrojs/sitemap also
 // writes /sitemap-index.xml; both list the same pages.)
 import type { APIRoute } from 'astro';
 import { site } from '../lib/site';
-import { getServices, getCaseStudies, getPosts, serviceHref, caseHref, postHref } from '../lib/content';
+import { getServices, getPosts, serviceHref, postHref } from '../lib/content';
 
-// Top-level pages from src/pages/*.astro (404 and the CMS are private/excluded).
+// Top-level pages from src/pages/*.astro (404, the CMS and the hidden case studies are excluded).
 const pageFiles = Object.keys(import.meta.glob('./*.astro'));
-const EXCLUDE = new Set(['404']);
+const EXCLUDE = new Set(['404', 'case-studies']);
 
 const xmlEscape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -18,12 +18,11 @@ export const GET: APIRoute = async () => {
     .map((name) => ({ path: name === 'index' ? '/' : `/${name}`, lastmod: undefined as Date | undefined }));
 
   const services = (await getServices()).map((s) => ({ path: serviceHref(s), lastmod: undefined as Date | undefined }));
-  const studies = (await getCaseStudies()).map((c) => ({ path: caseHref(c), lastmod: undefined as Date | undefined }));
   const posts = (await getPosts())
     .filter((p) => !p.data.draft)
     .map((p) => ({ path: postHref(p), lastmod: p.data.updated ?? p.data.date }));
 
-  const urls = [...top, ...services, ...studies, ...posts].sort((a, b) => (a.path === '/' ? -1 : b.path === '/' ? 1 : a.path.localeCompare(b.path)));
+  const urls = [...top, ...services, ...posts].sort((a, b) => (a.path === '/' ? -1 : b.path === '/' ? 1 : a.path.localeCompare(b.path)));
   const body = urls
     .map(({ path, lastmod }) => {
       const loc = path === '/' ? `${site.url}/` : `${site.url}${path}`;

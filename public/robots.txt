@@ -1,6 +1,8 @@
 # robots.txt for vaksconsulting.com
 #
-# The whole public site may be crawled. The CMS (/cms) and the form/API endpoints (/api)
+# The whole public site may be crawled. Case studies (/case-studies) are hidden under client NDAs:
+# they carry a noindex, nofollow robots tag and are not in the sitemaps (not disallowed here, so
+# crawlers can still read that tag). The CMS (/cms) and the form/API endpoints (/api)
 # are private: they are never crawled or indexed (they also send "X-Robots-Tag: noindex, nofollow").
 
 User-agent: *
