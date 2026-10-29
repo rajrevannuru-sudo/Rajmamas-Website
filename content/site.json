@@ -89,7 +89,7 @@
   ],
   "_statsNote": "60+ and 16+ come from the old site and are not yet confirmed by Raj.",
   "clients": [],
-  "_clientsNote": "Client names are not shown on the site (NDAs). Leave this empty unless a client gives written permission.",
+  "_clientsNote": "Client names are not shown on the site (NDAs), except Athena Overseas in Rajesh Kolli's testimonial. Leave this empty unless a client gives written permission.",
   "clientLogos": {},
   "_clientLogosNote": "Client logos are not shown on the site (NDAs). Logo files would live in src/assets/images/clients/.",
   "nav": [
@@ -250,7 +250,7 @@
       "quote": "Our internal SOPs were disorganized and difficult to maintain. VAKS brought structure and clarity, creating a practical system our team can confidently manage and sustain.",
       "name": "Rajesh Kolli",
       "role": "Managing Director",
-      "company": "",
+      "company": "Athena Overseas",
       "confirmed": true
     },
     {
