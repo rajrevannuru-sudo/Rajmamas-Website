@@ -75,13 +75,13 @@
       "icon": "calendar-check"
     },
     {
-      "value": "[60]",
+      "value": "60",
       "suffix": "+",
       "label": "Projects delivered",
       "icon": "folder-check"
     },
     {
-      "value": "[16]",
+      "value": "16",
       "suffix": "+",
       "label": "Clients served",
       "icon": "users"
@@ -220,7 +220,7 @@
   ],
   "story": [
     "VAKS Consulting was founded on a simple observation: most documentation is an afterthought. It's written in a hurry, by people who know too much to explain it clearly, for users who are left to figure it out alone.",
-    "We started VAKS to change that. We bring the same rigour and craft to documentation that great teams bring to their products: structured thinking, clear language, and a genuine obsession with the reader's experience.",
+    "We started VAKS Consulting to change that. We bring the same rigour and craft to documentation that great teams bring to their products: structured thinking, clear language, and a genuine obsession with the reader's experience.",
     "We take on a small number of projects at a time, so every client works directly with a senior documentation architect. Today we work with startups and technology companies across India and beyond."
   ],
   "homeFaq": [
