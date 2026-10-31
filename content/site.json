@@ -248,9 +248,9 @@
   "testimonials": [
     {
       "quote": "Some of our internal process documents were incomplete or out of date, making it difficult for employees to follow the right procedures. VAKS Consulting helped us improve and clarify those processes in line with our policies and work ethics. They also supported us in creating professional marketing content and clear, useful Statements of Purpose for our customers. Their work has helped us communicate more consistently and support our customers more effectively.",
-      /* "name": "Rajesh Kolli",
-      "role": "Managing Director",
-      "company": "Athena Overseas", */
+      // "name": "Rajesh Kolli",
+      // "role": "Managing Director",
+      // "company": "Athena Overseas",
       "confirmed": true
     },
     {
