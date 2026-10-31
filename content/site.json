@@ -22,17 +22,17 @@
   "callHours": "Call us Monday to Friday, 9:00 a.m.–6:00 p.m. IST. We’re happy to arrange a time to speak across time zones. If we miss your call, email us and we’ll respond as soon as possible.",
   "linkedinCompany": "",
   "founder": {
-    "name": "Rajasekhar V. Revannuru",
+    "name": "Raj Revannuru",
     "shortName": "Rajasekhar",
     "jobTitle": "Founder & Documentation Solutions Architect",
     "experienceYears": "26+",
     "location": "Hyderabad, India",
     "linkedin": "https://www.linkedin.com/in/rajrevannuru/",
     "photo": "assets-source/images/rajasekhar-revannuru-founder-vaks-consulting.png",
-    "photoAlt": "Rajasekhar V. Revannuru, Founder of VAKS Consulting",
-    "shortBio": "Rajasekhar V. Revannuru is a Documentation Solutions Architect with 26+ years of experience turning complex products and engineering workflows into clear, useful experiences for customers and internal teams.",
+    "photoAlt": "Raj Revannuru, Founder of VAKS Consulting",
+    "shortBio": "Raj Revannuru is a Documentation Solutions Architect with 26+ years of experience turning complex products and engineering workflows into clear, useful experiences for customers and internal teams.",
     "bio": [
-      "I'm Rajasekhar V. Revannuru, a Documentation Solutions Architect based in Hyderabad, India. I help organizations turn complex products and engineering workflows into clear, useful experiences for customers and internal teams.",
+      "I'm Raj Revannuru, a Documentation Solutions Architect based in Hyderabad, India. I help organizations turn complex products and engineering workflows into clear, useful experiences for customers and internal teams.",
       "My work spans documentation strategy, content architecture, knowledge management, and Docs-as-Code. Across cloud platforms, APIs, enterprise software, hardware, and telecommunications, I build scalable documentation systems that make information easier to find, understand, and maintain.",
       "I bring together structured content, thoughtful information architecture, and practical workflows to help people get more value from products."
     ],
