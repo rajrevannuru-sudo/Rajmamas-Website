@@ -2,8 +2,6 @@
 title: Privacy policy
 ---
 
-[Raj to review this policy before launch.]
-
 This policy explains what happens to the details you send us through vaksconsulting.com. We have kept it short and in plain English.
 
 ## What we collect
@@ -18,11 +16,11 @@ We use your details only to reply to your enquiry and, if we work together, to r
 
 ## Who processes it
 
-Contact form messages are delivered to us by [Web3Forms](https://web3forms.com), a form service that forwards each message to our inbox. Web3Forms processes your message only to deliver it. A copy of each enquiry is also kept in our website’s private enquiry log (hosted by Upstash on Vercel) so we can follow up; only we can see it. Our email is hosted by [our email provider].
+Contact form messages are delivered to us by [Web3Forms](https://web3forms.com), a form service that forwards each message to our inbox. Web3Forms processes your message only to deliver it. A copy of each enquiry is also kept in our website’s private enquiry log (hosted by Upstash on Vercel) so we can follow up; only we can see it. Our email is hosted by [GoDaddy.com](https://www.godaddy.com/en-in).
 
 ## How long we keep it
 
-We keep enquiry emails for as long as they are useful for the conversation, and no longer than [24 months] if we don't go on to work together.
+We keep enquiry emails for as long as they are useful for the conversation, and no longer than 12 months if we don't go on to work together.
 
 ## Your choices
 
