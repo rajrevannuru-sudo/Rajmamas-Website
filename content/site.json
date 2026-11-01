@@ -248,21 +248,21 @@
   "testimonials": [
     {
       "quote": "Some of our internal process documents were incomplete or out of date, making it difficult for employees to follow the right procedures. VAKS Consulting helped us improve and clarify those processes in line with our policies and work ethics. They also supported us in creating professional marketing content and clear, useful Statements of Purpose for our customers. Their work has helped us communicate more consistently and support our customers more effectively.",
-      "name": "Domain: International Education and Study-abroad Consulting",
+      "name": "International Education and Study-abroad Consulting",
       "role": "Area: Processes & Statement Profiles Writing",
       "company": "Updated process documents and created customer-focused content.",
       "confirmed": true
     },
     {
       "quote": "Our product information was scattered across different sources and depended heavily on a few key people. The documentation specialist brought it together by gathering technical information and interviewing our subject matter experts. They created installation and user guides from scratch, making deployment clearer and helping customers get up to speed more easily. As a result, we reduced deployment time and improved the onboarding experience.",
-      "name": "Domain: Cloud Computing & AI Infractructure",
+      "name": "Cloud Computing & AI Infractructure",
       "role": "Area: Cloud AI Infrastructure Automation",
       "company": "Created installation and user guides to simplify deployment and onboarding.",
       "confirmed": true
     },
     {
       "quote": "Our cloud-based application had complex, role-based access, with different screens and tasks for each user type, but its documentation was incomplete. The documentation specialist reviewed our requirements and design materials, then created role-specific guides tailored to each login and workflow. This helped customers get started faster and reduced the number of support calls we received.",
-      "name": "Domain: Software-as-a-Service",
+      "name": "Software-as-a-Service",
       "role": "Area: Governance, Risk, and Compliance (GRC) Automation",
       "company": "Created role-based guides to speed up onboarding and reduce support calls.",
       "confirmed": true
