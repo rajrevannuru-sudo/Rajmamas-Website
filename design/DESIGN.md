@@ -125,7 +125,7 @@ No logo file has been supplied yet, so the wordmark is set in type:
 - Midnight background, 96px vertical padding, 2-column grid (1.25fr / 1fr), vertically centred.
 - Left: eyebrow **"CLEAR DOCUMENTATION. CONFIDENT CUSTOMERS."**, H1 (max ~18ch), lead (muted-on-dark), primary + secondary buttons, then a small reassurance row (shield icon "NDA on request", globe icon "Working with teams worldwide") in 14px muted text with gold icons.
 - Right: **`home.jpg`** in a radius-12 frame (aspect 4:4.4 desktop, 4:3 mobile, 1px dark hairline border, large soft shadow) with the **founder mini-card** overlapping its bottom-left corner (−56px left, −88px bottom).
-- Founder mini-card (`.founder-mini`): ink-navy panel, radius 12, 330px wide: 56px circular photo, name (serif 20px), "Founder & Principal Consultant" (13px muted), gold LinkedIn icon link on the right.
+- Founder mini-card (`.founder-mini`): ink-navy panel, radius 12, 330px wide: 56px circular photo, name (serif 20px), "Founder & Documentation Solutions Architect" (13px muted), gold LinkedIn icon link on the right.
 - Mobile: single column, image below the buttons, mini-card sits under the image overlapping it by 28px.
 
 ### 3.5 Inner page hero (`.page-hero.dark`)
@@ -235,9 +235,9 @@ Light header → 2 columns. Left: eyebrow, H1 "Let's talk about your documentati
 
 ## 5. Content and data
 
-- **Founder:** Rajasekhar V. Revannuru — Founder & Principal Consultant (bio describes him as a Documentation Solutions Architect). 26+ years. LinkedIn: https://www.linkedin.com/in/rajrevannuru/
+- **Founder:** Raj Revannuru — Founder & Documentation Solutions Architect. 26+ years. LinkedIn: https://www.linkedin.com/in/rajrevannuru/
 - **Phone / WhatsApp:** +91 63095 82277 → `tel:+916309582277`, `https://wa.me/916309582277`
-- **Email:** not yet supplied (`[email]@vaksconsulting.com`)
+- **Email:** not yet supplied (`contact@vaksconsulting.com`)
 - **Public clients:** Aapmor Technologies, Drut Networks, Athena Overseas. Do not show any other client names.
 - **Career results** (Rajasekhar's own, not a single client's): 70% fewer support tickets, 90% fewer documentation defects, 25% faster onboarding, 40% better API documentation discoverability. Present them as career results, never as a specific client's outcome.
 - **The 7 services:** API & developer documentation · User manuals & help centres · SOPs & process documentation · Documentation audits · Style guides · Writing training for teams · Business & marketing content (secondary).
