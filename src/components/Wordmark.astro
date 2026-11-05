@@ -2,7 +2,7 @@
 // The VAKS Consulting logo. Gold on dark backgrounds, navy on light ones (gold is never used on light grounds).
 import { Image } from 'astro:assets';
 import goldLogo from '../assets/images/brand/vaks-consulting-logo-gold-new.png';
-import navyLogo from '../assets/images/brand/vaks-consulting-logo-navy.png';
+import navyLogo from '../assets/images/brand/vaks-consulting-logo-navy-new.png';
 import { site } from '../lib/site';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
   height?: number;
   class?: string;
 }
-const { tone = 'navy', height = 54, class: className } = Astro.props;
+const { tone = 'navy', height = 72, class: className } = Astro.props;
 const logo = tone === 'gold' ? goldLogo : navyLogo;
 const width = Math.round((logo.width / logo.height) * height);
 ---

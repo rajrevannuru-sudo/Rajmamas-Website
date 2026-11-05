@@ -1243,9 +1243,12 @@ html, body { margin: 0; }
   .vk .logo .logo-img { height: 36px; }
   .vk .logo-footer .logo-img { height: 44px; }
 }
-.vk .logo .logo-img { height: 54px; }
-.vk .logo-footer .logo-img { height: 62px; }
+/* the logo carries the "Value Aligned Knowledge Systems" tagline, so it runs taller to keep that line legible */
+.vk .site-header .bar { height: 96px; }
+.vk .logo .logo-img { height: 72px; }
+.vk .logo-footer .logo-img { height: 80px; }
 @media (max-width: 760px) {
-  .vk .logo .logo-img { height: 42px; }
-  .vk .logo-footer .logo-img { height: 52px; }
+  .vk .site-header .bar { height: 72px; }
+  .vk .logo .logo-img { height: 54px; }
+  .vk .logo-footer .logo-img { height: 64px; }
 }
