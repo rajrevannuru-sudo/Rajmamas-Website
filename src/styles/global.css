@@ -1252,3 +1252,12 @@ html, body { margin: 0; }
   .vk .logo .logo-img { height: 54px; }
   .vk .logo-footer .logo-img { height: 64px; }
 }
+
+/* sticky header: anchors and sticky side rails clear it */
+html { --header-h: 97px; scroll-padding-top: var(--header-h); }
+.vk .site-header { position: sticky; top: 0; z-index: 50; }
+.vk .toc-rail, .vk .post-sidebar { top: calc(var(--header-h) + 24px); }
+@media (max-width: 760px) {
+  html { --header-h: 73px; }
+  .vk .mobile-menu.open { max-height: calc(100dvh - var(--header-h)); overflow-y: auto; }
+}
