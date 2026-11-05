@@ -9,12 +9,12 @@ const f = site.founder;
 ---
 
 <div class="founder-mini">
-  <span class="photo">
+  <a href="/about" class="photo" tabindex="-1" aria-hidden="true">
     <Image src={founderPhoto} alt={f.name} width={112} height={168} loading="eager" class="founder-avatar" />
-  </span>
+  </a>
   <div>
-    <b {...at(src('site', 'founder.name'))}>{f.name}</b>
+    <b><a href="/about" class="name" {...at(src('site', 'founder.name'))}>{f.name}</a></b>
     <span {...at(src('site', 'founder.jobTitle'))}>{f.jobTitle}</span>
   </div>
-  <a href={f.linkedin} aria-label={pages.ui.linkedinLabel}><Icon name="linkedin" /></a>
+  <a href={f.linkedin} class="li" aria-label={pages.ui.linkedinLabel}><Icon name="linkedin" /></a>
 </div>
